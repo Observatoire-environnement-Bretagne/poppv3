@@ -1,0 +1,18 @@
+
+<div class="layer w-100">
+    <div class="form-group row">
+        <label for="selectAxeThe" class="col-sm-4 col-form-label">Th&eacute;matique paysagère</label>
+        <div class="col-sm-8">
+            <select id="selectAxeThe" class="form-control">
+                <option value='all'>-Tout-</option>
+                {% for axeThematicId, axeThematicNom in AxeThematics %}
+                    {% if axeThematicId in app.session.get('critere_search_series')['axeTheId'] %}
+                        <option value="{{ axeThematicId }}" selected>{{ axeThematicNom }}</option>
+                    {% else %}
+                        <option value="{{ axeThematicId }}">{{ axeThematicNom }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>

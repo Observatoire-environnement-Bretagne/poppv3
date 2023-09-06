@@ -1,0 +1,178 @@
+{%  extends "base.html.twig" %}
+
+{% block body %}
+	
+{% set id = 'new' %}
+{% if action != 'new' %}
+    {% set id = structure.porteurOppId %} 
+{% endif %}
+{% set parameters = app.session.get('parameters') %}
+<main class='main-content bgc-grey-100'>
+    <div id='mainContent'>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                        <div class="row mT-10">
+                            <h5 class='col-12 mB-20'>Ajout d'une structure</h5>
+                            <div class="col-md-12">
+                                <label for="add_struct_nom">Nom de la structure OPP</label>
+                            </div>
+                            <input class="form-control structure" type='hidden' id="add_struct_id" name='{{id}}' value='{{id}}'>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <input id="add_struct_nom" name="add_struct_nom" type="text" class="form-control structure" placeholder="Nom * " required {% if structure %} value="{{ structure.porteurOppNom }}"/>{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mT-10">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="add_struct_desc_courte">Description courte *</label>
+                                    <textarea id="add_struct_desc_courte" name="add_struct_desc_courte" class="form-control structure" placeholder="" required>{% if structure %}{{ structure.porteurOppDescCourte }}{% endif %}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mT-10">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="add_struct_adrs">Adresse *</label>
+                                    <input id="add_struct_adrs" name="add_struct_adrs" type="text" class="form-control structure" placeholder="" required {% if structure %} value="{{ structure.porteurOppAdresse }}"/>{% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="add_struct_contact">Contact r&eacute;f&eacute;rent *</label>
+                                    <input id="add_struct_contact" name="add_struct_contact" type="text" class="form-control structure" placeholder="" required {% if structure %} value="{{ structure.porteurOppContactRef }}"/>{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mT-10">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="add_struct_desc_tech">Description technique *</label>
+                                    <textarea id="add_struct_desc_tech" name="add_struct_desc_tech" class="form-control structure" placeholder="" required>{% if structure %}{{ structure.porteurOppDescTech }}{% endif %}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mT-10">
+                            <div class="col-md-6">
+                                 <div class="form-group">
+                                    <label for="add_struct_email">Email</label>
+                                    <input id="add_struct_email" name="add_struct_email" type="text" class="form-control structure" placeholder=""  {% if structure %} value="{{ structure.porteurOppEmail }}"/>{% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="add_struct_tel">T&eacute;l&eacute;phone</label>
+                                    <input id="add_struct_tel" name="add_struct_tel" type="text" class="form-control structure" {% if structure %} value="{{ structure.porteurOppTelephone }}"/>{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mT-10">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="add_struct_url">Site internet</label>
+                                    <input id="add_struct_url" name="add_struct_url" type="text" class="form-control structure" {% if structure %} value="{{ structure.porteurOppSiteWeb }}"/>{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mT-10">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="add_struct_preoc_pays">Pr&eacute;occupations paysag&egrave;res</label>
+                                    <textarea id="add_struct_preoc_pays" name="add_struct_preoc_pays" class="form-control structure" placeholder="">{% if structure %}{{ structure.porteurOppPreocupationPaysagere }}{% endif %}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mT-10">
+                            <div class="col-md-3">
+                                <label>Logo</label>
+                                <input type="hidden" id="structureLogoId" class="structure" value="{% if structure.porteurOppLogo %}{{ structure.porteurOppLogo.fileManagerId }}{% endif %}">
+                                <input type="hidden" id="structureLogoTitre" class="structure" value="{% if structure.porteurOppLogo %}{{ structure.porteurOppLogo.fileManagerNom }}{% endif %}">
+                                <input type="hidden" id="structureLogoURL" class="structure" value="{% if structure.porteurOppLogo %}{{ structure.porteurOppLogo.fileManagerUri }}{% endif %}">
+                                <input type="hidden" id="structureLogoPoids" class="structure" value="{% if structure.porteurOppLogo %}{{ structure.porteurOppLogo.fileManagerSize }}{% endif %}">
+                            </div>
+                            <div class="col-md-3" id="structureLogoDownload">
+                                {% if structure.porteurOppLogo %}
+                                    <a href="{{parameters['URL_FOLDER_FILES']}}{{ structure.porteurOppLogo.fileManagerUri }}" target="_blank">
+                                        {{ structure.porteurOppLogo.fileManagerNom }}
+                                    </a>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                            <a class="modify" id="editLogoStructure"  {% if not structure.porteurOppLogo %}style="display: none;"{% endif %}>
+                                <i class="c-light-blue-500 cur-p ti ti-pencil"></i>
+                            </a>
+                            <a class="remove" id="removeLogoStructure" {% if not structure.porteurOppLogo %}style="display: none;"{% endif %}>
+                                <i class="c-red-500 cur-p ti ti-trash"></i>
+                            </a>
+                            <button id="addLogoStructure" class="btn btn-primary cur-p" {% if structure.porteurOppLogo %}style="display: none;"{% endif %}>
+                                <i class="ti ti-plus"></i>
+                            </button>
+                                    <!--button id="editLogoStructure" class="btn btn-warning cur-p" {% if not structure.porteurOppLogo %}style="display: none;"{% endif %}>
+                                        <i class="ti ti-pencil"></i>
+                                    </button>
+                                    <button id="removeLogoStructure" class="btn btn-danger cur-p" {% if not structure.porteurOppLogo %}style="display: none;"{% endif %}>
+                                        <i class="ti ti-trash"></i>
+                                    </button>
+                                    <button id="addLogoStructure" class="btn btn-success cur-p" {% if structure.porteurOppLogo %}style="display: none;"{% endif %}>
+                                        <i class="ti ti-plus"></i>
+                                    </button-->
+                            </div>
+                        </div>
+                        <div class="checkbox checkbox-circle checkbox-info ai-c mL-15">
+                            <input type="checkbox" id="add_struct_financeur" class="peer form-control structure" {% if structure.porteurOppFinanceur %}checked{% endif %}>
+                            <label for="add_struct_financeur" class=" peer-greed js-sb ai-c">
+                                <span class="peer peer-greed">Financeur</span>
+                            </label>
+                        </div>
+                        <hr class="my-3">
+                        <div class="row mT-10">
+                            <div class="col-md-6 text-left">
+                                <div class="form-group">
+                                    {% if structure.porteurOppId %}<button id="deletetructure" class="btn btn-danger cur-p">Supprimer</button> {% endif %}
+                                    <!--input id="saveStructure" type="submit" name="envoi" class="btn btn-secondary cur-p"-->     
+                                </div>
+                            </div>
+                            <div class="col-md-6  text-right">
+                                <div class="form-group">
+                                    <button id="saveStructure" class="btn btn-primary cur-p">Valider</button>
+                                    <!--input id="saveStructure" type="submit" name="envoi" class="btn btn-secondary cur-p"-->     
+                                </div>
+                            </div>
+                            <div id="messageConfirmStructure"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{#Modal validation#}
+<div class="modal" id="modalStructureFile" tabindex="-1" role="dialog" aria-labelledby="modalStructureFile" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Logo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label for="update_struct_logo_dropzone">Logo : </label>
+                <!--small>(Si un fichier existe, il sera &eacute;cras&eacute;.)</small-->
+                <form id="updateStructLogoDropzoneForm" action="{{path('insertLogo')}}" class="dropzone" method="post" enctype="multipart/form-data">
+                  <div class="fallback">
+                    <input id="update_struct_logo_dropzone" name="update_struct_logo_dropzone" type="file"/>
+                  </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary cur-p" data-dismiss="modal">Annuler</button>
+                <button type="button" id="saveLogo" class="btn btn-success cur-p">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock body %}

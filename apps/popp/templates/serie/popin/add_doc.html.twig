@@ -1,0 +1,33 @@
+<div class="row mT-10">
+    <div class="col-md-12">
+        <div class="form-group">
+            <input id="add_doc_titre" type="text" class="form-control" placeholder="Titre * " required />
+        </div>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="legende_doc">L&eacute;gende</label>
+            <textarea id="add_doc_legende" class="form-control" placeholder="" required></textarea>
+        </div>
+    </div>
+</div>
+    
+<div class="row mT-10">
+    <div class="col-md-12">
+        <label for="import_documentation">Documentation</label>
+        <form action="/file-upload" class="dropzone form-control">
+          <div class="fallback">
+            <input id="add_doc_dropzone" name="file" type="file" value="test" required/>
+          </div>
+        </form>
+    </div>
+</div>
+
+<div class="row m-30">
+    <div class="col-md-12 center-align">
+        <button class="btn btn-secondary cur-p">Cr&eacute;ation de documentation</button>
+    </div>
+</div>

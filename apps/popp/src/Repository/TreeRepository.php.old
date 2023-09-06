@@ -1,0 +1,35 @@
+<?php
+
+namespace App\Repository;
+
+use App\Entity\ThesaurusTree;
+use Doctrine\Common\Persistence\ManagerRegistry;
+
+class TreeRepository extends Repository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, ThesaurusTree::class);
+    }
+
+    public function findParent1Tree($parent1): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = '
+            SELECT thesaurus_tree_id, thesaurus_tree_nom 
+            FROM thesaurus_tree 
+            WHERE thesaurus_tree_parent_id = 0
+            ';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(['parent1' => $parent1]);
+
+        // returns an array of arrays (i.e. a raw data set)
+        return $stmt->fetchAll();
+    }
+    
+    public function findParent2Tree()
+    {
+        return $this->find([], ['$thesaurusTreeParentId' => '0']);
+    }
+}

@@ -1,0 +1,66 @@
+{%  extends "base.html.twig" %}
+
+{% block body %}
+<main class='main-content bgc-grey-100'>
+  {% for message in app.flashes("error") %}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <strong>Erreur</strong> {{ message }}
+          <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+  {% endfor %}
+  {% for message in app.flashes("success") %}
+      <div class="alert alert-success alert-dismissible fade show " role="alert">
+          <strong>Succès</strong> {{ message }}
+          <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+  {% endfor %}
+  <div id="js-message"></div> 
+  <div id='mainContent'>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="bgc-white bd bdrs-3 p-20 mB-20">
+            <div class="row mT-10">
+                <div class="col-md-8">
+                    <h4 class="c-grey-900 mB-20">Liste des {{ "labelSeries"|trans }}</h4>
+                </div>
+                <div class="col-md-4  text-right">
+                    <div class="form-group">
+                        <a href="{{ path('createSerie')}}"><button type="button" class="btn btn-primary cur-p" id='addSerie'>{{ "labelAjoutSerie"|trans }}</button></a><br/><br/>
+                    </div>
+                </div>
+            </div>
+            <table id="dataTableSeries" class="table table-striped table-bordered" cellspacing="0" width="100%">
+              <thead>
+                <tr>
+                  <th>Id</th>
+                  <th>Titre</th>
+                  <th>OPP</th>
+                  <th style="min-width:100px;">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for serie in series %}
+                <tr>
+                  <td id ="strucId">{{serie.serieId}}</td>
+                  <td class='cur-p'>{{serie.serieTitre}}</td>
+                  <td class='cur-p'>{% if serie.serieOpp %}{{serie.serieOpp.oppNom}}{% endif %}</td>
+                  <td>
+                    <a class="modify"><i class="c-light-blue-500 cur-p ti ti-pencil"></i></a>
+                    <a class="remove"><i class="c-red-500 cur-p ti ti-trash"></i></a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock body %}

@@ -1,0 +1,72 @@
+labelUnitePaysageLocale: unité paysagère locale
+labelUnitePaysageLocales: unités paysagères locales 
+labelExportSerie: Export des séries
+labelNomSeriePhoto: Nom de la série photo
+labelPublierSerie: Publier la série
+labelSerie: Série
+labelSeries: séries
+labelArtAndSerie: de la série
+labelModifSerie: Modifier la série
+labelAjoutSerie: Ajouter une série photo
+labelTitleExportSerie: Exporter la série
+labelALaSerie: à la série
+labelLaSerie: la série
+labelTypologiesPaysage: typologies de paysage
+labelArtTypologiePaysage: une typologie de paysage
+labelTypologiePaysage: typologie de paysage
+fieldRequired: descFine
+labelIntentionPhotographe: Intention du photographe
+labelEnsemblePaysager: ensemble paysager
+labelEnsemblesPaysagers: ensembles paysagers
+labelArtEnsemblePaysager: un ensemble paysager
+labelAuteurReconduction: Auteur de la reconduction
+labelExportAllSeries: Ajouter toutes les séries dans le panier
+labelSuccessAddSeries: Séries ajoutées au panier
+labelSuccessAddSerie: Série ajoutée au panier
+labelAlreadyAddedSerie: Série déjà présente dans le panier 
+labelDeletedSerie: Série supprimée du panier 
+msgErreurLimitExport: L'export est limité à 100 séries
+TextIntroPanier: >
+  Vous trouvez toutes les séries que vous avez sélectionnées dans la POPP-Breizh. 
+  En cliquant sur « exporter les données », vous téléchargez un tableur qui recense les métadonnées 
+  liées aux séries photos et les statistiques relatives aux différents changements de paysage qui 
+  affectent vos séries. L’export est limité à 100 séries pour des questions de performance. 
+  Aussi, cette sélection n’est pas enregistrée dans votre espace personnel, elle est valable uniquement 
+  lors de cette session.
+showLicenceFichePhoto: true
+showSerieLangue: true
+showSerieDate: true
+showSerieFormat: true
+showButtonWizardTop: false
+wizardOrder: Objet;Géographie;Fiche terrain;Emplacement;Photos;Documentations annexe
+blockSearch-0:
+  title: 
+  code: Gpaysage
+  type: block
+  class: 
+  block: elementPaysage;commune;opp
+blockSearch-1:
+  title: Paysage
+  code: Gpaysage
+  type: accordion
+  class: 
+  block: typoPaysage;axeThematique;ensPaysage;unitePaysage
+blockSearch-2:
+  title: Recherche avancée
+  code: GrechAv
+  type: accordion
+  class: 
+  block: annee;identifiant;structureOpp
+blockSearch-3:
+  title: Localisation
+  code: Glocalisation
+  type: accordion
+  class: 
+  block: departement;region;pays
+default_value:
+  langue: Français
+  pays: FRANCE
+  region: Bretagne
+  frequence: année
+  disparition: Disparition
+

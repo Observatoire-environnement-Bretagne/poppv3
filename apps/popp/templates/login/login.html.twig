@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+    {% set parameters = app.session.get('parameters') %}
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!--title>{#% block title %}POPP Bretagne - Plateforme des Observatoires Photographiques du Paysage de Bretagne{% endblock %#}</title-->
+        <title>{% block title %}{{parameters.APP_NAME}} - {{parameters.APP_DESC}}{% endblock %}</title>
+        <!--<link rel="stylesheet" href="{{ asset('assets/app.css') }}" />-->
+
+        {{ encore_entry_link_tags('app') }}
+        {% block stylesheets %}
+            <style>
+                a{
+                    color:#fe7108
+                }
+                a:hover, a:active, a:focus{
+                    color:#ffa766
+                }
+                #loader {
+                    transition: all 0.3s ease-in-out;
+                    opacity: 1;
+                    visibility: visible;
+                    position: fixed;
+                    height: 100vh;
+                    width: 100%;
+                    background: #fff;
+                    z-index: 90000;
+                }
+
+                #loader.fadeOut {
+                    opacity: 0;
+                    visibility: hidden;
+                }
+
+                .spinner {
+                    width: 40px;
+                    height: 40px;
+                    position: absolute;
+                    top: calc(50% - 20px);
+                    left: calc(50% - 20px);
+                    background-color: #333;
+                    border-radius: 100%;
+                    -webkit-animation: sk-scaleout 1.0s infinite ease-in-out;
+                    animation: sk-scaleout 1.0s infinite ease-in-out;
+                }
+
+                @-webkit-keyframes sk-scaleout {
+                    0% { -webkit-transform: scale(0) }
+                    100% {
+                        -webkit-transform: scale(1.0);
+                        opacity: 0;
+                    }
+                }
+
+                @keyframes sk-scaleout {
+                    0% {
+                        -webkit-transform: scale(0);
+                        transform: scale(0);
+                    } 100% {
+                          -webkit-transform: scale(1.0);
+                          transform: scale(1.0);
+                          opacity: 0;
+                      }
+                }
+            </style>
+        {% endblock %}
+    </head>
+    <body class="app">
+        <!-- @TOC -->
+        <!-- =================================================== -->
+        <!--
+        + @Page Loader
+        + @App Content
+            - #Left Sidebar
+                > $Sidebar Header
+                > $Sidebar Menu
+
+            - #Main
+                > $Topbar
+                > $App Screen Content
+        -->
+
+        <!-- @Page Loader -->
+        <!-- =================================================== -->
+        <div id='loader'>
+            <div class="spinner"></div>
+        </div>
+
+        <div class="peers ai-s fxw-nw h-100vh">
+            <div class="d-n@sm- peer peer-greed h-100 pos-r bgr-n bgpX-c bgpY-c bgsz-cv" style='background-image:  url("{{parameters['URL_FOLDER_FILES']}}/custom/bg.jpg")'>
+            </div>
+
+            <div class="col-12 col-md-4 peer pX-40 pY-80 h-100 bgc-white scrollable pos-r" style='min-width: 320px'>
+                <a class="hiddenanchor" id="reinitPwd"></a>
+                <a class="hiddenanchor" id="signin"></a>
+                <a class="hiddenanchor" id="createCompte"></a>
+                <div class="login_wrapper">
+                    <div class="animate form login_form">
+                        <form method="post">
+                            {% if error %}
+                                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                            {% endif %}
+
+                            <h4 class="fw-300 c-grey-900 mB-40">Connexion</h4>
+                            <div class="form-group">
+                                <label class="text-normal text-dark" >Email:</label>
+                                <input type="email" class="form-control" placeholder="Email" id="inputEmail" name="email" value="{{ last_username }}" required autofocus>
+                            </div>
+                            <div class="form-group">
+                                <label class="text-normal text-dark" >Password:</label>
+                                <input type="password" class="form-control" placeholder="Password" id="inputPassword" name="password" required>
+                            </div>
+
+                            <!--label for="inputEmail" class="sr-only">Email</label>
+                            <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" placeholder="Email" required autofocus>
+                            <label for="inputPassword" class="sr-only">Password</label>
+                            <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required-->
+
+                            <input type="hidden" name="_csrf_token"
+                                value="{{ csrf_token('authenticate') }}"
+                            >
+
+                            <button class="btn cur-p btn-primary" type="submit">
+                                Login
+                            </button>
+                        </form>
+                        <div class="reset_pass">
+                            <a href="#reinitPwd">Réinitialiser votre mot de passe</a>
+                        </div>
+                        <div class="create_compte">
+                            <a href="#createCompte">Création de compte</a>
+                        </div>
+                        <br/><br/>
+                        <a href="{{ path('public_page') }}"><button class="btn cur-p btn-success">
+                            Accès public
+                        </button></a>
+                        <div class="clearfix"></div>
+                    </div>
+                
+                    <div id="register" class="animate form createcompte_form">
+
+                        <h4 class="fw-300 c-grey-900 mB-40">Création de compte</h4>
+                        <div id="msgCreateCompte" name="msgCreateCompte"></div>
+                        <div class="form-group">
+                            <label class="text-normal text-dark" >Type de compte:</label>
+                            <div class="form-check">
+                              <label class="form-check-label text-normal text-dark">
+                                <input class="form-check-input" type="radio" name="typeCompteRadios" id="radioFournisseur" value="isFournisseur" checked="">
+                                Fournisseur
+                              </label>
+                            </div>
+                            <div class="form-check">
+                              <label class="form-check-label text-normal text-dark">
+                                <input class="form-check-input" type="radio" name="typeCompteRadios" id="radioUser" value="isUser">
+                                Utilisateur
+                              </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="text-normal text-dark" >Email:</label>
+                            <input type="email" class="form-control" placeholder="Email" id="c_email" name="email"  required>
+                            <span class="formErrors"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="text-normal text-dark">Mot de passe :</label>
+                            <input class="form-control" type="password" id="plainPassword_first" name="password1" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"/>
+                            <span class="formErrors"></span>
+                        </div>
+                        <div class="form-group">
+                            <label  class="text-normal text-dark">Confirmation du mot de passe :</label>
+                            <input class="form-control" type="password" id="plainPassword_second" name="password2" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"/>
+                            <span class="formErrors"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="text-normal text-dark" >Nom:</label>
+                            <input type="text" class="form-control" placeholder="Nom" id="c_nom" name="name" required>
+                            <span class="formErrors"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="text-normal text-dark" >Prénom:</label>
+                            <input type="text" class="form-control" placeholder="Prénom" id="c_prenom" name="prenom" required>
+                            <span class="formErrors"></span>
+                        </div>
+                        <div class="form-group">
+                            <label >Sexe </label>
+                            <select id="c_sexe" name="c_sexe" class="form-control">
+                                <option value=''></option>
+                                <option value='F'>Femme</option>
+                                <option value='H'>Homme</option>
+                            </select>
+                        </div>
+
+                        <button class="btn cur-p btn-outline-warning" id="btnCreateCompte">
+                            Créer votre compte
+                        </button>
+                        <div>
+                            <a href="#signin">Déjà membre ? Connectez-vous</a>
+                        </div>
+                    </div>
+                    
+                    {# Formulaire de réinitialisation du mot de passe #} 
+                    <div class="animate form reinitpwd_form">
+                        <br/> 
+                        <h4 class="fw-300 c-grey-900 mB-40">REINITIALISER SON MOT DE PASSE</h4>
+                        <div id="msgReinit" name="msgReinit"></div>
+                        <div id="reinitform" >
+                            <div>
+                                <label class="text-normal text-dark" >Email:</label>
+                                <input type="email" class="form-control" placeholder="Email" id="r_email" name="email"  required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"/>
+                            </div>
+                            <br>
+                            <div>
+                                <button id="btnReinitPwd" name="btnReinitPwd" class="btn cur-p btn-outline-warning">Réinitialiser</button>
+                            </div>
+            
+                            <div class="reset_pass">
+                                <a href="#signin">Déjà membre ? Connectez-vous</a>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>    
+                    
+            <!-- Modal -->
+            <div class="modal fade" id="modalInfoUser" tabindex="-1" role="dialog" aria-labelledby="modalInfoUser" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="modalInfoUser">Informations complémentaires</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="form-group">
+                          <label  class="text-normal text-dark">Adresse :</label>
+                          <textarea class="form-control" type="text" id="user_adresse"></textarea>
+                      </div>
+                      <div class="form-group">
+                          <label  class="text-normal text-dark">Code postal :</label>
+                          <input class="form-control" type="text" id="user_code_postal" />
+                      </div>
+                      <div class="form-group">
+                          <label for="email" class="text-normal text-dark">Ville :</label>
+                          <input class="form-control" type="text" id="user_ville" />
+                      </div>
+                      <div class="form-group">
+                          <label for="email" class="text-normal text-dark">Téléphone :</label>
+                          <input class="form-control" type="text" id="user_telephone" />
+                      </div>
+                      <div class="form-group" id='divUserOpp'>
+                        <label for="user_opp" class="text-normal text-dark">OPP rattaché *</label>
+                        <select id="user_opp" name="user_opp" class="form-control">
+                            <option value=''></option>
+                            {% for opp in opps %}
+                              <option value='{{opp.oppId}}'>{{opp.oppNom}}</option>
+                            {% endfor %}
+                        </select>
+                      </div>
+                      <div class="checkbox checkbox-circle checkbox-info ai-c">
+                        <input type="checkbox" id="useraccept" name="useraccept" class="peer form-control" checked>
+                        <label for="useraccept" class=" peer-greed js-sb ai-c">
+                            <span class="peer peer-greed">J'accepte de céder les droits de diffusion de tout document déposé sur le site POPP *</span>
+                        </label>
+                      </div>
+                      <span id='messageInfoUser'></span>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary cur-p" data-dismiss="modal">Annuler</button>
+                      <button type="button" id="saveInfoUser" class="btn btn-primary cur-p">Enregistrer</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </div>
+               
+        <!--<script src="{{ asset('assets/app.js') }}"></script> -->
+
+        {{ encore_entry_script_tags('app') }}
+        <script>
+            (function() {
+                /*if('serviceWorker' in navigator) {
+                    navigator.serviceWorker.register('assets/service-worker.js');
+                }*/
+            })();
+
+            window.addEventListener('load', () => {
+                const loader = document.getElementById('loader');
+                setTimeout(() => {
+                    loader.classList.add('fadeOut');
+                }, 300);
+            });
+        </script>
+
+
+    </body>
+</html>
+

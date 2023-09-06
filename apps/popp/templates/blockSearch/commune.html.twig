@@ -1,0 +1,18 @@
+<div class="layer w-100">
+    <div class="form-group row">
+        <label for="selectCom" class="col-sm-4 col-form-label">Commune</label>
+        <div class="col-sm-8">
+            <select id="selectCom" class="form-control chosen-select" tabindex="99">
+            <option value='all'>-Tout-</option>
+            {% for commune in Communes %}
+                {% if commune.communeId == app.session.get('critere_search_series')['comId'] %}
+                <option value="{{ commune.communeId }}" selected>{{ commune.communeInsee }} {{ commune.communeNom }}</option>
+                {% else %}
+                <option value="{{ commune.communeId }}">{{ commune.communeInsee }} {{ commune.communeNom }}</option>
+                {% endif %}
+                
+            {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>

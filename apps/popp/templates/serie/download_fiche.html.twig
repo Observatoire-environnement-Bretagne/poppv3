@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<meta charset="UTF-8" >
+<html>
+  {% set parameters = app.session.get('parameters') %}
+  <head>
+    <style>
+    table.table-border, .table-border td, .table-border th {  
+      border-bottom: 1px solid #ddd;
+    }
+    
+    table.table-border {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    
+    .table-border  th, .table-border  td {
+      padding-top: 15px;
+      padding-bottom: 15px;
+    }
+    </style>
+  </head>
+  <body>
+    <!--TODO - en table paramètre-->
+    <table>
+      <tr>
+        <td>
+          <img src='{{parameters['URL_FOLDER_FILES']}}/custom/popp.png' height='30px' alt="logo" />
+          <br>
+        </td>
+        <td>
+          <p>Plateforme des Observatoires Photographiques du Paysage</p>
+        </td>
+      </tr>
+    </table>
+    <h2>Fiche terrain</h2>
+    <table class='table-border'>
+        <tr>
+          <th colspan='2'>
+            {{ "labelSerie"|trans }} : {{serie.serieTitre }}
+          </th>
+        </tr>
+        <tr>
+          <td width='50%'>
+            Identifiant : {{serie.serieIdentifiantSerie }}
+          </td>
+          <td width='50%'>
+            Identifiant photo initiale :  {{photo.photoIdentifiantInt}}
+          </td>
+        </tr>
+        <tr>
+          <th colspan='2'>
+            Localisation
+          </th>
+        </tr>
+        <tr>
+          <td>
+            Pays : {{serie.seriePays.paysNom }}
+          </td>
+          <td>
+            Région : {{serie.serieRegion.regionNom }}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Département : {{serie.serieDepartement.departementNom }}
+          </td>
+          <td>
+            Commune : {{serie.serieCommune.communeNom }}
+          </td>
+        </tr>
+        <tr>
+          <td colspan='2'>
+            Adresse / lieu de la prise de vue : {{serie.serieAdresse }}
+          </td>
+        </tr>
+        <tr>
+          <th colspan='2'>
+            Coordonnées GPS
+          </th>
+        </tr>
+        <tr>
+          <td colspan='2'>
+            WGS 84 : {{serie.serieGeomX}} {{serie.serieGeomY}}
+          </td>
+        </tr>
+        <tr>
+          <td colspan='2'>
+            Lambert 93 : {{longitude2154}},  {{latitude2154}}
+          </td>
+        </tr>
+        <tr>
+          <td colspan='2'>
+            Observations pour la re-photographie : {{serie.serieDesc|raw}}
+          </td>
+        </tr>
+        <tr>
+          <th colspan='2'>
+            Documents connexes
+          </th>
+        </tr>
+        <tr>
+          <td colspan='2'>
+            Photo initiale {{ "labelArtAndSerie"|trans }}
+          </td>
+        </tr>
+        <tr>
+          <td colspan='2' style="text-align:center">
+            {% if photo.photoFile %}
+              <img src="{{parameters['URL_FOLDER_FILES']}}{{photo.photoFile.fileManagerUri}}" style="width:44em">
+            {% else %}
+              Non renseigné
+            {% endif %}
+          </td>
+        </tr>
+        <tr>
+          <th>
+            Croquis
+          </th>
+          <th>
+            Photo du trépied
+          </th>
+        </tr>
+        <tr>
+          <td style="text-align:center">
+            {% if serie.serieCroquis %}
+              <img src="{{parameters['URL_FOLDER_FILES']}}{{serie.serieCroquis.fileManagerUri}}" style="width:20em">
+            {% else %}
+              Non renseigné
+            {% endif %}
+          </td>
+          <td style="text-align:center">
+            {% if serie.seriePhotoTrepied %}
+              <img src="{{parameters['URL_FOLDER_FILES']}}{{serie.seriePhotoTrepied.fileManagerUri}}" style="width:20em">
+            {% else %}
+              Non renseigné
+            {% endif %}
+          </td>
+        </tr>
+        <tr>
+          <th>
+            Carte IGN
+          </th>
+          <th>
+            Photo aérienne
+          </th>
+        </tr>
+        <tr>
+          <td  style="text-align:center">
+            {% if serie.seriePhotoIgn %}
+              <img src="{{parameters['URL_FOLDER_FILES']}}{{serie.seriePhotoIgn.fileManagerUri}}" style="width:20em">
+            {% else %}
+              Non renseigné
+            {% endif %}
+          </td>
+          <td  style="text-align:center">
+            {% if serie.seriePhotoAerienne %}
+              <img src="{{parameters['URL_FOLDER_FILES']}}{{serie.seriePhotoAerienne.fileManagerUri}}" style="width:20em">
+            {% else %}
+              Non renseigné
+            {% endif %}
+          </td>
+        </tr>
+        <tr>
+            <th colspan='2'>
+                Photo contextuelle
+            </th>
+        </tr>
+        <tr>
+            <td colspan='2' style="text-align:center">
+                {% if serie.seriePhotoContext %}
+                    <img src="{{parameters['URL_FOLDER_FILES']}}{{serie.seriePhotoContext.fileManagerUri}}" style="width:20em">
+                {% else %}
+                    Non renseigné
+                {% endif %}
+            </td>
+        </tr>
+      </table>
+      <p style="page-break-after: always">&nbsp;</p>
+      <table class='table-border'>
+        <tr>
+          <th colspan='2'>
+            Description des éléments de la photographie
+          </th>
+        </tr>
+        <tr>
+          <td>
+              Axe(s) thématiques :
+              {% for AxeThe in AxeTheBySerie %}{{ AxeThe.lSatAxeThematic.axeThematicNom }}{% endfor %}
+          </td>
+          <td>
+              Description précise des éléments / des changements : {{photo.photoDescChangement}}
+          </td>
+        </tr>
+      </table>
+      <table class='table-border'>
+        <tr>
+          <th colspan='4'>
+            Données à comparer pour la reconduction
+          </th>
+        </tr>
+        <tr>
+          <td colspan='2' style="width:50%">
+              Les métadonnées de référence de la photo N
+          </td>
+          <td colspan='2' style="width:50%">
+              Les métadonnées et données à vérifier ou à modifier sur le terrain pour la photo N+1 en comparaison avec le tableau de gauche
+          </td>
+        </tr>
+        <tr>
+          <td>Heure</td>
+          <td>{% if photo.photoHeure %}{{photo.photoHeure}}{% else %}Non-renseignée{% endif %}</td>
+          <td>Heure</td>
+          <td> </td>
+        </tr>
+        <tr>
+            <td>Date</td>
+            <td>{% if photo.photoDatePrise %}{{photo.photoDatePrise|date("d/m/Y")}}{% else %}Non-renseignée{% endif %}</td>
+            <td>Date</td>
+            <td> </td>
+        </tr>        
+        <tr>
+          <td>Coordonnées GPS (WGS84)</td>
+          <td>{% if serie.serieGeomX %}{{serie.serieGeomX}} ; {{serie.serieGeomY}}{% else %}Non-renseignée{% endif %}</td>
+          <td>Coordonnées GPS</td>
+          <td> </td>
+        </tr>
+        <tr>
+          <td>Orientation de la photo</td>
+          <td>{% if photo.photoOrientation %}{{photo.photoOrientation}}{% endif %}</td>
+          <td>Orientation de la photo</td>
+          <td> </td>
+        </tr>
+        <tr>
+          <td>Hauteur du trépied</td>
+          <td>{% if photo.photoHauteur %}{{photo.photoHauteur}}{% endif %}</td>
+          <td>Hauteur du trépied</td>
+          <td></td>
+        </tr>        
+        <tr>
+          <td>Type d'appareil photo</td>
+          <td>{% if photo.photoTypeAppareil %}{{photo.photoTypeAppareil}}{% endif %}</td>
+          <td>Type d'appareil photo</td>
+          <td> </td>
+        </tr>        
+        <tr>
+          <td>Focale (en mm)</td>
+          <td>{% if photo.photoFocale %}{{photo.photoFocale}}{% endif %}</td>
+          <td>Focale (en mm)</td>
+          <td> </td>
+        </tr>        
+        <tr>
+          <td>Ouverture du diaphragme</td>
+          <td>{% if photo.photoOuvertureDia %}{{photo.photoOuvertureDia}}{% endif %}</td>
+          <td>Ouverture du diaphragme</td>
+          <td> </td>
+        </tr>        
+        <tr>
+          <td>Type de film</td>
+          <td>{% if photo.photoTypeFilm %}{{photo.photoTypeFilm}}{% endif %}</td>
+          <td>Type de film</td>
+          <td> </td>
+        </tr>        
+        <tr>
+          <td>Commentaire technique sur la reconduction</td>
+          <td>{% if photo.photoHauteur %}{{photo.photoHauteur}}{% endif %}</td>
+          <td>Hauteur du trépied</td>
+          <td> </td>
+        </tr>
+        <p>Dernière mise à jour : {{ "now"|date("d/m/Y") }}</p>
+    </table>
+  </body>
+</html>

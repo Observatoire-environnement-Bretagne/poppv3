@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% set parameters = app.session.get('parameters') %}
+
+{% block body %}
+    <!--script src="https://cdn.ckeditor.com/ckeditor5/31.0.0/decoupled-document/ckeditor.js"></script-->
+    <script src="/utils/ckeditor5/31.0.0/decoupled-document/ckeditor.js"></script>
+                    
+<main class='main-content bgc-grey-100'>
+    <div id='mainContent'>
+        <div class="container-fluid">
+            <div class="bgc-white bd bdrs-3">
+
+                {% if is_granted("ROLE_ADMIN") %} 
+                <div class="form-group p-10 text-right">
+                    <a id="manageActualite" class="btn btn-primary" href="{{path('manageActualite')}}" role="button">Gérer le carousel</a>
+                </div>
+                {% endif %}
+
+                <div class="one-time">
+                    {% for photo in CarrouselPhotos %}
+                    <div>
+                        <img class="img-carrousel" src='{{parameters['URL_FOLDER_FILES']}}/{{photo.carrouselPhotoFile.fileManagerUri}}'/>
+                        <p class="text-center text-dark font-weight-normal">{{photo.carrouselPhotoTitre}}</p>
+                    </div>  
+                    {% endfor %}
+                </div>
+
+                {% if is_granted("ROLE_ADMIN") %} 
+                <div class="form-group p-10 text-right">
+                    <a id="addActualite" class="btn btn-primary" href="{{path('createActualite')}}" role="button">Ajouter une actualité</a>
+                </div>
+                {% endif %}
+                <div>
+                    {% for rubrique in tabActualites %}
+                        {% if is_granted("ROLE_ADMIN") %} 
+                        <div class="text-right">
+                            <a class="updateActualite cur-p c-blue-500" href="{{ path('updateActualite', { "actualiteId":rubrique.actualite.actualiteId }) }}" data-id="{{rubrique.actualite.actualiteId}}">Modifier<i class="ti ti-pencil-alt"></i></a>
+                            <a class="deleteActualite cur-p c-red-500" data-id="{{rubrique.actualite.actualiteId}}">Supprimer<i class="ti ti-trash"></i></a>
+                        </div>
+                        {% endif %}
+                        <div class="row mx-2">
+                            <div class="col-12">
+                                <div class="ck ck-content ck-viewable">
+                                    {{ rubrique.actualite.actualiteEditor|raw }}
+                                </div>
+                            </div>
+                            {% if rubrique.carrousel %}
+                                <div class=" col-12" style="min-height:550px" >
+                                    <div class="carrousel-actu position-absolute fixed-bottom">
+                                        {% for photo in rubrique.carrousel %}
+                                        <div>
+                                            <img class="img-carrousel " src='{{parameters['URL_FOLDER_FILES']}}/{{photo.carrouselPhotoFile.fileManagerUri}}'/>
+                                            <p class="text-center text-dark font-weight-normal">{{photo.carrouselPhotoTitre}}</p>
+                                        </div>  
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %} 
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

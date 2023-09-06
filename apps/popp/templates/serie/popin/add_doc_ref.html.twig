@@ -1,0 +1,205 @@
+<div class="row mT-10">
+    <div class="col-md-6">
+        <div class="form-group">
+            <input id="add_docref_id" type="text" class="form-control" placeholder="Identifiant du document de r&eacute;f&eacute;rence * " required />
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <input id="add_docref_auteur" type="text" class="form-control" placeholder="Auteur / Photographe * " />
+        </div>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="add_docref_desc">Description pr&eacute;cise du document * </label>
+            <textarea id="add_docref_desc" class="form-control" placeholder="" required></textarea>
+        </div>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-12">
+        <label for="add_docref_datepicker">Date * </label>
+        <div class='input-group date form-group' id='datetimepicker1'>
+            <input type='text' id="add_docref_datepicker" placeholder="" class="form-control" />
+        </div>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="add_docref_comment_date">Commentaire li&eacute; &agrave; la date </label>
+            <textarea id="add_docref_comment_date" class="form-control" placeholder="P&eacute;riode, estimation au cas o&ugrave; la date est approximative" required></textarea>
+        </div>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="doc_type">Type * </label>
+            <select class="form-control" id="doc_type">
+                <option>Carte postale ancienne</option>
+                <option>Dessin</option>
+                <option>Photo</option>
+                <option>Tableau</option>
+            </select> 
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="add_docref_format">Format</label>
+            <input type='text' id="add_docref_format" placeholder="" class="form-control" />
+        </div>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-9">
+        <div class="form-group">
+            <label for="add_docref_source">Source du document </label>
+            <input type='text' id="add_docref_source" placeholder="" class="form-control" />
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label for="add_docref_langue">Langue</label>
+            <select class="form-control" id="add_docref_langue">
+                {% for langue in langues %}
+                    <option>{{ langue.langueNom }}</option>
+                {% endfor %}            
+            </select> 
+        </div>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="add_docref_site">Site de la prise de vue</label>
+            <input type='text' id="add_docref_site" placeholder="" class="form-control" />
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="add_docref_right">Licence du document *</label>
+            <select class="form-control" id="add_docref_right">
+                {% for licence in licences %}
+                    <option>{{ licence.licenceNom }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-6">
+        <div class="form-group">
+            <input id="add_docref_nom" type="text" class="form-control" placeholder="Nom du fichier * " required />
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <input id="add_docref_sstitre" type="text" class="form-control" placeholder="Sous-titre"/>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading ">
+        <h6 class="panel-title mT-10 mB-10">
+            <a class="accordion_title" data-toggle="collapse" data-parent="#accordion" href="#collapseDocParamsAddi"><span class="ti ti-arrow-circle-down"></span> Param&egrave;tres additionnels </a>
+        </h6>
+    </div>
+    <div id="collapseDocParamsAddi" class="panel-collapse collapse">
+        <div class="panel-body">
+            <div class="row mT-10">
+                <div class="col-md-12">
+                    <div class="form-group row">
+                        <label for="add_docref_heure" class="col-sm-3 col-form-label">Heure</label>
+                        <div class="col-sm-9">
+                            <input id="add_docref_heure" class="form-control" type="time">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group row">
+                        <label for="add_docref_saison" class="col-sm-3 col-form-label">P&eacute;riode / saison de la photographie</label>
+                        <div class="col-sm-9">
+                            <input id="add_docref_saison" type="text" class="form-control" placeholder="" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group row">
+                        <label for="add_docref_moment" class="col-sm-3 col-form-label">Moment de la prise de vue</label>
+                        <div class="col-sm-9">
+                            <input id="add_docref_moment" type="text" class="form-control" placeholder="" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group row">
+                        <label for="add_docref_lieu" class="col-sm-3 col-form-label">Lieu de conversation *</label>
+                        <div class="col-sm-9">
+                            <input id="add_docref_lieu" type="text" class="form-control" placeholder="" required/>
+                        </div>
+                    </div>
+                </div>                                                
+                <div class="col-md-12">
+                    <div class="form-group row">
+                        <label for="add_docref_orientation" class="col-sm-3 col-form-label">Orientation de la prise de vue</label>
+                        <div class="col-sm-9">
+                            <input id="add_docref_orientation" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>                                                
+                <div class="col-md-12">
+                    <div class="form-group row">
+                        <label for="add_docref_altitude" class="col-sm-3 col-form-label">Altitude (prise de vue a&eacute;rienne)</label>
+                        <div class="col-sm-9">
+                            <input id="add_docref_altitude" type="text" class="form-control" placeholder="" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group row">
+                        <label for="add_docref_coef_maree" class="col-sm-3 col-form-label">Coefficient de mar&eacute;e</label>
+                        <div class="col-sm-9">
+                            <input id="add_docref_coef_maree" type="text" class="form-control" placeholder="" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group row">
+                        <label for="add_docref_cote" class="col-sm-3 col-form-label">Cote du document</label>
+                        <div class="col-sm-9">
+                            <input id="add_docref_cote" type="text" class="form-control" placeholder="" />
+                        </div>
+                    </div>
+                </div>
+            </div>   
+        </div>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-12">
+        <h6>Fichier * </h6>
+        <form action="/file-upload" class="dropzone form-control">
+          <div class="fallback">
+            <input id="add_docref_dropzone" name="file" type="file" value="test" required/>
+          </div>
+        </form>
+    </div>
+</div>
+
+<div class="row m-30">
+    <div class="col-md-12 center-align">
+        <button class="btn btn-secondary cur-p">Cr&eacute;ation de document r&eacute;f&eacute;rence</button>
+    </div>
+</div>

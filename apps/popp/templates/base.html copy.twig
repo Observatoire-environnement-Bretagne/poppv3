@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {% set parameters = app.session.get('parameters') %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>{% block title %}{{parameters.APP_NAME}} - {{parameters.APP_DESC}}{% endblock %}</title>
+        <!--link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.1.1/css/ol.css" type="text/css">
+        <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.1.1/build/ol.js"></script-->
+        <link rel="stylesheet" href="{{ asset('assets/app.css') }}" />
+        {% block stylesheets %}
+            <style>
+                a{
+                    color:#fe7108
+                }
+                a:hover, a:active, a:focus{
+                    color:#ffa766
+                }
+                #loader {
+                    transition: all 0.3s ease-in-out;
+                    opacity: 1;
+                    visibility: visible;
+                    position: fixed;
+                    height: 100vh;
+                    width: 100%;
+                    background: #fff;
+                    z-index: 90000;
+                }
+
+                #loader.fadeOut {
+                    opacity: 0;
+                    visibility: hidden;
+                }
+
+                .spinner {
+                    width: 40px;
+                    height: 40px;
+                    position: absolute;
+                    top: calc(50% - 20px);
+                    left: calc(50% - 20px);
+                    background-color: #333;
+                    border-radius: 100%;
+                    -webkit-animation: sk-scaleout 1.0s infinite ease-in-out;
+                    animation: sk-scaleout 1.0s infinite ease-in-out;
+                }
+
+                #div-img-full {
+                    transition: all 0.3s ease-in-out;
+                    opacity: 1;
+                    visibility: visible;
+                    position: fixed;
+                    height: 100vh;
+                    width: 100%;
+                    background: #fff;
+                    z-index: 90000;
+                }
+
+                #div-img-full.fadeOut {
+                    opacity: 0;
+                    visibility: hidden;
+                }
+
+                @-webkit-keyframes sk-scaleout {
+                    0% { -webkit-transform: scale(0) }
+                    100% {
+                        -webkit-transform: scale(1.0);
+                        opacity: 0;
+                    }
+                }
+
+                @keyframes sk-scaleout {
+                    0% {
+                        -webkit-transform: scale(0);
+                        transform: scale(0);
+                    } 100% {
+                          -webkit-transform: scale(1.0);
+                          transform: scale(1.0);
+                          opacity: 0;
+                      }
+                }
+            </style>
+        {% endblock %}
+    </head>
+    <body class="app">
+    <!-- @TOC -->
+    <!-- =================================================== -->
+    <!--
+      + @Page Loader
+      + @App Content
+          - #Left Sidebar
+              > $Sidebar Header
+              > $Sidebar Menu
+
+          - #Main
+              > $Topbar
+              > $App Screen Content
+    -->
+
+    <!-- @Page Loader -->
+    <!-- =================================================== -->
+    <div id='loader'>
+        <div class="spinner"></div>
+    </div>
+    <div id='div-img-full' class='fadeOut closeModal cur-p'>
+        <div class='h-100 w-100' >
+            <button id='closeModal' class="close cur-p" ><span aria-hidden="true" aria-label="Close">&times;</span></button>
+            <img id="img-full-screen" classes='h-100' style='margin-left:auto; margin-right:auto; max-height:100%; max-width:100%; display:block' />
+        </div>
+    </div>
+    
+    <!-- @App Content -->
+    <!-- =================================================== -->
+    <div>
+        <!-- #Left Sidebar ==================== -->
+        {%  if app.user == true %}
+        <div class="sidebar">
+            <div class="sidebar-inner">
+                <!-- ### $Sidebar Header ### -->
+                <div class="sidebar-logo" style="height: 73px;">
+                    <div class="peers ai-c fxw-nw">
+                        <div class="peer peer-greed">
+                            <a class="sidebar-link td-n pT-10" href="{{ path('public_page') }}">
+                                <div class="peers ai-c fxw-nw">
+                                    <div class="peer">
+                                        <div class="logo">
+                                            <img src="{{ asset('assets/images/logo.jpg') }}" alt="logo" />
+                                        </div>
+                                    </div>
+                                    <div class="peer peer-greed">
+                                        <h5 class="lh-1 mB-0 logo-text">&nbsp;POPP</h5>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="peer">
+                            <div class="mobile-toggle sidebar-toggle">
+                                <a href="" class="td-n">
+                                    <i class="ti-arrow-circle-left"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ### $Sidebar Menu ### -->
+                <ul class="sidebar-menu scrollable pos-r">
+                    <!--li class="nav-item mT-30 active">
+                        <a class="sidebar-link" href="{{ path('public_page')}}">
+                            <span class="icon-holder">
+                              <i class="c-blue-500 ti-home"></i>
+                            </span>
+                            <span class="title">POPP</span>
+                        </a>
+                    </li-->
+                    <!--li class="nav-item">
+                        <a class="sidebar-link" href="{{ path('admin_default', {'pageName': 'blank'})}}">
+                            <span class="icon-holder">
+                              <i class="c-brown-500 ti-email"></i>
+                            </span>
+                            <span class="title">G&eacute;rer mon groupe</span>
+                        </a>
+                    </li-->
+                    {% if is_granted('ROLE_ADMIN') %}
+                    <li class="nav-item">
+                        <a class="sidebar-link" href="{{ path('getStructure')}}">
+                            <span class="icon-holder">
+                              <i class="c-orange-500 ti-id-badge"></i>
+                            </span>
+                            <span class="title">G&eacute;rer les structures</span>
+                        </a>
+                    </li>
+                    <!--li class="nav-item dropdown m-0">
+                        <a class="dropdown-toggle" href="javascript:void(0);">
+                            <span class="icon-holder">
+                                <i class="c-orange-500 ti-id-badge"></i>
+                            </span>
+                            <span class="title">Gestion des structures</span>
+                            <span class="arrow">
+                                <i class="ti-angle-right"></i>
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="sidebar-link" href="{{ path('createStructure')}}">Cr&eacute;ation</a>
+                            </li>
+                            <li>
+                                <a class="sidebar-link" href="{{ path('getStructure')}}">Modification</a>
+                            </li>
+                        </ul>
+                    </li-->
+                    {% endif %}
+                    <!--li class="nav-item">
+                        <a class="sidebar-link" href="{{ path('admin_default', {'pageName': 'add_logo_partenaire'})}}">
+                            <span class="icon-holder">
+                              <i class="c-deep-orange-500 ti-calendar"></i>
+                            </span>
+                            <span class="title">Ajouter un logo partenaire</span>
+                        </a>
+                    </li-->
+                    {% if is_granted('ROLE_FOURNISSEUR') %}
+                    <li class="nav-item">
+                        <a class="sidebar-link" href="{{ path('getSeries')}}">
+                            <span class="icon-holder">
+                              <i class="c-indigo-500 ti-image"></i>
+                            </span>
+                            <span class="title">G&eacute;rer les {{ "labelSeries"|trans }}</span>
+                        </a>
+                    </li>
+                    <!--li class="nav-item dropdown m-0">
+                        <a class="dropdown-toggle" href="javascript:void(0);">
+                            <span class="icon-holder">
+                                <i class="c-orange-500 ti ti-image"></i>
+                            </span>
+                            <span class="title">Gestion des s&eacute;ries</span>
+                            <span class="arrow">
+                                <i class="ti-angle-right"></i>
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="sidebar-link" href="{{ path('createSerie')}}">Cr&eacute;ation</a>
+                            </li>
+                            <li>
+                                <a class="sidebar-link" href="{{ path('getSeries')}}">Modification</a>
+                            </li>
+                        </ul>
+                    </li-->
+                    {% endif %}
+                    {% if is_granted('ROLE_GESTIONNAIRE') %}
+                    <li class="nav-item">
+                        <a class="sidebar-link" href="{{ path('getOpps')}}">
+                            <span class="icon-holder">
+                              <i class="c-indigo-500 ti-eye"></i>
+                            </span>
+                            <span class="title">G&eacute;rer les groupes OPP</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                    <li class="nav-item">
+                        <a class="sidebar-link" href="{{ path('getParametres')}}">
+                            <span class="icon-holder">
+                                <i class="c-orange-500 ti ti-settings"></i>
+                            </span>
+                            <span class="title">G&eacute;rer les paramètres</span>
+                        </a>
+                    </li>     
+                    {% endif %}
+                    {% if is_granted('ROLE_GESTIONNAIRE') %}               
+					<li class="nav-item">
+                        <a class="sidebar-link" href="{{ path('showImport')}}">
+							<span class="icon-holder">
+								<i class="c-orange-500 ti-import"></i>
+                            </span>
+                            <span class="title">Import de masse</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-link" href="{{ path('thesaurusFacultatif')}}">
+                            <span class="icon-holder">
+                              <i class="c-light-blue-500 ti-ruler-pencil"></i>
+                            </span>
+                            <span class="title">Thésaurus facultatif</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                    <li class="nav-item">
+                        <a class="sidebar-link" href="{{ path('getUsers')}}">
+                            <span class="icon-holder">
+                              <i class="c-light-blue-500 ti-user"></i>
+                            </span>
+                            <span class="title">G&eacute;rer les utilisateurs</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if is_granted('ROLE_GESTIONNAIRE') %}
+                    <li class="nav-item">
+                        <a class="sidebar-link" href="{{ path('getFournisseurs')}}">
+                            <span class="icon-holder">
+                              <i class="c-light-green-500 ti-user"></i>
+                            </span>
+                            <span class="title">G&eacute;rer les fournisseurs</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if is_granted('ROLE_GESTIONNAIRE') %}
+                    <li class="nav-item">
+                        <a class="sidebar-link" href="{{ path('getCommentaires')}}">
+                            <span class="icon-holder">
+                              <i class="c-indigo-500 ti-comments"></i>
+                            </span>
+                            <span class="title">Commentaires {% if nbWaitingComments %}({{nbWaitingComments}}){% endif %}</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if is_granted('ROLE_FOURNISSEUR') %}
+                    <li class="nav-item">
+                        <a class="sidebar-link" href="{{ path('showDocuments')}}">
+                            <span class="icon-holder">
+                              <i class="c-light-purple-500 ti-file"></i>
+                            </span>
+                            <span class="title">Documents</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                    <li class="nav-item dropdown m-0">
+                        <a class="dropdown-toggle" href="javascript:void(0);">
+                            <span class="icon-holder">
+                                <i class="c-orange-500 ti-server"></i>
+                            </span>
+                            <span class="title">Métadonnées</span>
+                            <span class="arrow">
+                                <i class="ti-angle-right"></i>
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="sidebar-link" href="{{ path('getAxeThematics')}}">Axe thématique</a>
+                            </li>
+                            <li>
+                                <a class="sidebar-link" href="{{ path('getEnsemblePaysager')}}">{{parameters.dictionnaire.labelEnsemblePaysager|capitalize}}</a>
+                            </li>
+                            <li>
+                                <a class="sidebar-link" href="{{ path('getFormat')}}">Format</a>
+                            </li>
+                            <li>
+                                <a class="sidebar-link" href="{{ path('getLangue')}}">Langue</a>
+                            </li>
+                            <li>
+                                <a class="sidebar-link" href="{{ path('getLicence')}}">Licence</a>
+                            </li>
+                            <li>
+                                <a class="sidebar-link" href="{{ path('getTypologiePaysage')}}">{{parameters.dictionnaire.labelTypologiePaysage|capitalize}}</a>
+                            </li>
+                            <li>
+                                <a class="sidebar-link" href="{{ path('getUnitePaysages')}}">Unité paysagère</a>
+                            </li>
+                            <li>
+                                <a class="sidebar-link" href="{{ path('getUnitePaysageLocales')}}">{{parameters.dictionnaire.labelUnitePaysageLocale|capitalize}}</a>
+                            </li>
+                        </ul>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+        <!-- #Main ============================ -->
+            <!-- ### $Topbar ### -->
+        {%  if app.user == true %}
+            <div class="page-container">
+                <div class="header navbar mB-10"style="height: 74px;">
+                    <nav class="navbar navbar-expand-md navbar-light bgc-white __web-inspector-hide-shortcut__">
+                        <a id='sidebar-toggle' class="sidebar-toggle" href="javascript:void(0);">
+                            <h5 style="margin-top:1.3rem"><i class="ti-menu"></i></h5>
+                        </a>
+                        <div class="collapse navbar-collapse mB-10" id="navbarSupportedContent" style="vertical-align:middle">
+                            
+        {% else %}
+            <div class="page-container-public">
+                <div class="header-public navbar">
+                    <nav class="navbar navbar-expand-md navbar-light bgc-white __web-inspector-hide-shortcut__">
+                      <a class="navbar-brand" href="{{ path('public_page') }}"><img src="{{ asset('assets/images/popp.png') }}" alt="logo" /></a>
+                      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        {% endif %}              
+                            <ul class="navbar-nav mr-auto">
+                              <!--li class="nav-item">
+                                    <a class="nav-link" href="{{ path('public_page') }}"><h5 class="lh-1 mB-0 logo-text">&nbsp;POPP</h5> <span class="sr-only">(current)</span></a>
+                              </li-->
+                              <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('showApropos') }}"><h5 class="lh-1 mB-0 logo-text">&Agrave; propos</h5></a>
+                              </li>
+                              <li class="nav-item">															 
+                                    <a class="nav-link" href="{{ path('showStructures')}}"><h5 class="lh-1 mB-0 logo-text">Structures OPP</h5></a>
+                              </li>
+                              <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('showRessources')}}"><h5 class="lh-1 mB-0 logo-text">Ressources</h5></a>
+                              </li>
+                              <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('showFaqs')}}"><h5 class="lh-1 mB-0 logo-text">FAQ</h5></a>
+                              </li>
+                            </ul>				
+                      </div>
+                        <ul class="nav navbar-nav navbar-right ml-auto" style="display: -webkit-inline-box;">
+
+                          <li class="dropdown">
+                              
+        {%  if app.user == true %}
+                            <a href="{{ path('fos_user_security_logout') }}" class="dropdown-toggle no-after peers fxw-nw ai-c lh-1">
+                                <div class="peer">
+                                    <span class="fsz-sm c-grey-900"><i class="c-red-500 ti-power-off"></i> Logout</span>
+                                </div>
+                            </a>	
+                            <div class="peer">
+                                <span>{{app.user.nom}} (
+                                    {% if app.user.roles|length > 1 %}
+                                        {% for role in app.user.roles %}
+                                            {% if role != 'ROLE_USER' %}
+                                                {{role}}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        {{app.user.roles|join}}
+                                    {% endif %})
+                                </span>
+                            </div>
+        {% else %}	
+                            <a href="{{ path('fos_user_security_login') }}" class="dropdown-toggle no-after peers fxw-nw ai-c lh-1">
+                                <div class="peer">
+                                    <span class="fsz-sm c-grey-900"><i class="ti-power-off" style="color:#ff7109"></i> Login</span>
+                                </div>
+                            </a>
+        {% endif %}   
+                          </li>												  
+                      </ul>
+                      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">																	
+                            <span class="navbar-toggler-icon"></span>
+                      </button>
+                    </nav>
+                </div>
+        {% block body %}{% endblock %}
+        {% block footer %}
+            <!-- ### $App Screen Footer ### -->
+            <footer class="bdT ta-c lh-0 fsz-sm c-grey-600 page-footer">
+			  <!-- Footer Links -->
+			  <div class="container text-center text-md-left">
+				<!-- Footer links -->
+				<div class="row text-center text-md-left mt-3 pb-3">
+				  <!-- Grid column -->
+
+				  <!-- Grid column -->
+				  <div class="col-md-8 col-lg-8 col-xl-8 mx-auto mt-3">
+					<h6 class="text-uppercase mb-2 font-weight-bold">Partenaires</h6>
+					<img class='m-10' style='max-height: 40px; max-width: 70px;' src='{{parameters['URL_FOLDER_FILES']}}/logo_structure/Bloc-reseau-paysage-web.png'/>
+					<img class='m-10' style='max-height: 40px; max-width: 70px;' src='{{parameters['URL_FOLDER_FILES']}}/logo_structure/DREAL_Occitanie_RVB_HD.jpg'/>
+                    <!--img class='m-10' style='max-height: 40px; max-width: 70px;' src='{{parameters['URL_FOLDER_FILES']}}/logo ESO N&b.jpg'/-->
+					<p class="">La {{parameters.APP_NAME}} a été co-financée par XXXX.</p>
+				  </div>
+				  <!-- Grid column -->
+
+				  <hr class="w-100 clearfix d-md-none">
+
+				  <!-- Grid column -->
+				  <div class="col-md-4 col-lg-4 col-xl-4 mx-auto mt-3">
+					<h6 class="text-uppercase mb-2 font-weight-bold">Administrateur</h6>
+                    <!--img class='mb-2' style='max-height: 40px; /*max-width: 70px;*/' src='{{parameters['URL_FOLDER_FILES']}}/Logo_OEB Noir.png'/-->
+					<p class="mb-0">{{parameters.RESP_STRUCTURE}}</p>
+                    <p class="mb-0"><i class="ti-home pR-10"></i>{{parameters.RESP_ADRESSE}} </p>
+					<p class="mb-0"><i class="ti-email pR-10"></i>{{parameters.RESP_MAIL}}</p>
+					<p class="mb-0"><i class="ti-mobile pR-10"></i>{{parameters.RESP_TEL}}</p>
+                      
+				  </div>
+				  <!-- Grid column -->
+
+                </div>
+				<!--div class="row mL-25 mR-25 text-md-left"-->
+                    <div id='' class='w-100'>
+                      <h6 class="text-uppercase mb-1 font-weight-bold text-md-left">La {{parameters.APP_NAME}} est également financée par les adhérents</h6>
+                      {% for structure in structures %}
+                        {% if structure.porteurOppLogo and structure.porteurOppFinanceur %}
+                        <!--div -->
+                          <img class='m-10' style='max-height: 40px; max-width: 70px;' src='{{parameters['URL_FOLDER_FILES']}}/{{structure.porteurOppLogo.fileManagerUri}}'/>
+                        <!--/div-->
+                        {% endif %}
+                      {% endfor %}
+                    </div>
+                <!--/div-->
+                
+				<!--div class="row mL-25 mR-25 text-md-left"-->
+                    <div id='' class='w-100'>
+                      <h6 class="text-uppercase mb-1 font-weight-bold text-md-left">Les autres adhérents de la {{parameters.APP_NAME}}</h6>
+                      {% for structure in structures %}
+                        {% if structure.porteurOppLogo and structure.porteurOppFinanceur == false %}
+                        <!--div -->
+                          <img class='m-10' style='max-height: 40px; max-width: 70px;' src='{{parameters['URL_FOLDER_FILES']}}/{{structure.porteurOppLogo.fileManagerUri}}'/>
+                        <!--/div-->
+                        {% endif %}
+                      {% endfor %}
+                    </div>
+                <!--/div-->
+            </div>
+				<!-- Footer links -->
+				<!--hr>
+				<div class="row d-flex align-items-center">
+
+				  <div class="col-md-7 col-lg-8">
+				  <div>
+					<div class="text-center text-md-right">
+					  <ul class="list-unstyled list-inline">
+						<li class="list-inline-item">
+						  <a href="https://fr-fr.facebook.com/" class="btn-floating btn-sm rgba-white-slight mx-1">
+							<i class="ti-facebook pR-10"></i>
+						  </a>
+						</li>
+						<li class="list-inline-item">
+						  <a href="https://twitter.com/?lang=fr" class="btn-floating btn-sm rgba-white-slight mx-1">
+							<i class="ti-twitter pR-10"></i>
+						  </a>
+						</li>
+						<li class="list-inline-item">
+						  <a href="https://www.google.fr/webhp?tab=rw" class="btn-floating btn-sm rgba-white-slight mx-1">
+							<i class="ti-google pR-10"></i>
+						  </a>
+						</li>
+						<li class="list-inline-item">
+						  <a href="https://fr.linkedin.com/" class="btn-floating btn-sm rgba-white-slight mx-1">
+							<i class="ti-linkedin pR-10"></i>
+						  </a>
+						</li>
+					  </ul>
+					</div>
+
+				  </div>
+
+				</div>
+
+			  </div-->
+            </footer>
+            {% endblock %}
+        </div>
+        </div>
+    <script>
+        (function() {
+            /*if('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('assets/service-worker.js');
+            }*/
+        })();
+
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader');
+            setTimeout(() => {
+                loader.classList.add('fadeOut');
+            }, 300);
+        });
+    </script>
+
+    {% block javascripts %}<script src="{{ asset('assets/app.js') }}"></script>{% endblock %}
+
+    </body>
+</html>

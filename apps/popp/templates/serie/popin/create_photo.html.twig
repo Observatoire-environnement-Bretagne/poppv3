@@ -1,0 +1,233 @@
+
+<style>
+    #photo_thesaurus .jstree-open > .jstree-anchor > .jstree-checkbox,
+    #photo_thesaurus .jstree-closed > .jstree-anchor > .jstree-checkbox,
+    #photo_thesaurus_facult .jstree-open > .jstree-anchor > .jstree-checkbox,
+    #photo_thesaurus_facult .jstree-closed > .jstree-anchor > .jstree-checkbox { display:none; }
+</style>
+<input id="photo_id" type="hidden" class="form-control form-photo" />
+<div class="row mT-10">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="photo_titre">Titre * </label>
+            <input id="photo_titre" type="text" class="form-control form-photo" placeholder="Titre * " required />
+        </div>
+    </div>
+</div>
+<div class="row mT-10">
+    <div class="col-md-12">
+        <label for="photo_auteur">{{ "labelAuteurReconduction"|trans }} * </label>
+        <div class="form-group">
+            <input id="photo_auteur" type="text" class="form-control form-photo" placeholder="{{ "labelAuteurReconduction"|trans }} * " required/>
+        </div>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="photo_thesaurus">&Eacute;léments de paysage </label>
+            <!--br/><small>au minimum deux éléments de paysage</small-->
+            <div id="photo_thesaurus"></div>
+            <span class="formErrors"></span>
+        </div>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="photo_thesaurus_facult">Thésaurus facultatif </label>
+            <div id="photo_thesaurus_facult"></div>
+            <span class="formErrors"></span>
+        </div>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-12">
+        <label for="photo_desc">Description des éléments / des changements </label>
+        <textarea type='text' id="photo_desc" placeholder="" class="form-control form-photo" ></textarea>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="photo_date_desc">Date de la description</label>
+            <input type='date' id="photo_date_desc" placeholder="Date de la description" class="form-control form-photo" />
+
+            <!--div class="timepicker-input input-icon form-group">
+                <div class="input-group">
+                    <div class="input-group-addon bgc-white p-0">
+                        <i class="ti-calendar"></i>
+                    </div>
+                    <input id='photo_date_desc' type="text" class="form-control date-picker form-photo" placeholder="__/__/____" 
+                    data-provide="datepicker" value="">
+                </div>
+            </div-->
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="photo_licence">Licence de la photo  *</label>
+            <select class="form-control form-photo" id="photo_licence" required>
+                {% for licence in licences %}
+                    <option value="{{ licence.licenceId }}">{{ licence.licenceNom }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="photo_format">Format * </label>
+            <select class="form-control form-photo" id="photo_format" required>
+                {% for format in formats %}
+                    <option value="{{ format.formatId }}">{{ format.formatNom }}</option>
+                {% endfor %}            
+            </select> 
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="photo_iden">Identifiant de la photo OPP</label>
+            <input type='number' id="photo_iden" placeholder="" class="form-control form-photo" />
+        </div>
+    </div>
+</div>
+
+
+<div class="row mT-10" {% if not "showLicenceFichePhoto"|trans %} hidden {% endif %}>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="photo_fiche_licence">Licence de la fiche photo *</label>
+            <select class="form-control form-photo" id="photo_fiche_licence" {% if "showLicenceFichePhoto"|trans %}required{% endif %}>
+                {% for licence in licences %}
+                    <option value="{{ licence.licenceId }}">{{ licence.licenceNom }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>
+
+
+<div class="row mT-10">
+    <div class="col-md-12">
+        <input id="photo_file_action" type="hidden" class="form-control form-photo" />
+        <input id="photo_file_name" type="hidden" class="form-control form-photo" />
+        <input id="photo_file_size" type="hidden" class="form-control form-photo" />
+        <input id="photo_file_url" type="hidden" class="form-control form-photo" />
+        <h6>Photo * </h6>
+        <form id="addPhotoDropzone" name="addPhotoDropzone" action="{{path('addPhoto')}}" class="dropzone" method="post" enctype="multipart/form-data">
+            <div class="fallback">
+                <input type="file"/>
+            </div>
+        </form>
+        <span class="formErrors"></span>
+    </div>
+</div>
+
+<h5>MÉTADONNÉES HORS OAI-PMH</h5>
+<div class="row mT-10">
+    <div class="col-md-3">
+        <div class="form-group">
+            <label for="photo_heure">Heure</label>
+            <input id="photo_heure" class="form-control form-photo" placeholder="" />
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label for="photo_date_prise">Date de la prise de vue *</label>
+            <input type='date' id="photo_date_prise" placeholder="Date de la description" class="form-control form-photo" />
+
+            <!--div class="timepicker-input input-icon form-group">
+                <div class="input-group">
+                    <div class="input-group-addon bgc-white p-0">
+                        <i class="ti-calendar"></i>
+                    </div>
+                    <input id='photo_date_prise' type="text" class="form-control date-picker form-photo" placeholder="__/__/____" 
+                    data-provide="datepicker" value="" required>
+                </div>
+            </div-->
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="photo_type_appareil">Type d'appareil photo *</label>
+            <input id="photo_type_appareil" type="text" class="form-control form-photo"  required/>
+        </div>
+    </div>
+</div>
+<div class="row mT-10">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="photo_focale">Focale (mm)</label>
+            <input id="photo_focale" type="number" class="form-control form-photo"  />
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="photo_ouverture">Ouverture du diaphragme (Ex : F16)</label>
+            <input id="photo_ouverture" type="number" class="form-control form-photo" />
+        </div>
+    </div>
+</div>
+<div class="row mT-10">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="photo_type_film">Type de film</label>
+            <input id="photo_type_film" type="text" class="form-control form-photo"  />
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="photo_iso">Sensibilité ISO (Ex : 400 ISO)</label>
+            <input id="photo_iso" type="text" class="form-control form-photo" />
+        </div>
+    </div>
+</div>
+<div class="row mT-10">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="photo_poids_ori">Poids du fichier d'origine (Ex : 6.8 Mo)</label>
+            <input id="photo_poids_ori" type="text" class="form-control form-photo"  />
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="photo_inclinaison">Inclinaison de l'appareil (haut-bas)</label>
+            <input id="photo_inclinaison" type="text" class="form-control form-photo" />
+        </div>
+    </div>
+</div>
+<div class="row mT-10">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="photo_hauteur">Hauteur du trépied (cm)</label>
+            <input id="photo_hauteur" type="number" class="form-control form-photo"  />
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="photo_orientation">Orientation de la prise de vue (degré)</label>
+            <input id="photo_orientation" type="number" class="form-control form-photo" />
+        </div>
+    </div>
+</div>
+<div class="row mT-10">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="photo_altitude">Altitude (Ex : 3500 m)</label>
+            <input id="photo_altitude" type="number" class="form-control form-photo"  />
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="photo_coef_mer">Coefficient de marée (Ex : 75)</label>
+            <input id="photo_coef_mer" type="number" class="form-control form-photo" />
+        </div>
+    </div>
+</div>

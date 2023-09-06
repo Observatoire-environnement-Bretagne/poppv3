@@ -1,0 +1,18 @@
+
+<div class="layer w-100">
+    <div class="form-group row">
+        <label for="SelectAnn" class="col-sm-4 col-form-label">Ann&eacute;es</label>
+        <div class="col-sm-8">
+            <select id="SelectAnn" class="form-control">
+            <option value='all'>-Tout-</option>
+            {% for year in tabYearPhoto %}
+                {% if year in app.session.get('critere_search_series')['ann'] %}
+                <option value="{{ year }}" selected>{{ year }}</option>
+                {% else %}
+                <option value="{{ year }}">{{ year }}</option>
+                {% endif %}
+            {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>

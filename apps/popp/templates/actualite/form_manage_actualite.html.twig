@@ -1,0 +1,45 @@
+
+<div class="row">
+    <input type='hidden' id='action-carrousel' value="{{action}}" /> 
+    <div class="col-8">
+        <hr>
+        <label class="text-normal text-dark">Titre :</label>
+        <input class="form-control carouselRequired" type="text" id="titrephotocarousel" name="titrephotocarousel"></input>
+    </div>
+    <div class="col-4">
+        <hr>
+        <label class="text-normal text-dark">Numéro d'ordre :</label>
+        <input class="form-control" type="number" id="ordrephotocarousel" name="ordrephotocarousel"></input>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12"><br>
+        <label class="text-normal text-dark">Photo(s) :</label>
+        <form id="importPhotoForm" name="importPhotoForm" action="/admin/actualite/insertPhotos" class="dropzone" method="post" enctype="multipart/form-data">
+            <div class="fallback">
+                <input id="PhotoDropzone" name="PhotoDropzone" type="file" required/>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12 text-center">
+        <div id="messageConfirmImport" class="mT-10 mB-20"></div>
+        <button id="savePhotoCarrousel" name="importPhoto" class="btn btn-primary cur-p" value="Ajouter">Ajouter</button>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <hr>
+        <label class="text-normal text-dark">Vue d'ensemble :</label>
+    </div>
+</div>
+<div class="row" id='content-photo-carrousel'>
+    {% for photo in carrousel %}
+        <div class="col-md-3 text-center p-10 mT-10" id="block-photo-carrousel-{{photo.carrouselPhotoId}}">
+            <img class="img-fluid mx-auto" src='{{parameters['URL_FOLDER_FILES']}}/{{photo.carrouselPhotoFile.fileManagerUri}}' style="width: 100px; height: 50px;"/>
+            <p class="text-dark font-weight-normal">{{photo.carrouselPhotoTitre}}</p>
+            <a class="supprimerPhoto" data-id="{{photo.carrouselPhotoId}}"><i class="c-red-500 cur-p ti ti-trash"></i></a>
+        </div>
+    {% endfor %}
+</div> 

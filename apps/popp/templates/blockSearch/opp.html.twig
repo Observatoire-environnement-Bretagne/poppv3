@@ -1,0 +1,18 @@
+
+<div class="layer w-100">
+    <div class="form-group row" >
+        <label for="SelectOpp" class="col-sm-4 col-form-label">OPP</label>
+        <div class="col-sm-8">
+            <select id="SelectOpp" class="form-control">
+            <option value='all'>-Tout-</option>
+            {% for oppId, oppNom in Opps %}
+                {% if oppId in app.session.get('critere_search_series')['oppId'] %}
+                <option value="{{ oppId }}" selected>{{ oppNom }}</option>
+                {% else %}
+                <option value="{{ oppId }}">{{ oppNom }}</option>
+                {% endif %}
+            {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>

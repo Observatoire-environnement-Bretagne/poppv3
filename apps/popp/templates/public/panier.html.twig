@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% set parameters = app.session.get('parameters') %}
+
+{% block body %}
+<main class='main-content bgc-grey-100'>
+    {% for message in app.flashes("error") %}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <strong>Erreur</strong> {{ message }}
+          <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+  {% endfor %}
+  {% for message in app.flashes("success") %}
+      <div class="alert alert-success alert-dismissible fade show " role="alert">
+          <strong>Succès</strong> {{ message }}
+          <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+  {% endfor %}
+  <div id="js-message"></div> 
+        <div id='mainContent'>        
+            <div class="container-fluid">
+                <div class="row mT-10">
+                    <div class="col-md-8">
+                        <h4 class="c-grey-900 mB-20">Votre panier</h4>
+                    </div>
+                </div>
+                <div class="bgc-white bd bdrs-3 p-10 mB-20">
+                    <div class="row col-md-12">
+                        <div class="col-md-6 mT-25">
+                            <h6 class="lh-1">Le nombre de {{ "labelSeries"|trans }} dans le panier est de : <b>{{ serieSelection|length }}</b></h6>
+                        
+                        </div>
+                        <div class="col-md-6 text-right">
+                            {% if serieSelection|length >= 1 %}
+                            <a class="viderPanierSelection"><button type="button" class="btn btn-primary cur-p m-10">Vider le panier</button></a>
+                            {% endif %}
+                            <!--a href="{{path('generateFichierPanier')}}"-->
+                            <button 
+                                data-url="{{path('generateFichierPanier')}}" 
+                                data-url-get-session-panier="{{path('getSessionPanier')}}" 
+                                data-erreur-message="{{ "msgErreurLimitExport"|trans }}" 
+                                type="button" 
+                                class="btn btn-primary cur-p m-10"
+                                id="btn-generate-fichier-panier">
+                                    Exporter les données
+                            </button>
+                            <!--button 
+                                data-url="{{path('generateFicheTerrainPanier')}}" 
+                                data-url-get-session-panier="{{path('getSessionPanier')}}" 
+                                type="button" 
+                                class="btn btn-primary cur-p m-10"
+                                id="btn-generate-fiches-terrains-panier">
+                                    Exporter les fiches terrains
+                            </button-->
+                            <!--/a-->
+                        </div> 
+                    </div>   
+                    <div class="row ml-0 my-10"> 
+                        <div class="col-12">
+                            {{ "TextIntroPanier"|trans }}
+                        </div>
+                    </div>
+                    
+                    <div class="row m-10">
+                        {% for serie in series %}
+                        <div class="seriePanier col-md-6 p-10">
+                            <div class="col-md-12 row border bgc-white rounded">
+                                <div class="col-md-11 p-10">
+                                    <a href="{{path('get_serie', {'id': serie.serieId})}}">
+                                        <h5>{{ serie.serieTitre }}</h5>
+                                    </a>
+                                </div>
+                                <div class="col-md-1  p-20">
+                                    <a class="deleteSelectionPanier cur-p c-red-500 " data-id="{{serie.serieId}}"><i class="ti ti-trash"></i></a>
+                                </div>                              
+                            </div>
+                        </div>
+                        {% endfor %} 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

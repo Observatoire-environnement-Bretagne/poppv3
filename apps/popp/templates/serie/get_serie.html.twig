@@ -1,0 +1,491 @@
+{%  extends "base.html.twig" %}
+
+{% block body %}
+    
+{% set parameters = app.session.get('parameters') %}
+  <!-- ### $App Screen Content ### -->
+  <main class='main-content bgc-grey-100'>
+    <div id='mainContent'>
+      <div class="container-fluid">
+        <div class="row">
+          <div class="masonry-item col-md-9">
+            <div class="bgc-white bd bdrs-3 p-15 mB-20">
+            
+              {% if is_granted('ROLE_ADMIN') %}
+              <div class="row">
+                <div class="col-md-12">
+                  <a href='{{path('updateSerie', {serieId : serie.serieId})}}'><button id='modifSerie' class='btn btn-primary cur-p'>{{ "labelModifSerie"|trans  }}</button></a>
+                </div>
+              </div>
+              {% else %}
+                {% if isModifiable %}
+                  <div class="row">
+                    <div class="col-md-12">
+                      <a href='{{path('updateSerie', {serieId : serie.serieId})}}'><button id='modifSerie' class='btn btn-primary cur-p'>{{ "labelModifSerie"|trans }}</button></a>
+                    </div>
+                  </div>
+                {% endif %}
+              {% endif %}
+              <div class="row">
+                <div class="col-md-9"><h4 id="serieId" class="c-grey-900 mB-0 collapse">{{serie.serieId}}</h4></div>
+                <div class="col-md-12"><h4 class="c-grey-900 mB-0">{{serie.serieTitre}} - {% if serie.serieCommune %}{{serie.serieCommune.communeNom}} {% endif %} {% if serie.serieOpp %}{% if serie.serieOpp.oppParticipative == true %}<small class="bgc-light-green-100">#OPP participatif{% else %}<small>#OPP local{% endif %}{% else %}<small>#OPP local{% endif %}</small></h4></div>
+                
+              </div>
+              <div class="container my-4">
+                <hr class="my-4">
+                <div id='carouselPhoto' >
+                  {% if serie.serieRefdoc %}
+                  <div class='image full-screen cur-p' data-target="#modal-fullscreen" rel="modal-fullscreen:open" 
+                  data-titre="{{serie.serieRefdoc.documentRefNom}}" data-idPhoto="{{serie.serieRefdoc.documentRefIdentifiantInt}}" 
+                  data-date="{{serie.serieRefdoc.documentRefDate|date('d/m/Y à h:i')}}" data-licence="{% if serie.serieRefdoc.documentRefLicence %}{{serie.serieRefdoc.documentRefLicence.licenceNom}}{% endif %}"
+                  data-auteur="{{serie.serieRefdoc.documentRefAuteur}}" data-pk="{{serie.serieRefdoc.documentRefId}}" data-type='docref' data-desc='{{serie.serieRefdoc.documentRefCommentaireDate}}'>
+                    {% if serie.serieRefdoc.documentRefFile %}
+                      <img class='d-block w-100 img-fluid' src='{{parameters['URL_FOLDER_FILES']}}/{{serie.serieRefdoc.documentRefFile.fileManagerUri}}'/>
+                    {% endif %}
+                  </div>
+                  {% endif %}
+                  {% for photo in photos %}
+                    <div class='image full-screen cur-p' data-target="#modal-fullscreen" rel="modal-fullscreen:open" 
+                    data-titre="{{photo.photoTitre}}" data-idPhoto="{{photo.photoIdentifiantInt}}" 
+                    data-date="{{photo.photoDatePrise|date('d/m/Y à h:i')}}" data-licence="{% if photo.photoLicence %}{{photo.photoLicence.licenceNom}}{% endif %}"
+                    data-auteur="{{photo.photoAuteur}}" data-pk="{{photo.photoId}}" data-type='photo'>
+                      {% if photo.photoFile %}
+                        <img class='d-block w-100 img-fluid' src='{{parameters['URL_FOLDER_FILES']}}/{{photo.photoFile.fileManagerUri}}'/>
+                      {% endif %}
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+            <div class="bgc-white bd bdrs-3 p-20 mB-20">
+              <div id='carouselPhotoMiniature' >
+                {% if serie.serieRefdoc %}
+                <div class='image p-10 cur-p'>
+                  <img class='d-block w-100 img-fluid' src='{{parameters['URL_FOLDER_FILES']}}/{{serie.serieRefdoc.documentRefFile.fileManagerUri}}' height=""/>
+                  <center><label>Document de référence</label></center>
+                </div>
+                {% endif %}
+                {% set indexPhoto = 1 %}
+                {% for photo in photos %}
+                  {% if photo.photoFile %}
+                    <div class='image p-10 cur-p'>
+                      <img class='d-block w-100 img-fluid' src='{{parameters['URL_FOLDER_FILES']}}/{{photo.photoFile.fileManagerUri}}' height=""/>
+                      <center><label>Photo n°{{indexPhoto}} - {{ photo.photoDatePrise|date('d/m/Y') }}</label></center>
+                    </div>
+                    {% set indexPhoto = indexPhoto +1 %}
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          <div class="masonry-item col-md-3">
+            <div class="bgc-white bd bdrs-3 p-20 mB-20" >
+              <div class="row center-align">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                  {% if serie.seriePorteurOpp %}
+                    {% if serie.seriePorteurOpp.porteurOppLogo %}
+                      <img class='d-block w-40 img-fluid' style='margin-left: auto; margin-right: auto;' src="{{parameters['URL_FOLDER_FILES']}}/{{serie.seriePorteurOpp.porteurOppLogo.fileManagerUri}}">
+                    {% endif %}
+                  {% endif %}
+                </div>
+                <div class="col-md-2"></div>
+              </div>
+              <div class="row pT-10  center-align">
+                <div class="col-md-6">
+                  <button type="button" id="export" class="btn btn-primary cur-p red-tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ "labelTitleExportSerie"|trans }}">
+                    <i class="ti-share"></i>
+                  </button>
+                </div>
+                <div class="col-md-6">
+                  <button type="button" id="download" class="btn btn-primary cur-p" data-toggle="tooltip" data-placement="top" title="" data-original-title="Télécharger la fiche terrain">
+                    <i class="ti-download"></i>
+                  </button>                            
+                </div>
+              </div>
+              <hr class="my-3">
+              <div class="row">
+                <span class="tt-c c-grey-900">
+                  Structure OPP : &nbsp;
+                </span>
+                  {% if serie.seriePorteurOpp %}
+                    {{serie.seriePorteurOpp.porteurOppNom}}
+                  {% endif %}
+              </div>
+              <div class="row">
+                <span class="tt-c c-grey-900">
+                  OPP : &nbsp;
+                </span>
+                {% if serie.serieOpp %}{{serie.serieOpp.oppNom}}{% endif %}
+                <!--div class="col-md-4">
+                  <h5 class="fsz-def tt-c c-grey-900">OPP :</h5>
+                </div>
+                <div class="col-md-8">
+                  <span class="w-100 ov-h tov-e d-b">{% if serie.serieOpp %}{{serie.serieOpp.oppNom}}{% endif %}</span>
+                </div-->
+              </div>
+              <div class="row" id="accordion">
+                <div class="card left-align mT-20 w-100 mT-10">
+                  <div class="card-header" role="tab" id="heading-serie">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-serie" aria-expanded="true" aria-controls="collapse-serie">
+                      <h6 class="mb-0 red-text">
+                        {{ "labelSerie"|trans }} {{serie.serieIdentifiantSerie}}
+                      </h6>
+                    </a>
+                  </div>
+                  <div id="collapse-serie" class="collapse p-10" role="tabpanel" aria-labelledby="heading-serie" data-parent="#accordion">
+                    <div class="card-body pt-0">
+                      <div class="row">
+                          Fr&eacute;quence de reconduction pr&eacute;vue : 
+                          {{serie.serieFreqInterval}} {{serie.serieFreqPeriod}}{% if serie.serieFreqPeriod != 'mois' %}(s){% endif %}</div>
+                      <hr class="my-1 mT-10 mB-10">
+                      <div class="row">
+                          Axe(s) thématique(s) :&nbsp;
+                          {% for axeThe in AxeTheBySerie %}
+                          {% if loop.index > 1%},&nbsp;{% endif %}
+                            <span> {{axeThe.lSatAxeThematic.axeThematicNom}}</span>
+                          {% endfor %}
+                      </div>
+                      <!--hr class="my-1">
+                      <div class="row ">
+                        <div class="col-md-4 v-align-middle">
+                          <strong>Série(s) du même axe thématique:</strong>
+                        </div>
+                        <div class="col-md-8">
+                          {#% set serieIdPrec = 0 %}
+                          {% for serieAxe in seriesByAxeThe %}
+                          {#On ne veut pas 2 fois la même serie#}
+                            {#% if serieAxe.lSatSerie.serieID != serieIdPrec %}
+                              <a href='{{path('get_serie', {id : serieAxe.lSatSerie.serieID})}}'>
+                                <span class="whs-nw w-100 ov-h tov-e d-b">{{serieAxe.lSatSerie.serieTitre}}</span>
+                              </a>
+                            {% endif %}
+                            {% set serieIdPrec = serieAxe.lSatSerie.serieID %}
+                          {% endfor %#}
+                        </div>
+                      </div-->
+                      <hr class="my-1 mT-10 mB-10">
+                      <div class="row">
+                        Licence(s) des photos {{ "labelArtAndSerie"|trans }} :&nbsp;
+                        {% for LicencePhoto in tabLicencesPhotos %}
+                          {% if loop.index > 1 %},&nbsp;{% endif %}
+                          <span> {{LicencePhoto.licenceNom}}</span>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card left-align w-100 mT-10" >
+                  <div class="card-header" role="tab" id="heading-photo">
+                    <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse-photo" aria-expanded="false" aria-controls="collapse-photo">
+                      <h6 class="mb-0 red-text">
+                        <span id="docType">Photo</span> {{serie.serieIdentifiantSerie}} <span id="photoIndex"></span>
+                      </h6>
+                    </a>
+                  </div>
+                  <div id="collapse-photo" class="collapse p-10" role="tabpanel" aria-labelledby="heading-photo" data-parent="#accordion">
+                    <div class="card-body pt-0">
+                      <div class="row">
+                          Auteur de la reconduction :&nbsp;<span id="photoAuteur"></span>
+                      </div>
+                      <hr class="my-1 mT-10 mB-10">
+                      <div class="row">
+                        Date :&nbsp;<span id="photoDate"></span>
+                      </div>
+                      <hr class="my-1 mT-10 mB-10">
+                      <div class="row">
+                          Licence :&nbsp;<span id="photoLicence"></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card left-align w-100 mT-10" >
+                  <div class="card-header" role="tab" id="heading-territoire">
+                    <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse-territoire" aria-expanded="false" aria-controls="collapse-territoire">
+                      <h6 class="mb-0 red-text">
+                        Territoire
+                      </h6>
+                    </a>
+                  </div>
+                  <div id="collapse-territoire" class="collapse p-10" role="tabpanel" aria-labelledby="heading-territoire" data-parent="#accordion">
+                    <div class="card-body pt-2">
+                      {% if serie.serieDepartement %}
+                      <div class="row">
+                        Département : {{serie.serieDepartement.departementNom}} 
+                      </div>
+                      <hr class="my-1 mT-10 mB-10">
+                      {% endif %}
+                      <div class="row">
+                        Commune : {{serie.serieCommune.communeNom}}
+                      </div>
+                      <hr class="my-1 mT-10 mB-10">
+                      <div class="row">
+                        Adresse/lieu de la prise de vue : {{serie.serieAdresse}}
+                      </div>
+                      <hr class="my-1 mT-10 mB-10">
+                      <div class="row">
+                        {{ "labelEnsemblePaysager"|trans|capitalize}} : {% if serie.serieEnsemblePaysage %}{{serie.serieEnsemblePaysage.ensemblePaysagerNom}}{% endif %}
+                      </div>
+                      <hr class="my-1 mT-10 mB-10">
+                      <div class="row">
+                        Unité de paysage : {% if serie.serieUnitePaysagere %}{{serie.serieUnitePaysagere.unitePaysageNom}}{% endif %}
+                      </div>
+                      <hr class="my-1 mT-10 mB-10">
+                      <div class="row">
+                        Emplacement {{ "labelArtAndSerie"|trans }} :&nbsp;
+                        <div>
+                          <div id="longitudeWGS84">Long : {{serie.serieGeomX}}</div>
+                          <div id="latitudeWGS84">Lat : {{serie.serieGeomY}}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="bd bgc-white">
+              <div class="peers fxw-nw@lg+ ai-s">
+                <div class="peer peer-greed w-70p@lg+ w-100@lg- p-20">
+                  <div class="tab-width">
+                    <ul class="nav nav-tabs" role="tablist">
+                      <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#description">Descriptions</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#changements">Changements</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#commentaires">Commentaires ({{commentaires|length}})</a>
+                      </li>
+                      {% if docs or liensExterneSerie|length > 0 %}
+                      <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#documentations">Documentations</a>
+                      </li>
+                      {% endif %}
+                      {% if sons %}
+                      <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#son">Son</a>
+                      </li>
+                      {% endif %}
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content" style="overflow:auto ; height:auto">
+                      <div id="description" class="tab-pane active tab-width mT-15" >
+                        <div id="descPhoto">
+                          <h6>Intention du photographe</h6>
+                          <p>{{serie.serieIntention}}</p>
+                          <h6>Description fine des éléments de paysage à la première prise de vue (le {{serie.serieDate|date('d/m/Y')}})</h6>
+                          {{serie.serieDesc|raw}}
+                          <table class="table" id="recap-table">
+                            <thead>
+                              <tr>
+                                <th scope="col" style="min-width:90px">Photo</th>
+                                <th scope="col">Description des éléments / des changements</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {% set indexPhoto = 1 %}
+                              {% for photo in photos %}
+                              <tr id='recap-{{indexPhoto}}'>
+                                  <td>Photo n°{{indexPhoto}}</td>
+                                  <td>{{photo.photoDescChangement}}</td>
+                              </tr>
+                                {% set indexPhoto = indexPhoto +1 %}
+                              {% endfor %}
+                            </tbody>
+                          </table>
+                        </div>
+                        <div id="descDocRef">
+                          {% if serie.serieRefdoc %}
+                          <h6>Lieu de conservation</h6>
+                          <p>{{serie.serieRefdoc.documentRefLieuConservation}}</p>
+                          <h6>Description précise du document</h6>
+                          <p>{{serie.serieRefdoc.documentRefDesc|raw}}</p>
+                          {% endif %}
+                        </div>
+                      </div>
+
+                      <div id="changements" class="tab-pane fade tab-width"><br>
+                          <div class='w-100 text-right'>
+                            <button class='btn btn-primary cur-p mL-5 mB-5' id='exporterChangementPhoto'>Exporter</button>
+                          </div>
+                          <h6>Changements par rapport &agrave; la photo pr&eacute;c&eacute;dente</h6>
+                          <div id="tableauEvolutionPhoto"></div>
+                          <h6>Changements intervenus sur la dur&eacute;e {{ "labelArtAndSerie"|trans }}</h6>
+                          <table class="table" id="recap-table-duree">
+                            <thead>
+                              <tr>
+                                <th scope="col">El&eacute;ments</th>
+                                <th scope="col" id='col-evol-0'><center>Présence</center></th>
+                                {% for evolutionPaysage in tabEvolutionPaysage %}
+                                  <th scope="col" id='col-evol-{{evolutionPaysage.evolutionPaysageId}}'><center>{{evolutionPaysage.evolutionPaysageNom}}</center></th>
+                                {% endfor %}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {% for evolutionsThesaurus in tabEvolutionsThesaurus %}
+                                <tr>
+                                  <td scope="col">{{evolutionsThesaurus.nom}}</td>
+                                  <td scope="col">
+                                    <center>
+                                      {% if evolutionsThesaurus.evolution[0] is defined %}
+                                        <a class="cur-p red-tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{evolutionsThesaurus.evolution[0].libelleListePhoto}} : {{evolutionsThesaurus.evolution[0].listePhoto}}">
+                                        {{evolutionsThesaurus.evolution[0].nb }}
+                                        </a>
+                                      {% else %}
+                                        0
+                                      {% endif %}
+                                    </center></td>
+                                {% for evolutionPaysage in tabEvolutionPaysage %}
+                                  <td >
+                                    <center>
+                                      {% if evolutionsThesaurus.evolution[evolutionPaysage.evolutionPaysageId] is defined %}
+                                        <a class="cur-p red-tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{evolutionsThesaurus.evolution[evolutionPaysage.evolutionPaysageId].libelleListePhoto}} : {{evolutionsThesaurus.evolution[evolutionPaysage.evolutionPaysageId].listePhoto}}">
+                                        {{evolutionsThesaurus.evolution[evolutionPaysage.evolutionPaysageId].nb }}
+                                        </a>
+                                      {% else %}
+                                        0
+                                      {% endif %}
+                                    </center>
+                                  </td>
+                                {% endfor %}
+                                </tr>
+                              {% endfor %}
+                            </tbody>
+                          </table>
+                        </div>
+                        <div id="commentaires" class="tab-pane fade tab-width" ><br>
+                          {% for commentaire in commentaires %}
+                            <div class="peers fxw-nw p-20 bdB bgcH-grey-100">
+                              <div class="peer peer-greed ov-h">
+                                <div class="peers ai-c">
+                                  <div class="peer peer-greed">
+                                    <h6>{% if commentaire.commentaireAuteur %}{{ commentaire.commentaireAuteur.Prenom }} {{ commentaire.commentaireAuteur.Nom }}{% endif %}</h6>
+                                  </div>
+                                  <div class="peer">
+                                    <small>{{ commentaire.commentaireDate|date('d/m/Y à H:i') }}</small>
+                                  </div>
+                                </div>
+                                {% if commentaire.commentairePhoto %}<h5 class="fsz-def tt-c c-grey-900">Photo : {{ commentaire.commentairePhoto.photoTitre }}</h5>{% endif %}
+                                <span class="w-100 ov-h tov-e d-b">{{ commentaire.commentaireText|raw }}</span>
+                              </div>
+                            </div>
+                          {% else %}
+                              <em>Aucun commentaire pour le moment</em>
+                          {% endfor %}
+                          <!--h6>Aucun commentaire pour le moment</h6-->
+                          {%  if app.user == true %}
+                          <div class="form-group mT-20">
+                            <h5>Ajouter un commentaire</h5>
+                            <label for="serie_photo_comment">Photo concernée par votre commentaire </label>
+                            <select id="serie_comment_photo" class="form-control">
+                              {% for photo in photos %}
+                              <option value='{{photo.photoId}}' >{{photo.photoTitre}}</option>
+                              {% endfor %}
+                            </select><br>
+                            <label for="serie_comment_text">Commentaire * </label>
+                            <textarea id='serie_comment_text' class="form-control"></textarea>
+                            <br>
+                            <div class="text-right">
+                                <button id="createSerieComment" class="btn btn-primary cur-p" value="Enregistrer">Enregistrer</button>
+                            </div>
+                            <div id="messageConfirmComment" class=" mT-10"></div>
+                          </div>
+                          {% else %}
+                            <p><a href='{{ path('fos_user_security_login') }}'>Connectez-vous</a> pour publier un commentaire</p>
+                          {% endif %}
+                        </div>
+                        <div id="documentations" class="tab-pane fade tab-width"><br>
+                          <h6>Documents associ&eacute;s {{ "labelALaSerie"|trans }}</h6>
+                          {% if docs %}
+                            {% for doc in docs %}
+                              <a target='_blank' href="{{parameters['URL_FOLDER_FILES']}}/{{doc.documentFile.fileManagerUri}}">{{doc.documentTitre}}</a>
+                              <br>
+                              {{doc.documentLegende}}
+                            {% endfor %}
+                          {% else %}
+                            Aucun
+                          {% endif %}
+                          {% if liensExterneSerie|length > 0 %}
+                            <br/><br/>
+                            <h6>Liens associés {{ "labelALaSerie"|trans }}</h6>
+                            {% for lienExterneSerie in liensExterneSerie %}
+                              <a href="{{lienExterneSerie.lienExterneValue}}">{{lienExterneSerie.lienExterneValue}}</a><br/>
+                            {% endfor %}
+                          {% endif %}
+                        </div>
+                        <div id="son" class="tab-pane fade tab-width"><br>
+                          <h6>Son</h6>
+                          {% if sons %}
+                          <table class="table" id="recap-table-duree">
+                            <thead>
+                              <tr>
+                                <th scope="col">Informations</th>
+                                <th scope="col">Contexte</th>
+                                <th scope="col">Lecture</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {% for son in sons %}
+                                <tr>
+                                  <td scope="col">
+                                    Titre : {{son.sonTitre}}<br>
+                                    Type : {{son.sonType}}<br>
+                                    Présentation : {{son.sonPresentation}}<br>
+                                    Photo {{son.sonNumPhoto}}
+                                  </td>
+                                  <td scope="col">
+                                    Auteur / Preneur de son : {{son.sonAuteur}}<br>
+                                    <!--Contributeur : -->
+                                    Structure responsable de la création du contenu : {% if son.sonStructResp %}{{son.sonStructResp.porteurOppNom}}{% endif %}
+                                  </td>
+                                  <td scope="col">
+                                    {% if son.sonFormat == 'Vidéo' %}
+                                    <video width="620" height="405" controls="controls" >
+                                      <source src="{{parameters['URL_FOLDER_FILES']}}/{{son.sonFile.fileManagerUri}}" type="video/mp4" />
+                                      Votre navigateur ne supporte pas l'élément vidéo ou le format de la vidéo. 
+                                    </video><br>
+                                    {% else %}
+                                    <audio
+                                      controls
+                                      src="{{parameters['URL_FOLDER_FILES']}}/{{son.sonFile.fileManagerUri}}">
+                                          Votre navigateur ne supporte pas l'élément
+                                          <code>audio</code>.
+                                    </audio><br>
+                                    {% endif %}
+                                    Date : {{son.sonDate|date('d/m/Y')}}<br>
+                                    {% if son.sonLicence %}Licence : {{son.sonLicence.licenceNom}}{% endif %}<br>
+                                    
+                                  </td>
+                                </tr>
+                              {% endfor %}
+                            </tbody>
+                          </table>
+                          {% else %}
+                            Aucun son disponible
+                          {% endif %}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <iframe id="download_iframe" style="display:none;"></iframe>
+  </main>
+    <!-- Modal -->
+    <div class="modal fade" id="modal-fullscreen" tabindex="-1" role="dialog" aria-labelledby="modal-fullscreen" aria-hidden="true">
+      <div class="modal-dialog modal-lg mL-5 mT-5 w-100" style='max-width:initial'>
+        <button id='closeModal' class="close cur-p" ><span aria-hidden="true" aria-label="Close">&times;</span></button>
+          <!--img id="img-full-screen" class='w-100' /-->
+      </div>
+    </div>
+{% endblock body %}

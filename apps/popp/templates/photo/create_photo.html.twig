@@ -1,0 +1,442 @@
+{%  extends "base.html.twig" %}
+
+{% block body %}
+
+<!-- ### $App Screen Content ### -->
+    <!-- ### Ck Editor import### -->
+<script src="https://cdn.ckeditor.com/4.13.1/standard/ckeditor.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/min/dropzone.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/min/dropzone.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/min/dropzone.min.css">
+
+{#calendar#}
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+{#<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">#}
+<script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
+<link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+<style>
+    .necessaryValue{
+        border-color:red;
+    }
+</style>
+
+<main class='main-content bgc-grey-100'>
+    <div id='mainContent'>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                        <div class="row mT-10" >
+                           <h5 class='col-12 mB-20'>Ajouter une photo</h5>
+                           <div class="col-md-6">
+                               <div class="form-group">
+                                   <input id="photo_titre" name="photo_titre" type="text" class="form-control photo" placeholder="Titre *" required {% if photo %} value="{{ photo.photoTitre }}"/>{% endif %}
+                               </div>
+                           </div>
+                           <div class="col-md-6">
+                               <div class="form-group">
+                                   <input id="photo_auteur" name="photo_auteur" type="text" class="form-control photo" placeholder="Auteur *" required {% if photo %} value="{{ photo.photoAuteur }}"/>{% endif %}
+                               </div>
+                           </div>
+                       </div>
+                       <div class="row mT-10">
+                           <div class="col-md-12">
+                               <div class="form-group">
+                                   <textarea  id="photo_desc" name="photo_desc" placeholder="Description des &eacute;l&eacute;ments / des changements" class="form-control photo"   name="photo_desc" rows="1" cols="80">{% if photo %}{{ photo.photoDescChangement }}{% endif %}</textarea>
+                               </div>
+                           </div>
+                       </div>
+                       <div class="row mT-10">
+                           <div class="col-md-6">
+                               <div class='form-group'>
+                                   <label for="photo_datepicker_desc">Date de la description</label>
+                                   <input type='date' id="photo_datepicker_desc" name="photo_datepicker_desc" placeholder="Date de la description" class="form-control photo" {# {% if photo %} value="{{ photo.photoDateDesc }}"#}/>{#{% endif %}#}
+                               </div>
+                           </div>
+                           <div class="col-md-6">
+                               <div class="form-group">
+                                  <label for="photo_datepicker_photo">Date de la prise de vue</label>
+                                  <input type='date' class="form-control photo" id="photo_datepicker_photo" name="photo_datepicker_photo" placeholder="Date de la prise de vue"{# {% if photo %} value="{{ photo.photoDatePrise }}"#}/>{#{% endif %}#}
+                               </div>
+                           </div>
+                       </div>    
+                       <div class="row mT-10">
+                           <div class="col-md-12">
+                               <div class="form-group">
+                                   <input id="photo_id" name="photo_id" type="text" class="form-control photo" placeholder="Identifiant de la photo OPP"  {% if photo %} value="{{ photo.photoIdentifiantInt }}"/>{% endif %}
+                               </div>
+                           </div>
+                       </div>
+                       <div class="row mT-10">
+                           <h6 class='col-12'>Rights</h6>
+                           <div class="col-md-6">
+                               <div class="form-group">
+                                   <label for="photo_right">Licence de la photo</label>
+                                   <select class="form-control photo" name="photo_right" id="photo_right">
+                                         {% for licence in licences %}
+                                            {% if photo.photoLicence %}
+                                                <option value="{{ licence.licenceId }}" selected>{{ licence.licenceNom }}</option>
+                                            {% else %}
+                                                <option value="{{ licence.licenceId }}">{{ licence.licenceNom }}</option>
+                                            {% endif %}
+                                         {% endfor %}
+                                   </select>
+                               </div>
+                           </div>
+                           <div class="col-md-6">
+                               <div class="form-group">
+                                   <label for="photo_right_fiche">Licence de la fiche photo</label>
+                                   <select class="form-control photo" id="photo_right_fiche" name="photo_right_fiche">
+                                       {% for licence in licences %}
+                                            {% if photo.photoLicenceFiche %}
+                                                <option value="{{ licence.licenceId }}"selected>{{ licence.licenceNom }}</option>
+                                            {% else %}
+                                                <option value="{{ licence.licenceId }}">{{ licence.licenceNom }}</option>
+                                            {% endif %}
+                                       {% endfor %}
+                                   </select>
+                               </div>
+                           </div>
+                       </div>
+                       <div class="row mT-10">
+                           <div class="col-md-12">
+                               <h6>M&eacute;tadonn&eacute;es hors OAI-PMH</h6>
+                           </div>
+                       </div>
+                       <div class="row mT-10">
+                            <div class="col-md-6">
+                               <div class="form-group">
+                                   <input id="photo_meta_type_appareil" name="photo_meta_type_appareil" type="text" class="form-control photo" placeholder="Type d'appareil photo*" required {% if photo %} value="{{ photo.photoTypeAppareil }}"/>{% endif %}
+                               </div>
+                            </div>
+                            <div class="col-md-6">
+                               <div class="form-group">
+                                   <select id="photo_format" name="photo_format" class="form-control photo" required>
+                                       {% for format in formats %}
+                                            {% if photo.photoFormat %}
+                                                <option value="{{ format.formatId }}" selected>{{ format.formatNom }}</option>
+                                            {% else %}
+                                                <option value="{{ format.formatId }}">{{ format.formatNom }}</option>
+                                            {% endif %}
+                                       {% endfor %}
+                                   </select>
+                               </div>
+                           </div>
+                       </div>
+                       <div class="panel panel-default">
+                           <div class="panel-heading ">
+                               <h6 class="panel-title mT-10 mB-10">
+                                   <a class="accordion_title" data-toggle="collapse" data-parent="#accordion" href="#collapseParams"><span class="ti ti-arrow-circle-down"></span> Param&egrave;tres optionnels </a>
+                               </h6>
+                           </div>
+                           <div id="collapseParams" class="panel-collapse collapse">
+                               <div class="panel-body">
+                                   <div class="row mT-10">
+                                       <div class="col-md-6">
+                                           <div class="form-group row">
+                                               <label for="photo_param_heure" class="col-sm-3 col-form-label">Heure</label>
+                                               <div class="col-sm-9">
+                                                   <input id="photo_param_heure" name="photo_param_heure" class="form-control photo" type="time" {% if photo %} value="{{ photo.photoHeure }}"/>{% endif %}
+                                               </div>
+                                           </div>
+                                       </div>
+                                       <div class="col-md-6">
+                                           <div class="form-group row">
+                                               <label for="photo_param_focale" class="col-sm-3 col-form-label">Focale</label>
+                                               <div class="col-sm-9">
+                                                   <input id="photo_param_focale" name="photo_param_focale" type="text" class="form-control photo" placeholder="" {% if photo %} value="{{ photo.photoFocale }}"/>{% endif %}
+                                               </div>
+                                           </div>
+                                       </div>
+                                       <div class="col-md-6">
+                                           <div class="form-group row">
+                                               <label for="photo_param_ouv_diaph" class="col-sm-3 col-form-label">Ouverture du diaphragme</label>
+                                               <div class="col-sm-9">
+                                                   <input id="photo_param_ouv_diaph" name="photo_param_ouv_diaph" type="text" class="form-control photo" placeholder="" {% if photo %} value="{{ photo.photoOuvertureDia }}"/>{% endif %}
+                                               </div>
+                                           </div>
+                                       </div>
+                                       <div class="col-md-6">
+                                           <div class="form-group row">
+                                               <label for="photo_param_type_film" class="col-sm-3 col-form-label">Type de film</label>
+                                               <div class="col-sm-9">
+                                                   <input id="photo_param_type_film" name="photo_param_type_film" type="text" class="form-control photo" placeholder="" {% if photo %} value="{{ photo.photoTypeFilm }}"/>{% endif %}
+                                               </div>
+                                           </div>
+                                       </div>                                                
+                                       <div class="col-md-6">
+                                           <div class="form-group row">
+                                               <label for="photo_param_sensi_iso" class="col-sm-3 col-form-label">Sensibilit&eacute; ISO</label>
+                                               <div class="col-sm-9">
+                                                   <input id="photo_param_sensi_iso" name="photo_param_sensi_iso" type="text" class="form-control photo" {% if photo %} value="{{ photo.photoIso }}"/>{% endif %}
+                                               </div>
+                                           </div>
+                                       </div>                                                
+                                       <div class="col-md-6">
+                                           <div class="form-group row">
+                                               <label for="photo_param_poids_file" class="col-sm-3 col-form-label">Poids du fichier d'origine</label>
+                                               <div class="col-sm-9">
+                                                   <input id="photo_param_poids_file" name="photo_param_poids_file" type="text" class="form-control photo" placeholder=""  {% if photo %} value="{{ photo.photoPoidsOrigine }}"/>{% endif %}
+                                               </div>
+                                           </div>
+                                       </div>
+                                       <div class="col-md-6">
+                                           <div class="form-group row">
+                                               <label for="photo_param_inclinaison_value" class="col-sm-3 col-form-label">Inclinaison de l'appareil (haut-bas)</label>
+                                               <div class="col-sm-9">
+                                                   <input id="photo_param_inclinaison_value" name="photo_param_inclinaison_value" type="text" class="form-control photo" placeholder="" {% if photo %} value="{{ photo.photoInclinaison }}"/>{% endif %}
+                                               </div>
+                                           </div>
+                                       </div>
+                                       <div class="col-md-6">
+                                           <div class="form-group row">
+                                               <label for="photo_param_hauteur_trep_value" class="col-sm-3 col-form-label">Hauteur du tr&eacute;pied (cm)</label>
+                                               <div class="col-sm-9">
+                                                   <input id="photo_param_hauteur_trep_value" name="photo_param_hauteur_trep_value" type="number" class="form-control photo" placeholder="" {% if photo %} value="{{ photo.photoHauteur }}"/>{% endif %}
+                                               </div>
+                                           </div>
+                                       </div>                                                
+                                       <div class="col-md-6">
+                                           <div class="form-group row">
+                                               <label for="photo_param_orientation_value" class="col-sm-3 col-form-label">Orientation de la prise de vue</label>
+                                               <div class="col-sm-9">
+                                                   <input id="photo_param_orientation_value" name="photo_param_orientation_value" type="text" class="form-control photo" placeholder=""  {% if photo %} value="{{ photo.photoOrientation }}"/>{% endif %}
+                                               </div>
+                                           </div>
+                                       </div>                                                
+                                       <div class="col-md-6">
+                                           <div class="form-group row">
+                                               <label for="photo_param_altitude_value" class="col-sm-3 col-form-label">Altitude</label>
+                                               <div class="col-sm-9">
+                                                   <input id="photo_param_altitude_value" name="photo_param_altitude_value" type="text" class="form-control photo" placeholder=""  {% if photo %} value="{{ photo.photoAltitude }}"/>{% endif %}
+                                               </div>
+                                           </div>
+                                       </div>                                                
+                                       <div class="col-md-6">
+                                           <div class="form-group row">
+                                               <label for="photo_param_coef_mar_value" class="col-sm-3 col-form-label">Coefficient de mar&eacute;e</label>
+                                               <div class="col-sm-9">
+                                                   <input id="photo_param_coef_mar_value" name="photo_param_coef_mar_value" type="text" class="form-control photo" placeholder="" {% if photo %} value="{{ photo.photoCoefMaree }}"/>{% endif %}
+                                           </div>
+                                       </div>
+                                   </div>   
+                               </div>
+                           </div>
+                       </div>
+                       <div class="panel panel-default">
+                           <div class="panel-heading ">
+                               <h6 class="panel-title mT-10 mB-10">
+                                   <a class="accordion_title" data-toggle="collapse" data-parent="#accordion" href="#collapseObjet"><span class="ti ti-arrow-circle-down"></span> Objet </a>
+                               </h6>
+                           </div>
+                           <div id="collapseObjet" class="panel-collapse collapse">
+                               <div class="panel-body">
+                                   <div class="row mT-10">
+                                       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+                                       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
+                                       <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+                                       <div class="col-md-12">
+                                           <p>Cliquez sur une cat&eacute;gorie pour voir les th&egrave;mes. Si vous ne choisissez aucun type d'&eacute;volution, les photographies contenant l&apos;&eacute;l&eacute;ment seront recherch&eacute;es.
+                                           <div id="jstree">      
+                                               <div id="html1">
+                                                   <ul>
+                                                       <li data-jstree='{"opened":false,"selected":false}'>V&eacute;g&eacute;tation
+                                                           <ul>
+                                                               <li data-jstree='{"opened":false,"selected":false}'>Culture
+                                                                   <ul>
+                                                                       <li data-jstree='{"icon":false}'>Culture fourrag&egrave;re</li>
+                                                                       <li data-jstree='{"icon":false}'>Jach&egrave;re</li>
+                                                                       <li data-jstree='{"icon":false}'>Culture mara&icirc;ch&egrave;re</li>
+                                                                   </ul>
+                                                               </li>
+                                                               <li data-jstree='{"opened":false,"selected":false}'>Lisi&egrave;re / limites
+                                                                   <ul>
+                                                                       <li data-jstree='{"icon":false}'>Haie agricole</li>
+                                                                       <li data-jstree='{"icon":false}'>Alignement d&apos;arbre</li>
+                                                                       <li data-jstree='{"icon":false}'>Muret</li>
+                                                                   </ul>
+                                                               </li>
+                                                               <li data-jstree='{"opened":false,"selected":false}'>V&eacute;g&eacute;tation ornementale
+                                                                   <ul>
+                                                                       <li data-jstree='{"icon":false}'>V&eacute;g&eacute;tation ornementale</li>
+                                                                       <li data-jstree='{"icon":false}'>Arbre isol&eacute;</li>
+                                                                       <li data-jstree='{"icon":false}'>Parcs et jardins priv&eacute;</li>
+                                                                   </ul>
+                                                               </li>
+                                                           </ul>
+                                                       </li>
+                                                       <li data-jstree='{"opened":true,"selected":false}'>B&acirc;ti
+                                                           <ul>
+                                                               <li data-jstree='{"opened":true,"selected":false}'>Entreprise
+                                                                   <ul>
+                                                                       <li data-jstree='{"opened":false,"icon":false,"selected":false}'>Chantier
+                                                                           <ul>
+                                                                               <li data-jstree='{"icon":"ti ti-arrow-up"}'>Augmentation</li>
+                                                                               <li data-jstree='{"icon":"ti ti-arrow-down"}'>Diminution</li>
+                                                                               <li data-jstree='{"icon":"ti ti-arrows-horizontal"}'>Stabilit&eacute;</li>
+                                                                               <li data-jstree='{"icon":"ti ti-back-right"}'>Changement d'apparence</li>
+                                                                           </ul>
+                                                                       </li>                                                                    
+                                                                       <li data-jstree='{"opened":false,"icon":false,"selected":false}'>Magasin
+                                                                           <ul>
+                                                                               <li data-jstree='{"icon":"ti ti-arrow-up"}'>Augmentation</li>
+                                                                               <li data-jstree='{"icon":"ti ti-arrow-down"}'>Diminution</li>
+                                                                               <li data-jstree='{"icon":"ti ti-arrows-horizontal"}'>Stabilit&eacute;</li>
+                                                                               <li data-jstree='{"icon":"ti ti-back-right"}'>Changement d'apparence</li>
+                                                                           </ul>
+                                                                       </li>                                                                    
+                                                                       <li data-jstree='{"opened":false,"icon":false,"selected":false}'>Site industriel
+                                                                           <ul>
+                                                                               <li data-jstree='{"icon":"ti ti-arrow-up"}'>Augmentation</li>
+                                                                               <li data-jstree='{"icon":"ti ti-arrow-down"}'>Diminution</li>
+                                                                               <li data-jstree='{"icon":"ti ti-arrows-horizontal"}'>Stabilit&eacute;</li>
+                                                                               <li data-jstree='{"icon":"ti ti-back-right"}'>Changement d'apparence</li>
+                                                                           </ul>
+                                                                       </li>
+                                                                   </ul>
+                                                               </li>
+                                                               <li data-jstree='{"opened":false,"selected":false}'>Exploitation agricole
+                                                                   <ul>
+                                                                       <li data-jstree='{"icon":false}'>Ferme</li>
+                                                                       <li data-jstree='{"icon":false}'>Silo</li>
+                                                                       <li data-jstree='{"icon":false}'>Hangar agricole</li>
+                                                                   </ul>
+                                                               </li>
+                                                               <li data-jstree='{"opened":false,"selected":false}'>Habitat
+                                                                   <ul>
+                                                                       <li data-jstree='{"icon":false}'>Ensemble r&eacute;sidentiel urbain</li>
+                                                                       <li data-jstree='{"icon":false}'>Maison individuelle</li>
+                                                                       <li data-jstree='{"icon":false}'>Immeuble de grande hauteur</li>
+                                                                   </ul>
+                                                               </li>
+                                                           </ul>
+                                                       </li>
+{#                                                                            {% for parent1 in parents1 %}
+                                                           <option>{{ parent1.thesaurusTreeNom }}</option>
+                                                       {% endfor %}  #}                                          
+                                                   </ul>
+                                               </div>
+                                           </div>  
+                                       </div>
+                                   </div>  
+                               </div>
+                           </div>
+                       </div>
+                       <div class="row mT-10">
+                           <div class="col-md-12">
+                               <h6>Photographie * </h6>
+                               <form id="add_photo_file" action="/administrateur/addToServer/photo" class="dropzone" method="post" enctype="multipart/form-data">
+                                   <div class="fallback">
+                                       <input id="photo_dropzone" name="file" type="file" value="test" required/>
+                                   </div>
+                               </form>
+                           </div>
+                       </div>
+                       <div class="row m-30">
+                           <div class="col-md-12 center-align">
+                               <input id="submitPhoto" type="submit" name="envoi" class="btn btn-secondary cur-p" value="Suivant">
+                           </div>
+                       </div>
+                       <script>$('#html1').jstree({"plugins" : [ "themes", "html_data", "checkbox", "sort", "ui" ]});</script>
+                   </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<script>
+    // "myAwesomeDropzone" is the camelized version of the HTML element's ID
+    Dropzone.options.myAwesomeDropzone = {
+      paramName: "photo_fiche_dropzone_croquis",
+      maxFilesize: 256,
+      maxFiles: 1,                                                                                  
+      uploadMultiple: true, 
+      autoprocessQueue: false,
+      accept: function(file, done) {
+        done();
+      }
+    };
+    Dropzone.prototype.defaultOptions.dictDefaultMessage = "Les fichiers doivent peser moins de 256 Mo.";
+    Dropzone.prototype.defaultOptions.dictRemoveFile = "Supprimer";
+    Dropzone.prototype.defaultOptions.addRemoveLinks = true;
+    Dropzone.prototype.defaultOptions.acceptedFiles = "image/*";
+    Dropzone.prototype.defaultOptions.maxFiles = 1;
+</script>
+<style>
+    .dropzone .dz-message{
+        margin:0;
+    }
+    .dropzone{
+        min-height:0px;
+        border: 1px dotted #ced4da;
+    }
+
+</style>
+
+<script>
+$("#submitPhoto").click(function() {
+    {#Cr�ation de la variable : nombre de champs compl�t�#}
+    var longueur = $(".photo").length;
+
+    {#Cr�ation du tableau de parametre envoi#}
+    var insertionChamp = {};
+
+    for (let i = 0 ; i < longueur; i++){
+        {#Si le champ est null#}
+        if ($(".photo")[i].value === ""){
+            var elt = $(".photo")[i];
+
+            {#Si le champ est optionnel#}
+            if ($(".photo")[i].required === false){
+                $id = $(".photo")[i].id;
+                $value = $(".photo")[i].value;
+                insertionChamp[$id] = $value;
+            }
+            
+            {#Si le champ est obligatoire#}
+            else{
+                document.getElementsByClassName("photo")[i].classList.add("is-invalid");
+                    }
+        }
+        {#Si le champ a une valeur#}
+        else{
+            document.getElementsByClassName("photo")[i].classList.remove("is-invalid");
+            $id = $(".photo")[i].id;
+            $value = $(".photo")[i].value;
+            insertionChamp[$id] = $value;
+        }  
+    }
+    if(add_photo_file.dropzone.files.length !== 0){
+        insertionChamp["photoTitre"] = JSON.parse(add_photo_file.files[0].xhr.response).logoName;
+        insertionChamp["photoURI"] = JSON.parse(add_photo_file.files[0].xhr.response).logoURI;
+        insertionChamp["photoFormat"] = JSON.parse(add_photo_file.dropzone.files[0].xhr.response).logoFormat;
+        insertionChamp["photoStatut"] = JSON.parse(add_photo_file.dropzone.files[0].xhr.response).logoStatut;
+        insertionChamp["photoSize"] = JSON.parse(add_photo_file.dropzone.files[0].xhr.response).logoSize;
+        insertionChamp["photoDate"] = add_photo_file.dropzone.files[0].lastModified;
+    }
+
+{#            if (insertionChamp['add_struct_id'] !== 'new'){
+        Dropzone.options.myAwesomeDropzone = {
+            init: function() {
+                let myDropzone = this;
+
+                let mockFile = { name: "Filename", size: 12345 };
+                myDropzone.displayExistingFile(mockFile, fileUri);
+            }
+        }
+    }
+    #}
+    var longueur = $(".form-control").length;
+    $.ajax({
+{#                url : 'insertDb',#}
+        url : '/administrateur/structure/insertStructure',
+        type : 'POST',
+        cache: true,
+        data : insertionChamp
+     })
+     ;
+};
+    
+</script>
+{% endblock body %}

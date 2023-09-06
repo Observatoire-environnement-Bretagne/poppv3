@@ -1,0 +1,95 @@
+{%  extends "base.html.twig" %}
+
+{% block body %}
+    {% set parameters = app.session.get('parameters') %}
+        <!-- ### $App Screen Content ### -->
+        <main class='main-content bgc-grey-100'>
+          <div id='mainContent'>
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-md-12">
+                    <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                        <div class="row mT-10">
+                            <div class="col-md-12">
+                                <h4 class="c-grey-900 mB-20">{{ user.Prenom }} {{ user.Nom }}</h4>
+                            </div>
+                        </div>
+                        <hr class="my-4">
+                        <div class="row mT-10">
+                            <div class="col-md-12">
+                                <h6>Email :</h6>
+                                <p>{{ user.email }}</p>
+                            </div>
+                        </div>
+                        <div class="row mT-10">
+                            <div class="col-md-12">
+                                <h6>Sexe :</h6>
+                                <p>{{ user.Sexe }}</p>
+                            </div>
+                        </div>
+                        <div class="row mT-10">
+                            <div class="col-md-12">
+                                <h6>Adresse :</h6>
+                                <p>{{ user.Adresse }}</p>
+                            </div>
+                        </div>
+                        <div class="row mT-10">
+                            <div class="col-md-12">
+                                <h6>Code postal :</h6>
+                                <p>{{ user.codePostal }}</p>
+                            </div>
+                        </div>
+                        <div class="row mT-10">
+                            <div class="col-md-12">
+                                <h6>Ville :</h6>
+                                <p>{{ user.Ville }}</p>
+                            </div>
+                        </div>
+                        <div class="row mT-10">
+                            <div class="col-md-12">
+                                <h6>Telephone :</h6>
+                                <p>{{ user.Telephone }}</p>
+                            </div>
+                        </div>
+                        <div class="row mT-10">
+                            <div class="col-md-12">
+                                <h6>Date de dernière connexion :</h6>
+                                <p>{{ user.Datederncnx|date('d/m/Y') }}</p>
+                            </div>
+                        </div>
+                        {% if fournisseurOpps %}
+                        <div class="row mT-10">
+                            <div class="col-md-12">
+                                <h6>Fournisseur des OPP :</h6>
+                                {% for fournisseurOpp in fournisseurOpps %}
+                                    <li>{% if fournisseurOpp.lFoOpp %}{{ fournisseurOpp.lFoOpp.oppNom }} {% endif %}</li>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% if gestionnaireOpps %}
+                        <div class="row mT-10">
+                            <div class="col-md-12">
+                                <h6>Gestionnaires des Opp :</h6>
+                                {% for gestionnaireOpp in gestionnaireOpps %}
+                                    <li>{% if gestionnaireOpp.lGoOpp %}{{ gestionnaireOpp.lGoOpp.oppNom }} {% endif %}</li>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+              </div>
+              <!--si liste user a ajouter-->
+              <!--div class="row">
+                  <div class="col-md-12">
+                    <div class="bgc-white bd bdrs-3 p-20 mB-20">
+
+                    </div>
+                  </div>
+              </div-->
+            </div>
+          </div>
+        </main>
+
+{% endblock body %}

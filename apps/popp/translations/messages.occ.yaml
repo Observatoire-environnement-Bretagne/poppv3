@@ -1,0 +1,73 @@
+labelUnitePaysageLocale: structure de paysage
+labelUnitePaysageLocales: structures de paysage 
+labelExportSerie: Export des points de vue
+labelNomSeriePhoto: Nom du point de vue
+labelPublierSerie: Publier le point de vue
+labelSerie: Point de vue
+labelSeries: points de vue
+labelArtAndSerie: points de vue
+labelModifSerie: Modifier le point de vue
+labelAjoutSerie: Ajouter un point de vue
+labelTitleExportSerie: Exporter le point de vue
+labelALaSerie: au point de vue
+labelLaSerie: le point de vue
+labelTypologiesPaysage: grands ensembles géographiques
+labelArtTypologiePaysage: un grand ensemble géographique
+labelTypologiePaysage: grand ensemble géographique
+fieldRequired: AxeThematique;EnsemblePaysager;UnitePaysage
+labelIntentionPhotographe: Intention de prise de vue
+labelEnsemblePaysager: famille de paysages
+labelEnsemblesPaysagers: familles de paysages
+labelArtEnsemblePaysager: une famille de paysages
+labelAuteurReconduction: Auteur de la photographie
+labelExportAllSeries: Ajouter tous les points de vue dans le panier
+labelSuccessAddSeries: Points de vue ajoutés au panier
+labelSuccessAddSerie: Point de vue ajouté au panier
+labelAlreadyAddedSerie: Point de vue déjà présent dans le panier 
+labelDeletedSerie: Point de vue supprimé du panier 
+msgErreurLimitExport: L'export est limité à 100 points de vue
+TextIntroPanier: >
+  Vous trouvez tous les points de vue que vous avez sélectionnés dans la POPP. 
+  En cliquant sur « exporter les données », vous téléchargez un tableur qui recense les métadonnées 
+  liées aux séries photos et les statistiques relatives aux différents changements de paysage qui 
+  affectent vos séries. L’export est limité à 100 séries pour des questions de performance. 
+  Aussi, cette sélection n’est pas enregistrée dans votre espace personnel, elle est valable uniquement 
+  lors de cette session.
+showLicenceFichePhoto: false
+showSerieLangue: false
+showSerieDate: true
+showSerieFormat: false
+showButtonWizardTop: true
+wizardOrder: Objet;Emplacement;Géographie;Photos;Fiche terrain;Documentations annexe
+blockSearch-0:
+  title: Localisation
+  code: Glocalisation
+  type: accordion
+  class: show
+  block: departement;commune
+blockSearch-1:
+  title: OPP
+  code: Gopp
+  type: accordion
+  class: 
+  block: opp;axeThematique;annee;identifiant
+blockSearch-2:
+  title: Identification des paysages
+  code: Gpaysage
+  type: accordion
+  class: 
+  block: typoPaysage;ensPaysage;unitePaysage
+blockSearch-3:
+  title: Localisation
+  code: Glocalisation
+  type: block
+  class: 
+  block: elementPaysage
+default_value:
+  langue: Français
+  pays: FRANCE
+  region: Occitanie
+  frequence: année
+  disparition: Disparition
+
+

@@ -1,0 +1,18 @@
+
+<div class="layer w-100">
+    <div class="form-group row">
+        <label for="SelectIdSer" class="col-sm-4 col-form-label">Identifiant {{ "labelArtAndSerie"|trans }}</label>
+        <div class="col-sm-8">
+            <select id="SelectIdSer" class="form-control">
+            <option value='all'>-Tout-</option>
+            {% for serie in Series %}
+                {% if serie.serieId in app.session.get('critere_search_series')['serId'] %}
+                <option value="{{ serie.serieId }}" selected>{{ serie.serieIdentifiantSerie }}</option>
+                {% else %}
+                <option value="{{ serie.serieId }}">{{ serie.serieIdentifiantSerie }}</option>
+                {% endif %}
+            {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>

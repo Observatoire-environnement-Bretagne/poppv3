@@ -1,0 +1,34 @@
+
+<input id="document_id" type="hidden" class="form-control form-document" />
+<div class="row mT-10">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="document_titre">Titre du document * </label>
+            <input id="document_titre" type="text" class="form-control form-document" placeholder="Titre * " required />
+        </div>
+    </div>
+</div>
+<div class="row mT-10">
+    <div class="col-md-12">
+        <label for="document_legende">Légende </label>
+        <div class="form-group">
+            <textarea type='text' id="document_legende" placeholder="" class="form-control form-document"></textarea>
+        </div>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-12">
+        <input id="document_file_action" type="hidden" class="form-control form-document" />
+        <input id="document_file_name" type="hidden" class="form-control form-document" />
+        <input id="document_file_size" type="hidden" class="form-control form-document" />
+        <input id="document_file_url" type="hidden" class="form-control form-document" />
+        <h6>document * </h6>
+        <form id="addDocumentDropzone" name="addDocumentDropzone" action="{{path('addPhoto')}}" class="dropzone" method="post" enctype="multipart/form-data">
+            <div class="fallback">
+                <input type="file"/>
+            </div>
+        </form>
+        <span class="formErrors"></span>
+    </div>
+</div>

@@ -1,0 +1,6 @@
+fos_user:
+    db_driver: orm
+    firewall_name: main
+    user_class: App\Entity\User
+    from_email: {address: "m.etourneau@geofit.fr", sender_name: MET}
+    use_flash_notifications: false

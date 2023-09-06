@@ -1,0 +1,19 @@
+
+<div class="layer w-100">
+    <div class="form-group row" >
+        <label for="selectEnsPay" class="col-sm-4 col-form-label">{{ "labelEnsemblePaysager"|trans|capitalize }}</label>
+        <div class="col-sm-8">
+            <select id="selectEnsPay" class="form-control">
+            <option value='all' >-Tout-</option>
+            {% for ensemblePaysagerId, ensemblePaysagerNom in EnsemblePaysagers %}
+                {% if ensemblePaysagerId in app.session.get('critere_search_series')['ensPayId'] %}
+                <option value="{{ ensemblePaysagerId }}" selected>{{ ensemblePaysagerNom }}</option>
+                {% else %}
+                <option value="{{ ensemblePaysagerId }}">{{ ensemblePaysagerNom }}</option>
+                {% endif %}
+                
+            {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>

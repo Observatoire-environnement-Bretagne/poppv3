@@ -1,0 +1,107 @@
+{% trans_default_domain 'FOSUserBundle' %}
+
+
+    <div class="peers ai-s fxw-nw h-100vh">
+        <div class="d-n@sm- peer peer-greed h-100 pos-r bgr-n bgpX-c bgpY-c bgsz-cv" style='background-image:  url("{{ asset('assets/images/bg.jpg') }}")'>
+        </div>
+
+        <div class="col-12 col-md-4 peer pX-40 pY-80 h-100 bgc-white scrollable pos-r" style='min-width: 320px;'>
+
+            <h3>Rejoignez la POPP</h3>
+
+            <h4 class="fw-300 c-grey-900 mB-40">Création d'un compte</h4>
+            <form action="{{ path('fos_user_registration_register') }}" method="POST" class="form-horizontal" role="form">
+
+                {% if form_errors(form.email) %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ form_errors(form.email) }}
+                    </div>
+                    <br/>
+                {% endif %}
+                {% if form_errors(form.username) %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ form_errors(form.username) }}
+                    </div>
+                    <br/>
+                {% endif %}
+                {% if form_errors(form.plainPassword.first) %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ form_errors(form.plainPassword.first) }}
+                    </div>
+                    <br/>
+                {% endif %}
+                {% if form_errors(form.plainPassword.second) %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ form_errors(form.plainPassword.second) }}
+                    </div>
+                    <br/>
+                {% endif %}
+                
+                <fieldset>
+                    <legend>Enregistrement d'un utilisateur</legend>
+                    <div class="form-group"><div class="form-group">
+                        <label  class="text-normal text-dark">Login :</label>
+                        <input class="form-control" type="text" id="username" name="fos_user_registration_form[username]" required="required" />
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="text-normal text-dark">Email :</label>
+                        <input class="form-control" type="email" id="email" name="fos_user_registration_form[email]" required="required" />
+                    </div>
+                    <div class="form-group">
+                        <label for="plainPassword_first" class="text-normal text-dark">Mot de passe :</label>
+                        <input class="form-control" type="password" id="plainPassword_first" name="fos_user_registration_form[plainPassword][first]" value="Hedwige_45Hp" required="required" />
+                    </div>
+                    <div class="form-group">
+                        <label for="plainPassword_second" class="text-normal text-dark">Confirmation du mot de passe :</label>
+                        <input class="form-control" type="password" id="plainPassword_second" name="fos_user_registration_form[plainPassword][second]" value="Hedwige_45Hp" required="required" />
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <button type="submit" class="btn cur-p btn-primary">Valider <span class="glyphicon glyphicon-ok"></span></button>
+                        </div>
+                    </div>
+                </fieldset>
+                 
+                {{ form_widget(form._token) }}
+            </form>
+
+            {#{ form_start(form, {'method': 'post', 'action': path('fos_user_registration_register'), 'attr': {'class': 'fos_user_registration_register'}}) }}
+            
+            <div class="form-group" id="fos_user_registration_form">
+                {{ form_widget(form.email, { 'attr': {'class': 'form-control', 'placeholder': 'form.email'|trans } }) }}
+                {% if form_errors(form.email) %}
+                    <div class="alert alert-danger">
+                        {{ form_errors(form.email) }}
+                    </div>
+                {% endif %}
+
+                {{ form_widget(form.username, { 'attr': {'class': 'form-control', 'placeholder': 'form.username'|trans } }) }}
+                {% if form_errors(form.username) %}
+                    <div class="alert alert-danger">
+                        {{ form_errors(form.username) }}
+                    </div>
+                {% endif %}
+
+                {{ form_widget(form.plainPassword.first, { 'attr': {'class': 'form-control', 'placeholder': 'form.password'|trans } }) }}
+                {% if form_errors(form.plainPassword.first) %}
+                    <div class="alert alert-danger">
+                        {{ form_errors(form.plainPassword.first) }}
+                    </div>
+                {% endif %}
+
+                {{ form_widget(form.plainPassword.second, { 'attr': {'class': 'form-control', 'placeholder': 'form.password_confirmation'|trans } }) }}
+                {% if form_errors(form.plainPassword.second) %}
+                    <div class="alert alert-danger">
+                        {{ form_errors(form.plainPassword.second) }}
+                    </div>
+                {% endif %}
+            </div>
+                {{ form_widget(form) }}
+                        <div class="peer">
+                            <button class="btn cur-p btn-primary" id="_submit" name="_submit">{{ 'registration.submit'|trans }}</button>
+                        </div>
+            {{ form_end(form) }#}
+        </div>
+    </div>
+
+

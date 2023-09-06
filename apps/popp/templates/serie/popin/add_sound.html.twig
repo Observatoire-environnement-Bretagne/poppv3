@@ -1,0 +1,198 @@
+<div class="row mT-10">
+    <div class="col-md-12">
+        <div class="form-group">
+            <input id="add_sound_titre" type="text" class="form-control" placeholder="Titre du son * " required />
+        </div>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="add_sound_structure_creation_contenu">Structure responsable de la cr&eacute;ation du contenu * </label>
+            <select class="form-control" id="add_sound_structure_creation_contenu">
+                <option>Eiffage</option>
+                <option>DPT</option>
+                <option>REGION</option>
+            </select> 
+        </div>
+    </div>    
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="add_sound_auteur">Auteur / Preneur de son * </label>
+            <input id="add_sound_auteur" type="text" class="form-control" placeholder="" required />
+        </div>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="add_sound_presentation">Pr&eacute;sentation du son</label>
+            <textarea id="add_sound_presentation" class="form-control" placeholder="Pr&eacute;sentation du son * " required></textarea>
+        </div>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="add_sound_presentation_lien">Lien avec le paysage pour la personne interview&eacute;e ou pour le preneur de l'ambiance sonore</label>
+            <textarea id="add_sound_presentation_lien" class="form-control" placeholder=""></textarea>
+        </div>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-4">
+        <label for="add_sound_datepicker_enreg">Date d'enregistrement * </label>
+        <div class='input-group date form-group' id='datetimepicker1'>
+            <input type='text' id="add_sound_datepicker_enreg" placeholder="" class="form-control" />
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label for="add_sound_type">Type * </label>
+            <select class="form-control" id="add_sound_type">
+                <option>T&eacute;moignage</option>
+                <option>Ambiance</option>
+            </select> 
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label for="add_sound_format">Format * </label>
+            <select class="form-control" id="add_sound_format">
+                <option>Audio</option>
+                <option>Vid&eacute;o</option>
+            </select> 
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading ">
+        <h6 class="panel-title mT-10 mB-10">
+            <a class="accordion_title" data-toggle="collapse" data-parent="#accordion" href="#collapseSoundParamsAddi"><span class="ti ti-arrow-circle-down"></span> Param&egrave;tres additionnels </a>
+        </h6>
+    </div>
+    <div id="collapseSoundParamsAddi" class="panel-collapse collapse">
+        <div class="panel-body">
+            <div class="row mT-10">
+                <div class="col-md-12">
+                    <div class="form-group row">
+                        <label for="add_sound_heure" class="col-sm-3 col-form-label">Heure</label>
+                        <div class="col-sm-9">
+                            <input id="add_sound_heure" class="form-control" type="time">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group row">
+                        <label for="add_sound_material_type" class="col-sm-3 col-form-label">Type de mat&eacute;riel</label>
+                        <div class="col-sm-9">
+                            <input id="add_sound_material_type" type="text" class="form-control" placeholder="" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group row">
+                        <label for="add_sound_trait_file" class="col-sm-3 col-form-label">Traitement du fichier</label>
+                        <div class="col-sm-9">
+                            <input id="add_sound_trait_file" type="text" class="form-control" placeholder="" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group row">
+                        <label for="add_sound_protocole" class="col-sm-3 col-form-label">Protocole / M&eacute;thode d'enregistrement</label>
+                        <div class="col-sm-9">
+                            <input id="add_sound_protocole" type="text" class="form-control" placeholder="" />
+                        </div>
+                    </div>
+                </div>                                                
+                <div class="col-md-12">
+                    <div class="form-group row">
+                        <label for="add_sound_contexte" class="col-sm-3 col-form-label">Contexte d'enregistrement</label>
+                        <div class="col-sm-9">
+                            <input id="add_sound_contexte" type="text" class="form-control"/>
+                        </div>
+                    </div>
+                </div>                                                
+                <div class="col-md-12">
+                    <div class="form-group row">
+                        <label for="add_sound_meteo" class="col-sm-3 col-form-label">Conditions m&eacute;t&eacute;orologiques</label>
+                        <div class="col-sm-9">
+                            <input id="add_sound_meteo" type="text" class="form-control" placeholder="" />
+                        </div>
+                    </div>
+                </div>
+
+            </div>   
+        </div>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="add_sound_lieu_PDS">Lieu de la prise de son * </label>
+            <textarea id="add_sound_lieu_PDS" class="form-control" placeholder="D&eacute;crivez le lieu" required></textarea>
+        </div>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="add_sound_photo_number">Num&eacute;ro de la photo dans {{ "labelLaSerie"|trans }} *</label>
+            <input id="add_sound_photo_number" type="text" class="form-control" placeholder="" />
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="add_sound_langue">Langue *</label>
+            <select class="form-control" id="add_sound_langue" required>
+                {% for langue in langues %}
+                    <option>{{ langue.langueNom }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="add_sound_licence">Licence du son *</label>
+            <select class="form-control" id="add_sound_licence">
+                {% for licence in licences %}
+                    <option>{{ licence.licenceNom }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="add_sound_duree">Dur&eacute;e en mn * </label>
+            <input id="add_sound_duree" type="number" class="form-control" placeholder="" >
+        </div>
+    </div>
+</div>
+    
+<div class="row mT-10">
+    <div class="col-md-12">
+        <h6>Fichier * </h6>
+        <form action="/file-upload" class="dropzone form-control">
+          <div class="fallback">
+            <input id="add_sound_dropzone" name="file" type="file" value="test" required/>
+          </div>
+        </form>
+    </div>
+</div>
+
+<div class="row m-30">
+    <div class="col-md-12 center-align">
+        <button class="btn btn-secondary cur-p">Cr&eacute;ation de son</button>
+    </div>
+</div>

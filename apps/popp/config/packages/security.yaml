@@ -1,0 +1,68 @@
+security:
+    encoders:
+        #FOS\UserBundle\Model\UserInterface: bcrypt
+        Symfony\Component\Security\Core\User\User: plaintext
+        App\Entity\Users: bcrypt
+
+    role_hierarchy:
+        ROLE_USER:       ~
+        ROLE_FOURNISSEUR:       ROLE_USER
+        ROLE_GESTIONNAIRE:       ROLE_FOURNISSEUR
+        ROLE_ADMIN:       ROLE_GESTIONNAIRE
+        ROLE_SUPER_ADMIN: ROLE_ADMIN
+
+    #providers:
+    #    fos_userbundle:
+    #        id: fos_user.user_provider.username
+    providers:
+        chain_providers:
+            chain:
+                providers: [les_admins, les_users]
+        in_memory:
+            memory:
+                users:
+                    demo:
+                        password: demo
+                        roles: 'ROLE_USER'
+                    admin:
+                        password: admin
+                        roles: 'ROLE_ADMIN'
+        les_admins:
+            memory: 
+                users:
+                    #admin: {password: admin, roles: ['ROLE_ADMIN'] }
+                    admin@admin.fr: {password: admin, roles: ['ROLE_ADMIN'] }
+        les_users:
+            entity:
+                class: App\Entity\Users
+                property: email
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            pattern: ^/
+
+            #form_login:
+            #    login_path:             fos_user_security_login
+            #    login_path:             popp_login
+            #    check_path:             /login_check
+            #    provider:               in_memory
+            #    csrf_token_generator: security.csrf.token_manager # Use form.csrf_provider instead for Symfony <2.4
+            #    default_target_path:            /admin/popp
+            logout:
+                target: /admin
+
+            anonymous:    true
+            guard:
+                authenticators:
+                    - App\Security\LoginFormAuthenticator
+                provider:               chain_providers
+
+    access_control:
+        - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin, roles: [ROLE_SUPER_ADMIN, ROLE_ADMIN] }
+        - { path: ^/gestion, roles: [ROLE_SUPER_ADMIN, ROLE_ADMIN, ROLE_GESTIONNAIRE, ROLE_FOURNISSEUR] }
+        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }

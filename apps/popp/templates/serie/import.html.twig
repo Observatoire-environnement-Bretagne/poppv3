@@ -1,0 +1,63 @@
+{%  extends "base.html.twig" %}
+
+{% set parameters = app.session.get('parameters') %}
+
+{% block body %}
+
+<main class='main-content bgc-grey-100'>
+  <div id='mainContent'>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="bgc-white bd bdrs-3 p-20 mB-20">
+            <div class="row mT-10">
+                <div class="col-md-6 mt-auto">
+                    <h4 class="c-grey-900">Import de masse</h4>
+                </div>
+                <div class="col-md-6 text-right form-inline" style="display:block">
+                    <div class="form-group float-right ">
+                        <a href="{{path('generateFichierPreparation')}}"><button type="button" class="btn btn-primary cur-p m-10">Fichier de préparation à l'import</button></a><br/><br/>
+                        <!--a href="{{parameters['URL_FOLDER_FILES']}}\import\export_preparation.csv"><button type="button" class="btn btn-primary cur-p m-10" id='downloadPrepareImportFile'>Fichier de préparation à l'import</button></a><br/><br/-->
+                        <a href="{{parameters['URL_FOLDER_FILES']}}\import\fichier_import.csv"><button type="button" class="btn btn-primary cur-p m-10" id='downloadImportFile'>Fichier d'import</button></a><br/><br/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <hr>
+                    <h5>Photographies</h5>
+                    <p>Indiquez le fichier ZIP de vos photos</p>
+                    <form id="importPhotoDropzoneForm" name="importPhotoDropzoneForm" action="{{path('importSeriePhotos')}}" class="dropzone" method="post" enctype="multipart/form-data">
+                        <div class="fallback">
+                            <input id="importPhotoDropzone" name="importPhotoDropzone" type="file" required/>
+                        </div>
+                    </form>
+                    <div id="messageImportZipPhotos"></div>
+                </div>
+            </div>
+            <div class='row'>
+                <div class="col-12">
+                    <hr>
+                    <h5>Tableau d'import</h5>
+                    <p>Indiquez le tableau CSV</p>
+                    <form id="importTableDropzoneForm" name="importTableDropzoneForm" action="{{path('importSerieTable')}}" class="dropzone" method="post" enctype="multipart/form-data">
+                        <div class="fallback">
+                            <input id="importTableDropzone" name="importTableDropzone" type="file" required/>
+                        </div>
+                    </form>
+                    <div id="messageImportTableSerie"></div>
+                </div>
+            </div>
+            <div class='row m-40'>
+                <div class="col-12 text-center">
+                    <div id="messageConfirmImport" class="mT-10 mB-20"></div>
+                    <button id="importSerie" name="importSerie" class="btn btn-primary cur-p" value="Importer">Importer</button>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock body %}

@@ -1,0 +1,68 @@
+{%  extends "base.html.twig" %}
+
+{% block body %}
+
+<main class='main-content bgc-grey-100'>
+  <div id='mainContent'>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="bgc-white bd bdrs-3 p-20 mB-20">
+            <h4 class="c-grey-900 mB-20">Liste des utilisateurs</h4>
+            <table id="dataTableParametres" class="table table-striped table-bordered" cellspacing="0" width="100%">
+              <thead>
+                <tr>
+                  <th>Id</th>
+                  <th>Code</th>
+                  <th>Valeur</th>
+                  <th>Description</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {#% for parametre in parametres %}
+                <tr>
+                  <td>{{parametre.id}}</td>
+                  <td>{{parametre.prmCode}}</td>
+                  <td>{{parametre.prmValeur}}</td>
+                  <td>{{parametre.prmDesc}}</td>
+                  <td>
+                    <a class="modify cur-p" data-toggle="modal" data-target="#modalParametre" rel="modalParametre:open"><i class="c-light-blue-500 ti ti-pencil"></i></a>
+                  </td>
+                </tr>
+                {% endfor %#}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Modal -->
+<div class="modal fade" id="modalParametre" tabindex="-1" role="dialog" aria-labelledby="modalParametre" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalParametre">Paramètre <span id='codeParametre'></span></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+            <label  class="text-normal text-dark">Valeur :</label>
+            <input class="form-control" type="text" id="parametreVal" name="parametreVal" required="required" />
+        </div>
+        {#{ dump(app) }#}
+        <input type="hidden" id="idParametre" name="idParametre" />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+        <button type="button" id="saveParametre" class="btn btn-primary">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock body %}

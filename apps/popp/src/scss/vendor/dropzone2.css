@@ -1,0 +1,7 @@
+div .dropzone .dz-message{
+    margin:0;
+}
+div .dropzone{
+    min-height:0px;
+    border: 1px dotted #ced4da;
+}

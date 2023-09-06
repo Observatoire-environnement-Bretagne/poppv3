@@ -1,0 +1,17 @@
+<div class="layer w-100">
+    <div class="form-group row">
+        <label for="selectDep" class="col-sm-4 col-form-label">D&eacute;partement</label>
+        <div class="col-sm-8">
+            <select id="selectDep" class="form-control">
+                <option value='all'>-Tout-</option>
+                {% for departementId, departement in Departements %}
+                    {% if departementId in app.session.get('critere_search_series')['depId'] %}
+                        <option value="{{ departementId }}" data-code="{{departement.departementCode}}" selected>{{ departement.departementNom }}</option>
+                    {% else %}
+                        <option value="{{ departementId }}" data-code="{{departement.departementCode}}" >{{ departement.departementNom }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>

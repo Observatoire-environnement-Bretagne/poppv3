@@ -1,0 +1,307 @@
+{%  extends "base.html.twig" %}
+
+  {% set parameters = app.session.get('parameters') %}
+
+{% block body %}
+    <!--script src="https://cdn.ckeditor.com/4.13.1/standard/ckeditor.js"></script-->
+    <script src="https://cdn.ckeditor.com/ckeditor5/19.0.0/classic/ckeditor.js"></script>
+
+        <!-- ### $App Screen Content ### -->
+        <main class='main-content bgc-grey-100'>
+          <div id='mainContent'>
+            <div class="container-fluid">
+              <div class="row mT-10">
+                <div class="col-md-8">
+                    <h4 class="c-grey-900 mT-10 mB-30">&Agrave; propos</h4>
+                </div>
+                {% if is_granted("ROLE_ADMIN") %} 
+                    <div class="col-md-4  text-right">
+                        <div class="form-group">
+                            <button type="button" id="addApropos" class="btn btn-primary">Ajouter une ressource</button>
+                        </div>
+                    </div>
+                {% endif %}
+              </div>
+              <div id="messageConfirmModifApropos"></div>
+                <div class="row">
+                <div class="col-md-12">
+                    {% for rubrique in apropos %}
+                    <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                        <div class="row mT-10">
+                            <div class="col-md-8">
+                                <h4 class="c-grey-900 mT-10 mB-30" id="aproposTitre{{ rubrique.AproposID }}">{{ rubrique.AproposTitre }}</h4>
+                            </div>
+                            {% if is_granted("ROLE_ADMIN") %} 
+                                <div class="col-md-4  text-right">
+                                    <div class="form-group mT-10">
+                                        <a class="updateApropos cur-p c-blue-500" id="{{ rubrique.AproposID }}" >Modifier<i class="ti ti-pencil-alt"></i></a>
+                                        <a class="deleteApropos cur-p c-red-500" delete="{{ rubrique.AproposID }}" >Supprimer<i class="ti ti-trash"></i></a>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="row">
+                            <div class="col-12 text-justify" id="aproposDesc{{ rubrique.AproposID }}">
+                                {{ rubrique.AproposDescription|raw }}
+                            </div>
+                            <input type='hidden' id='aproposNumOrdre{{ rubrique.AproposID }}' value="{{ rubrique.aproposNumOrdre }}">
+                        </div>
+                        {% if rubrique.AproposDocUrl %}
+                        <div class="row">
+                            <div class="col-12 text-center m-30">
+                                <form id="urlBtnApropos{{ rubrique.AproposID }}" target="_blank"  action="{#{ parameters['URL_FOLDER_FILES'] }#}{{ rubrique.AproposDocUrl }}">
+                                    <input id="labelBtnApropos{{ rubrique.AproposID }}" class="btn btn-secondary" target="_blank" type="submit" value="{% if rubrique.AproposDocLabel %}{{ rubrique.AproposDocLabel }}{%else%}En savoir plus{% endif %}"/>
+                                </form>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    
+                    {#//Modal#}
+                    <div class="modal fade" id="modalApropos" tabindex="-1" role="dialog" aria-labelledby="modalApropos" aria-hidden="true">
+                      <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="modalApropos">Modifier une rubrique</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            <input class="form-control" type="text" id="idApropos" name="idApropos" required="required" style="display:none"/>
+                            <div class="row">
+                                <div class="form-group col-12">
+                                    <label  class="text-normal text-dark">Titre :</label>
+                                    <input class="form-control" type="text" id="titleApropos" name="titleApropos" required="required" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="descApropos">Description :</label>
+                                <textarea name="descApropos" id="descApropos" rows="10" cols="80"></textarea>
+                                <script>
+                                    ClassicEditor
+                                        .create( document.querySelector( '#descApropos' ), {
+                                            extraPlugins: [ MyCustomUploadAdapterPlugin ],
+                                        } )
+                                        .then( editor => {
+                                            myEditor = editor;
+                                        } )
+                                        .catch( error => {
+                                            console.error( error );
+                                        } );
+                                                            
+                                        function MyCustomUploadAdapterPlugin( editor ) {
+                                            editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
+                                                // Configure the URL to the upload script in your back-end here!
+                                                return new MyUploadAdapter( loader );
+                                            };
+                                        }
+                                        class MyUploadAdapter {
+                                            constructor( loader ) {
+                                                // The file loader instance to use during the upload.
+                                                this.loader = loader;
+                                            }
+
+                                            // Starts the upload process.
+                                            upload() {
+                                                return this.loader.file
+                                                    .then( file => new Promise( ( resolve, reject ) => {
+                                                        this._initRequest();
+                                                        this._initListeners( resolve, reject, file );
+                                                        this._sendRequest( file );
+                                                    } ) );
+                                            }
+
+                                            // Aborts the upload process.
+                                            abort() {
+                                                if ( this.xhr ) {
+                                                    this.xhr.abort();
+                                                }
+                                            }
+
+                                            // Initializes the XMLHttpRequest object using the URL passed to the constructor.
+                                            _initRequest() {
+                                                const xhr = this.xhr = new XMLHttpRequest();
+
+                                                // Note that your request may look different. It is up to you and your editor
+                                                // integration to choose the right communication channel. This example uses
+                                                // a POST request with JSON as a data structure but your configuration
+                                                // could be different.
+                                                xhr.open( 'POST', "{{ path('upload_img') }}", true );
+                                                xhr.responseType = 'json';
+                                            }
+
+                                            // Initializes XMLHttpRequest listeners.
+                                            _initListeners( resolve, reject, file ) {
+                                                const xhr = this.xhr;
+                                                const loader = this.loader;
+                                                const genericErrorText = `Couldn't upload file: ${ file.name }.`;
+
+                                                xhr.addEventListener( 'error', () => reject( genericErrorText ) );
+                                                xhr.addEventListener( 'abort', () => reject() );
+                                                xhr.addEventListener( 'load', () => {
+                                                    const response = xhr.response;
+
+                                                    // This example assumes the XHR server's "response" object will come with
+                                                    // an "error" which has its own "message" that can be passed to reject()
+                                                    // in the upload promise.
+                                                    //
+                                                    // Your integration may handle upload errors in a different way so make sure
+                                                    // it is done properly. The reject() function must be called when the upload fails.
+                                                    if ( !response || response.error ) {
+                                                        return reject( response && response.error ? response.error.message : genericErrorText );
+                                                    }
+
+                                                    // If the upload is successful, resolve the upload promise with an object containing
+                                                    // at least the "default" URL, pointing to the image on the server.
+                                                    // This URL will be used to display the image in the content. Learn more in the
+                                                    // UploadAdapter#upload documentation.
+                                                    resolve( {
+                                                        default: response.url
+                                                    } );
+                                                } );
+
+                                                // Upload progress when it is supported. The file loader has the #uploadTotal and #uploaded
+                                                // properties which are used e.g. to display the upload progress bar in the editor
+                                                // user interface.
+                                                if ( xhr.upload ) {
+                                                    xhr.upload.addEventListener( 'progress', evt => {
+                                                        if ( evt.lengthComputable ) {
+                                                            loader.uploadTotal = evt.total;
+                                                            loader.uploaded = evt.loaded;
+                                                        }
+                                                    } );
+                                                }
+                                            }
+
+                                            // Prepares the data and sends the request.
+                                            _sendRequest( file ) {
+                                                // Prepare the form data.
+                                                const data = new FormData();
+
+                                                data.append( 'upload', file );
+
+                                                // Important note: This is the right place to implement security mechanisms
+                                                // like authentication and CSRF protection. For instance, you can use
+                                                // XMLHttpRequest.setRequestHeader() to set the request headers containing
+                                                // the CSRF token generated earlier by your application.
+
+                                                // Send the request.
+                                                this.xhr.send( data );
+                                            }
+                                        }
+                                    /*CKEDITOR.replace( 'descApropos', { 
+                                        filebrowserBrowseUrl: '/apps/ckfinder/3.4.5/ckfinder.html',
+                                        filebrowserImageBrowseUrl: '/apps/ckfinder/3.4.5/ckfinder.html?type=Images',
+                                        filebrowserUploadUrl: '/apps/ckfinder/3.4.5/core/connector/php/connector.php?command=QuickUpload&type=Files',
+                                        filebrowserImageUploadUrl: '/apps/ckfinder/3.4.5/core/connector/php/connector.php?command=QuickUpload&type=Images',
+
+                                    });*/
+                                </script>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-6">
+                                    <label  class="text-normal text-dark">Label du bouton :</label>
+                                    <input class="form-control" type="text" id="labelBtnApropos" name="labelBtnApropos" required="required" />
+                                </div>
+                                <div class="form-group col-6">
+                                    <label  class="text-normal text-dark">Url du bouton :</label>
+                                    <input class="form-control" type="text" id="urlBtnApropos" name="urlBtnApropos" required="required" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-12">
+                                    <label  class="text-normal text-dark">Numéro d'ordre :</label>
+                                    <input class="form-control" type="number" id="AProposNumOrdre" name="AProposNumOrdre"/>
+                                </div>
+                            </div>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                            <button type="button" id="createApropos" class="btn btn-primary">Enregistrer</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {#Quatri&Egrave;me partie#}
+                    <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                        <h5 style ="margin:0px 0px 20px 0px">La structuration du site internet {{parameters.APP_NAME}}</h5>
+                        <div class="row">                         
+                            <div class="col-sm-4 feature">
+                              <a href="{{ path('public_page') }}"><i class="ti-home feature_icon"></i></a>
+                              <h5>Accueil</h5>
+                              <p>Permet de rechercher des {{ "labelSeries"|trans }} OPP via diff&eacute;rents filtres.</p>
+                            </div>
+                            <div class="col-sm-4 feature">
+                              <a href="{{ path('showApropos') }}"><i class="ti-info feature_icon"></i></a>
+                              <h5>&Agrave; propos</h5>
+                              <p>Formulaire en ligne qui permet &agrave; tout un chacun de cr&eacute;er un compte {{parameters.APP_NAME}}. Ce compte est la premi&egrave;re &eacute;tape pour int&eacute;grer un groupe OPP et/ou de commenter en ligne des {{ "labelSeries"|trans }} OPP.</p>
+                            </div>
+                            <div class="col-sm-4 feature">
+                              <a href="{{ path('showStructures')}}"><i class="ti-camera feature_icon"></i></a>
+                              <h5>Structures OPP</h5>
+                              <p>Pr&eacute;sente les diff&eacute;rentes structures qui participent au projet de la {{parameters.APP_NAME}}.</p>
+                            </div>
+                            <div class="col-sm-4 offset-sm-2 feature">
+                              <a href="{{ path('showRessources')}}"><i class="ti-download feature_icon"></i></a>
+                              <h5>Ressources</h5>
+                              <p>Ensemble documentaire qui a pour but d&apos;aider les structures dans la d&eacute;marche OPP. Cet ensemble documentaire est articul&eacute; autour de 3 axes : 1/ Administrer les OPP, 2/ Technicit&eacute; des OPP, 3/ Analyse des OPP.</p>
+                            </div>
+                            <div class="col-sm-4 feature">
+                              <a href="{{ path('showFaqs')}}"><i class="ti-help feature_icon"></i></a>
+                              <h5>FAQ</h5>
+                              <p>R&eacute;pertorie les principaux questionnements relatifs &agrave; la {{parameters.APP_NAME}} avec &agrave; disposition des tutoriels, la charte d&apos;utilisation de la plateforme, etc.</p>
+                            </div>
+                        </div>
+{#                        <div class="row">
+                            <div class="col-12" style="text-align:center ; margin:30px auto">
+                                <button type="button" class="btn btn-secondary"><a href="{{parameters['URL_FOLDER_FILES']}}\contexte_politique_des_opp_0.pdf">En savoir plus</a></button>
+                            </div>    
+                        </div>  #}
+                    </div>
+                    
+{#                  Formulaire de contact#}
+                    <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                        <div class="container contact-form" style="text-align:center">
+                            <h5>Pour tout renseignement, vous pouvez contacter {{parameters.RESP_CONTACT}} </h5>
+                            <div id="messageConfirmMailApropos"></div>
+                            <div class="row text-center m-30">
+                                <div class="col-md-6 text-left m-auto">
+                                    {% if parameters.RESP_NOM != "" %}
+                                        <p class="mB-3"><strong>Nom : </strong>{{parameters.RESP_NOM}}</p> 
+                                    {% endif %}
+                                    {% if parameters.RESP_TITRE != "" %}
+                                        <p class="mB-3"><strong>Cheffe de projet : </strong>{{parameters.RESP_TITRE}}</p>
+                                    {% endif %}
+                                    <p class="mB-3"><strong>Mail : </strong>{{parameters.RESP_MAIL}}
+                                    <p class="mB-3"><strong>Tel : </strong>{{parameters.RESP_TEL}}</p>
+                                    <p class="mB-3"><strong>Adresse : </strong>{{parameters.RESP_ADRESSE}}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <input type="text" id="contactAproposNom" name="contactAproposNom" class="form-control" placeholder="Votre Nom *" value="" required/>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" id="contactAproposMail" name="contactAproposMail" class="form-control" placeholder="Votre Email *" value="" required/>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" id="contactAproposTel" name="contactAproposTel" class="form-control" placeholder="Votre num&eacute;ro de T&eacute;l&eacute;phone *" value="" required/>
+                                    </div>
+                                    <div class="form-group">
+                                        <textarea id="contactAproposMsg" name="contactAproposMsg" class="form-control" placeholder="Votre message *" style="width: 100%; height: 150px;" required></textarea>
+                                    </div>
+                                </div>
+                             </div>
+                             <div class="col-12 form-group">
+                                 <input type="submit" id="contactAproposSubmit" name="contactAproposSubmit" class="btn btn-secondary btnContact" value="Envoi" />
+                             </div>
+                        </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+{% endblock body %}

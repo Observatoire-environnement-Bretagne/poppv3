@@ -1,0 +1,18 @@
+
+<div class="layer w-100">
+    <div class="form-group row">
+        <label for="selectPay" class="col-sm-4 col-form-label">Pays </label>
+        <div class="col-sm-8">
+            <select id="selectPay" class="form-control">
+                <option value='all'>-Tout-</option>
+                {% for paysId, paysNom in Pays %}
+                    {% if paysId in app.session.get('critere_search_series')['payId'] %}
+                        <option value="{{ paysId }}" selected>{{ paysNom }}</option>
+                    {% else %}
+                        <option value="{{ paysId }}">{{ paysNom }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>

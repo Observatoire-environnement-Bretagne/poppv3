@@ -1,0 +1,159 @@
+{%  extends "base.html.twig" %}
+
+{% block body %}
+
+<main class='main-content bgc-grey-100'>
+  {% for message in app.flashes("error") %}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <strong>Erreur</strong> {{ message }}
+          <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+  {% endfor %}
+  {% for message in app.flashes("success") %}
+      <div class="alert alert-success alert-dismissible fade show " role="alert">
+          <strong>Succès</strong> {{ message }}
+          <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+  {% endfor %}
+  <div id="js-message"></div>
+  <div id='mainContent'>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="bgc-white bd bdrs-3 p-20 mB-20">
+            <div class="row mT-10">
+                <div class="col-md-8">
+                  <h4 class="c-grey-900 mB-20">Liste des utilisateurs</h4>
+                </div>
+                <div class="col-md-4  text-right">
+                    <div class="form-group">
+                      <button type="button" class="btn btn-primary cur-p" id='addUser' data-toggle="modal" data-target="#modalUser">Ajouter un utilisateur</button><br/><br/>
+                    </div>
+                </div>
+            </div>
+            <table id="dataTableUsers" class="table table-striped table-bordered" cellspacing="0" width="100%">
+              <thead>
+                <tr>
+                  <th>Id</th>
+                  <th>Nom</th>
+                  <th>Prenom</th>
+                  <th>eMail</th>
+                  <th>Sexe</th>
+                  <th>Dernière connexion</th>
+                  <th>Rôles</th>
+                  <th>Action</th>
+                  <th>user_adresse</th>
+                  <th>user_codepostal</th>
+                  <th>user_ville</th>
+                  <th>user_telephone</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for user in users %}
+                <tr>
+                  <td>{{user.id}}</td>
+                  <td class='cur-p'>{{user.Nom}}</td>
+                  <td class='cur-p'>{{user.Prenom}}</td>
+                  <td class='cur-p'>{{user.email}}</td>
+                  <td class='cur-p'>{{user.Sexe}}</td>
+                  <td class='cur-p'>{{user.Datederncnx ? user.Datederncnx|date("d/m/Y") }}</td>
+                  <td class='cur-p'>{{user.roles|join(', ')}}</td>
+                  <td>
+                    <a class="modify"><i class="c-light-blue-500 ti ti-pencil cur-p"></i></a>
+                    <a class="remove"><i class="c-red-500 ti ti-trash cur-p"></i></a>
+                  </td>
+                  <td class='cur-p'>{{user.Adresse}}</td>
+                  <td class='cur-p'>{{user.codePostal}}</td>
+                  <td class='cur-p'>{{user.Ville}}</td>
+                  <td class='cur-p'>{{user.Telephone}}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Modal -->
+<div class="modal fade" id="modalUser" tabindex="-1" role="dialog" aria-labelledby="modalUser" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalUser">Utilisateur</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="infoUser"></div>
+        <div class="form-group">
+            <label  class="text-normal text-dark">Nom :</label>
+            <input class="form-control" type="text" id="usernom" name="usernom" required="required" />
+        </div>
+        <div class="form-group">
+            <label  class="text-normal text-dark">Prénom :</label>
+            <input class="form-control" type="text" id="userprenom" name="userprenom" required="required" />
+        </div>
+        <div class="form-group">
+            <label for="email" class="text-normal text-dark">Email :</label>
+            <input class="form-control" type="email" id="email" name="email" required="required" />
+        </div>
+        <div class="form-group">
+          <label >Sexe </label>
+          <select id="usersexe" name="usersexe" class="form-control">
+              <option value=''></option>
+              <option value='F'>Femme</option>
+              <option value='H'>Homme</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label >Role </label>
+          <select id="userrole" name="userrole" class="form-control">
+              <option value=''></option>
+              {% for role, tab_role in roles %}
+                <option value='{{role}}'>{{role}}</option>
+              {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+            <label  class="text-normal text-dark">Adresse :</label>
+            <textarea class="form-control" type="text" id="useradresse"></textarea>
+        </div>
+        <div class="form-group">
+            <label  class="text-normal text-dark">Code postal :</label>
+            <input class="form-control" type="text" id="usercodepostal" />
+        </div>
+        <div class="form-group">
+            <label for="user_ville" class="text-normal text-dark">Ville :</label>
+            <input class="form-control" type="text" id="userville" />
+        </div>
+        <div class="form-group">
+            <label for="user_telephone" class="text-normal text-dark">Téléphone :</label>
+            <input class="form-control" type="text" id="usertelephone" />
+        </div>
+        <div class="form-group">
+            <label for="plainPassword_first" class="text-normal text-dark">Mot de passe :</label>
+            <input class="form-control" type="password" id="plainPassword_first" name="plainPassword_first" value="" />
+        </div>
+        <div class="form-group">
+            <label for="plainPassword_second" class="text-normal text-dark">Confirmation du mot de passe :</label>
+            <input class="form-control" type="password" id="plainPassword_second" name="plainPassword_second" value="" />
+        </div>
+        {#{ dump(app) }#}
+        <input type="hidden" id="iduser" name="iduser" />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+        <button type="button" id="saveUser" class="btn btn-primary">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock body %}

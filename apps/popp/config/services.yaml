@@ -1,0 +1,62 @@
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    locale: 'fr'
+    
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        public: true       # Allows optimizing the container by removing unused services; this also means
+                            # fetching services directly from the container via $container->get() won't work.
+                            # The best practice is to be explicit about your dependencies anyway.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/*'
+        exclude: '../src/{Entity,Migrations,Tests}'
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    App\Controller\:
+        resource: '../src/Controller'
+        tags: ['controller.service_arguments']
+        arguments: ['@session.storage']
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+    app.form.registration:
+        class: AppBundle\Form\RegistrationType
+        tags:
+            - { name: form.type, alias: app_user_registration }
+
+    parametre.dao:
+        class: App\Model\ParametreDAO
+        arguments: 
+            #- "@doctrine"
+            - "@doctrine.orm.default_entity_manager"
+            - "@service_container"
+
+    filemanager.dao:
+        class: App\Model\FileManagerDAO
+        arguments: 
+            - "@doctrine.orm.default_entity_manager"
+            - "@service_container"
+
+    serie.dao:
+        class: App\Model\SerieDAO
+        arguments: 
+            - "@doctrine.orm.default_entity_manager"
+            - "@service_container"
+
+    commentaire.dao:
+        class: App\Model\CommentaireDAO
+        arguments: 
+            - "@doctrine.orm.default_entity_manager"
+            - "@service_container"
+
+    App\Kernel:
+        $environment: prod
+        $debug: false

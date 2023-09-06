@@ -1,0 +1,219 @@
+{%  extends "base.html.twig" %}
+
+{% block body %}
+  <style>
+    #treeThesaurus .jstree-open > .jstree-anchor > .jstree-checkbox,
+    #treeThesaurus .jstree-closed > .jstree-anchor > .jstree-checkbox { display:none; }
+
+    .pulse:hover:before{opacity: 1; transform: translate(0,0);}
+    .pulse:before{
+      content: attr(data-hover);
+      position: absolute;
+      margin-bottom: 0!important;
+      letter-spacing: .5px;
+      font-family: Roboto,-apple-system,system-ui,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif;
+      line-height: 1.5;
+      font-size: 1rem;
+      margin-top: 0;
+      font-weight: 500;
+      opacity: 0;
+      transform: translate(-100%,0);
+      transition: all .3s ease-in-out;
+    }
+    /*button h6 (button text before hover)*/
+    .pulse:hover h6{opacity: 0; transform: translate(100%,0)}
+
+    #popup {
+      text-decoration: none;
+      color: white;
+      font-size: 11pt;
+      font-weight: bold;
+      text-shadow: black 0.1em 0.1em 0.2em;
+    }
+
+    div.popover{
+      max-width : 400px;
+      width : 300px;
+      min-width: 280px;
+    }
+
+    h3.popover-header{
+      color:black;
+    }
+  </style>
+<!-- ### $App Screen Content ### -->
+  <main class='main-content bgc-grey-100'>
+    {% for message in app.flashes("error") %}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <strong>Erreur</strong> {{ message }}
+          <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+  {% endfor %}
+  {% for message in app.flashes("success") %}
+      <div class="alert alert-success alert-dismissible fade show " role="alert">
+          <strong>Succès</strong> {{ message }}
+          <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+  {% endfor %}
+
+    <div id='mainContent'>
+      <div class="row gap-20 masonry pos-r">
+        {% include "custom/intro.html.twig" ignore missing %}
+        <div class="masonry-sizer col-md-12"></div>
+          <div class="masonry-item col-12">
+          <!-- #Site Visits ==================== -->
+            <div class="bd bgc-white">
+              {% if app.request.get('message') != "" %}
+                <div class="alert alert-success" id='messageAccueil'>
+                  <div>{{app.request.get('message')}}</div>
+                </div>
+              {% endif %}
+              <div class="peers fxw-nw@lg+ ai-s">
+                <div class="peer peer-greed w-60p@lg+ w-100@lg- p-20">
+                  <div class="layers">
+                    <div class="layer w-100 mB-10">
+                      <h6 class="lh-1">Le nombre de {{ "labelSeries"|trans }} est de : <b><span id='nbSerie'>{{app.session.get('critere_search_series')['series']|length}}</span></b></h6>
+                    </div>
+                    <div class="layer w-100">
+                      <div id="map" class="col-12" style='height: 550px; position:relative; z-index:1; padding:0px'>
+                        <div id="bottompanel" class="col-12" style="z-index:2">
+                          <span id="status"></span>
+                          <span id="bottompanel-content"></span>
+                        </div>   
+                      </div>
+                      <div id="popup" class="ol-popup tooltip-arrow" title="Sélection de {{ "labelSeries"|trans }}">
+                        <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+                        <div id="popup-content" ></div>
+                      </div>
+                    <div id="serieClicMap" class="col-12"></div>
+
+                  </div>
+                </div>
+              </div>
+              <div class="peer bdL p-10 w-40p@lg+ w-100p@lg-">
+                <div class="layers">
+                  <div class="layer w-100">
+                    <div class="layers">
+                      <div id="accordion" style='width:100%'>
+                        {% for i in 0..3 %}
+                          {% if ("blockSearch-"~i~".type")|trans == "accordion" %}
+                            <div class="card left-align mT-10 w-100">
+                              <div class="card-header" role="tab" id="heading-search-{{ ("blockSearch-"~i~".code")|trans }}">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse-search-{{ ("blockSearch-"~i~".code")|trans }}" aria-expanded="true" aria-controls="collapse-search-{{ ("blockSearch-"~i~".code")|trans }}">
+                                  <h6 class="mb-0 red-text">
+                                      {{ ("blockSearch-"~i~".title")|trans }}
+                                  </h6>
+                                </a>
+                              </div>
+                              <div id="collapse-search-{{ ("blockSearch-"~i~".code")|trans }}" class="collapse pB-0 pT-10 pX-10 {{ ("blockSearch-"~i~".class")|trans }}" role="tabpanel" aria-labelledby="heading-search-{{  ("blockSearch-"~i~".code")|trans  }}" data-parent="#accordion">
+                          {% endif %}
+                            {% for blockSearch in ("blockSearch-"~i~".block")|trans|split(";") %}
+                              {% if blockSearch == "commune" %}
+                                {% include "blockSearch/commune.html.twig" ignore missing %}
+                              {% endif %}
+                              {% if blockSearch == "departement" %}
+                                {% include "blockSearch/departement.html.twig" ignore missing %}
+                              {% endif %}
+                              {% if blockSearch == "annee" %}
+                                {% include "blockSearch/annee.html.twig" ignore missing %}
+                              {% endif %}
+                              {% if blockSearch == "axeThematique" %}
+                                {% include "blockSearch/axeThematique.html.twig" ignore missing %}
+                              {% endif %}
+                              {% if blockSearch == "elementPaysage" %}
+                                {% include "blockSearch/elementPaysage.html.twig" ignore missing %}
+                              {% endif %}
+                              {% if blockSearch == "ensPaysage" %}
+                                {% include "blockSearch/ensPaysage.html.twig" ignore missing %}
+                              {% endif %}
+                              {% if blockSearch == "identifiant" %}
+                                {% include "blockSearch/identifiant.html.twig" ignore missing %}
+                              {% endif %}
+                              {% if blockSearch == "opp" %}
+                                {% include "blockSearch/opp.html.twig" ignore missing %}
+                              {% endif %}
+                              {% if blockSearch == "pays" %}
+                                {% include "blockSearch/pays.html.twig" ignore missing %}
+                              {% endif %}
+                              {% if blockSearch == "region" %}
+                                {% include "blockSearch/region.html.twig" ignore missing %}
+                              {% endif %}
+                              {% if blockSearch == "structureOpp" %}
+                                {% include "blockSearch/structureOpp.html.twig" ignore missing %}
+                              {% endif %}
+                              {% if blockSearch == "typoPaysage" %}
+                                {% include "blockSearch/typoPaysage.html.twig" ignore missing %}
+                              {% endif %}
+                              {% if blockSearch == "unitePaysage" %}
+                                {% include "blockSearch/unitePaysage.html.twig" ignore missing %}
+                              {% endif %}
+                            {% endfor %}
+                          {% if ("blockSearch-"~i~".type")|trans == "accordion" %}
+                              </div>
+                            </div>
+                          {% endif %}
+                        {% endfor %}
+                      </div>
+
+                      </div>
+                      <div class="peer w-100 mT-10">
+                        <button class="btn cur-p btn-primary" id='search'>Rechercher</button>
+                        <button class="btn cur-p btn-secondary" id='removeSearch'>Réinitaliser la recherche</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <div id='listClickMapSeriePhoto' ></div>
+      <div 
+        id='listeSeries' 
+        data-label-export-all-series="{{ "labelExportAllSeries"|trans }}"
+        data-label-success-add-series="{{ "labelSuccessAddSeries"|trans }}"
+        data-label-success-add-serie="{{ "labelSuccessAddSerie"|trans }}"
+        data-label-already-added-serie="{{ "labelAlreadyAddedSerie"|trans }}"
+        ></div>
+
+  
+    <!-- Modal -->
+      <div class="modal fade" id="thesaurusModal" tabindex="-1" role="dialog" aria-labelledby="thesaurusModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="thesaurusModalLabel">Recherche par élément de paysage et par type d’évolution</h5>
+              <button type="button" class="close cleanThesaurus" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>Cliquez sur une cat&eacute;gorie pour voir les éléments de paysage. Si vous ne choisissez aucun type d'&eacute;volution, les photographies contenant l&apos;&eacute;l&eacute;ment seront recherch&eacute;es.</p>
+              <div id="treeThesaurus"></div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary cur-p cleanThesaurus" data-dismiss="modal">Annuler</button>
+              <button type="button" class="btn btn-primary cur-p" id='searchThesaurus'>Valider</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script>
+  window.addEventListener('load', () => {
+      var elem = document.getElementById('map').parentNode.parentNode.parentNode,
+          properties = window.getComputedStyle(elem, null),
+          height = properties.height,
+          width = properties.width;
+
+          document.getElementById("map").style.height = (parseInt(height ,10) - 34).toString() + 'px' ;
+
+      });        
+
+  </script>
+{%  endblock body %}

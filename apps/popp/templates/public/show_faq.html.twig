@@ -1,0 +1,179 @@
+{%  extends "base.html.twig" %}
+{% set parameters = app.session.get('parameters') %}
+
+{% block body %}
+        <!-- ### $App Screen Content ### -->
+        <main class='main-content bgc-grey-100'>
+          <div id='mainContent'>
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-md-12">
+                    <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                        <div class="row mT-10">
+                            <div class="col-md-8">
+                                <h4 class="c-grey-900 mT-10 mB-30">{{ faq.faqTitre }}</h4>
+                            </div>
+                            {% if is_granted("ROLE_ADMIN") %} 
+                            <div class="col-md-4  text-right">
+                                <div class="form-group">
+                                    <button type="button" id="modifFaqContent" class="btn btn-primary">Modifier</button>
+                                    <button type="button" id="supprimerFaqContent" class="btn btn-primary">Supprimer</button>
+                                    <button type="button" id="consultFaqContent" style="display:none" class="btn btn-primary">Consulter</button>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <hr class="my-4">
+                        {#ConsultBlock#}
+                        <div id="consultBlock">
+                            <p>Publié le {{ faq.faqDate |date("d/m/Y")}}</p>
+                            <div class="my-4">
+                                <h6>{{ faq.faqQuestion }}</h6>
+                                <p>{{ faq.faqReponse }}</p>
+                            </div>
+                            {% for file in files %}
+                                {% if file.LFafmFileManager %}
+                                <p><strong>Documentation : </strong><a href="{{parameters['URL_FOLDER_FILES']}}{{ file.LFafmFileManager.fileManagerUri }}">{% if file.lFafmNomFichier %}{{file.lFafmNomFichier}}{% else %}{{ file.LFafmFileManager.FileManagerNom }}{% endif %}</a></p>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        {#ModifBlock#}
+                        <div id="modifBlock" style="display:none">
+                            <div class="container my-4">
+                                <input class="form-control collapse" id="faqId" value="{{ faq.FaqId }}">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label class="mT-20" for="faqTitre">Titre</label>
+                                        <input class="form-control faqRequired" id="faqTitre" value="{{ faq.FaqTitre }}" required>
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="mT-20" for="faqDate">Date</label>
+                                        <div class="timepicker-input input-icon form-group">
+                                            <div class="input-group">
+                                                <div class="input-group-addon bgc-white p-0">
+                                                    <i class="ti-calendar"></i>
+                                                </div>
+                                                <input type="text" id="faqDate"class="form-control date-picker faqRequired" placeholder="" value="{{ faq.faqDate|date("d/m/Y") }}" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12"> 
+                                        <label class="mT-20" for="faqHeader">Description brève</label>
+                                        <textarea id="faqHeader" class="font-italic form-control faqRequired" rows="2" required>{%if faq.FaqHeader %}{{ faq.FaqHeader }}{% endif %}</textarea>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <label class="mT-20" for="faqQuestion">Question</label>
+                                        <textarea id="faqQuestion" class="font-italic form-control faqRequired" rows="2" required>{%if faq.FaqQuestion %}{{ faq.FaqQuestion }}{% endif %}</textarea>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <label class="mT-20" for="faqReponse">Réponse</label>
+                                        <textarea  id="faqReponse" class="form-control faqRequired" required>{%if faq.FaqReponse %}{{ faq.FaqReponse }}{% endif %}</textarea>
+                                    </div>
+                                </div> 
+                                <div class="row">
+                                    <div class="col-12">
+                                        <label class="mT-20" for="addFaqDoc">Documentation</label>
+                                        {% if files %}
+                                            {% for file in files %}
+                                                {% if file.LFafmFileManager %}
+                                                <div class="row mT-10">
+                                                    <div class="col-md-3" style="display:none">
+                                                        <input type="hidden" id="faqDocId" class="faq" value="{% if file %}{{ file.LFafmFileManager.fileManagerId }}{% endif %}">
+                                                        <input type="hidden" id="faqDocTitre" class="faq" value="{% if file %}{{ file.LFafmFileManager.fileManagerNom }}{% endif %}">
+                                                        <input type="hidden" id="faqDocURL" class="faq" value="{% if file %}{{ file.LFafmFileManager.fileManagerUri }}{% endif %}">
+                                                        <input type="hidden" id="faqDocPoids" class="faq" value="{% if file %}{{ file.LFafmFileManager.fileManagerSize }}{% endif %}">
+                                                        <input type="hidden" id="faqDocFileName" class="faq" value="{% if file %}{{ file.lFafmNomFichier }}{% endif %}">
+                                                    </div>
+                                                    <div class="col-md-3" id="faqDocDownload">
+                                                        <a href="{{parameters['URL_FOLDER_FILES']}}{{ file.LFafmFileManager.fileManagerUri }}">{% if file.lFafmNomFichier %}{{file.lFafmNomFichier}}{% else %}{{ file.LFafmFileManager.FileManagerNom }}{% endif %}</a>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <button id="editDocFaq" class="btn btn-warning cur-p">
+                                                            <i class="ti ti-pencil"></i>
+                                                        </button>
+                                                        <button id="removeDocFaq" class="btn btn-danger cur-p">
+                                                            <i class="ti ti-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>    
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% else %}
+                                            <button id="addDocFaq" class="btn btn-success cur-p" >
+                                                <i class="ti ti-plus"></i>
+                                            </button>
+                                            <div class="row mT-10">
+                                                <div class="col-md-3">
+                                                    <input type="hidden" id="faqDocId" class="faq" value="">
+                                                    <input type="hidden" id="faqDocTitre" class="faq" value="">
+                                                    <input type="hidden" id="faqDocURL" class="faq" value="">
+                                                    <input type="hidden" id="faqDocPoids" class="faq" value="">
+                                                    <input type="hidden" id="faqDocFileName" class="faq" value="">
+                                                </div>
+                                                <div class="col-md-3" id="faqDocDownload"></div>
+                                                <div class="col-md-6">
+                                                    <button id="editDocFaq" class="btn btn-warning cur-p" style="display:none">
+                                                        <i class="ti ti-pencil"></i>
+                                                    </button>
+                                                    <button id="removeDocFaq" class="btn btn-danger cur-p" style="display:none">
+                                                        <i class="ti ti-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div> 
+                                        {% endif %}
+                                    </div>
+                                </div> 
+                                {#Modal validation#}
+                                <div class="modal" id="modalFaqFile" tabindex="-1" role="dialog" aria-labelledby="modalFaqFile" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Documents</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <label class="mT-20" for="faqDocFileTitre">Titre</label>
+                                                <input class="form-control mB-10" id="faqDocFileTitre">
+                                                <label for="addFaqDoc">Document : </label>
+                                                <!--small>(Si un fichier existe, il sera &eacute;cras&eacute;.)</small-->
+                                                <form id="addFaqDoc" name="addFaqDoc" action="{{path('insertFaqFile')}}" class="dropzone" method="post" enctype="multipart/form-data">
+                                                    <div class="fallback">
+                                                        <input id="add_faq_doc" name="add_faq_doc" type="file"/>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary cur-p" data-dismiss="modal">Annuler</button>
+                                                <button type="button" id="saveFaqDoc" class="btn btn-success cur-p">Enregistrer</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>   
+                                <div class="row">
+                                    <div class="col-12">
+                                        <label class="mT-20" for="faqNumOrdre">Numéro d'ordre</label>
+                                        <input type="number" class="form-control" id="faqNumOrdre" value="{{ faq.faqNumOrdre }}">
+                                    </div>
+                                </div> 
+                            </div>
+                            <div class="my-4 text-center">
+                                <button type="button" id="validationFaqContent" class="btn btn-secondary">Valider</button>
+                            </div>
+                        </div>
+                        <div id="messageConfirmModifFaq"></div>
+                    </div>
+                </div>
+               </div>
+            </div>
+          </div>
+        </main>
+
+{% endblock body %}

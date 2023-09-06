@@ -1,0 +1,185 @@
+{%  extends "base.html.twig" %}
+
+{% block body %}
+    {% set parameters = app.session.get('parameters') %}
+        <!-- ### $App Screen Content ### -->
+        <main class='main-content bgc-grey-100'>
+            {% for message in app.flashes("error") %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Erreur</strong> {{ message }}
+            <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endfor %}
+    {% for message in app.flashes("success") %}
+        <div class="alert alert-success alert-dismissible fade show " role="alert">
+            <strong>Succès</strong> {{ message }}
+            <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endfor %}
+    <div id="js-message"></div> 
+          <div id='mainContent'>
+            <div class="container-fluid">
+              <div class="row">
+                <div id="messageConfirmModifStructure"></div>
+                <div class="col-md-9">
+                    <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                        <div class="row mT-10">
+                            {% if is_granted("ROLE_ADMIN") %} 
+                            <div class="col-md-8">
+                                <h4 class="c-grey-900 mB-20">{{ structure.PorteurOppNom }}</h4>
+                            </div>
+                            <div class="col-md-4  text-right">
+                                <div class="form-group">
+                                    <button type="button" id="modifStructureContent" class="btn btn-primary">Modifier</button>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <hr class="my-4">
+                        <div class="container my-4">
+                            <h6 class="font-weight-bold">Description</h6>
+                            <p>{{ structure.PorteurOppDescCourte }}</p>
+                            <h6 class="font-weight-bold">Pr&eacute;occupations paysag&egrave;res</h6>
+                            <p>{%if structure.porteurOppPreocupationPaysagere %}{{ structure.porteurOppPreocupationPaysagere }}{% else %}- Aucune -{% endif %}</p>
+                            <h6 class="font-weight-bold">Les OPP auquels nous participons :</h6>
+                            {% for opp in opps %}
+                            <hr class="my-4">
+                                <h5>{{ opp.oppNom }}</h5>
+                                <div class="row mT-10">
+                                    <div class="col-md-12">
+                                        <p class='mB-0'><b>Objectif :</b>{{ opp.oppDesc|raw }}</p>
+                                    </div>
+                                </div>
+                                <div class="row mT-10">
+                                    <div class="col-md-12">
+                                        <p class='mB-0'><b>Technicité de l'observatoire : </b>{{ opp.oppTechnicite }}</p>
+                                    </div>
+                                </div>
+                                <div class="row mT-10">
+                                    <div class="col-md-12">
+                                        <p class='mB-0'><b>Année de création : </b>{{ opp.oppAnneeCreation }}</p>
+                                    </div>
+                                </div>
+                                <div class="row mT-10">
+                                    <div class="col-md-12">
+                                        <p class='mB-0'><b>Niveau territorial concerné : </b>{{ opp.oppNivTerrit }}</p>
+                                    </div>
+                                </div>
+                                <div class="row mT-10">
+                                    <div class="col-md-12">
+                                        <p class='mB-0'><b>Valorisation et diffusion : </b>{{ opp.oppValo }}</p>
+                                    </div>
+                                </div>
+                            {% else %}
+                                Aucun
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                     <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="logo" style="text-align:center">
+                                    {%if structure.porteurOppLogo %}
+                                        <img class="col-12" src='{{parameters['URL_FOLDER_FILES']}}/{{structure.porteurOppLogo.fileManagerUri}}'/>
+                                    {% else %}
+                                        <p>- Aucun logo -</p>
+                                    {% endif %}
+                                </div>
+                                <hr class="my-4">
+                                <p>Contact r&eacute;f&eacute;rent : {%if structure.porteurOppContactRef %}{{ structure.porteurOppContactRef  }}{% else %}- Aucun -{% endif %}</p>                                
+                                <p>Email : {%if structure.porteurOppEmail %}{{ structure.porteurOppEmail  }}{% else %}- Aucun -{% endif %}</p>
+                                <p>Adresse : {%if structure.porteurOppAdresse %}{{ structure.porteurOppAdresse  }}{% else %}- Aucune -{% endif %}</p>
+                                <p>T&eacute;l&eacute;phone : {%if structure.porteurOppTelephone %}{{ structure.porteurOppTelephone  }}{% else %}- Aucun -{% endif %}</p>
+                                <p>Site internet : {%if structure.porteurOppSiteWeb %}<a href="{{ structure.porteurOppSiteWeb }}">{{ structure.porteurOppSiteWeb }}</a>{% else %}- Aucun -{% endif %}</p>
+                            </div>
+                        </div>
+                     </div>
+                </div>
+               </div>
+                <!-- Modal -->
+                <div class="modal fade" id="modalStructureContent" name="modalStructureContent" tabindex="-1" role="dialog" aria-labelledby="modalRessourceContent" aria-hidden="true">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalStructureContent">Modification de la structure</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row mT-10">
+                                    <div class="col-12">
+                                        <input id="structureId" style="display:none" value="{{ structure.PorteurOppId }}">
+                                        <label>Nom de la structure : </label>
+                                        <input class="form-control" id="structureNom" value="{{ structure.PorteurOppNom }}">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">  
+                                        <label>Description : </label>
+                                        <textarea  class="form-control" id="structureDescCourte">{%if structure.PorteurOppDescCourte %}{{ structure.PorteurOppDescCourte }}{% else %}- Pas de contenu -{% endif %}</textarea>
+                                    </div>
+                                </div>
+                                <div class="row mT-10">
+                                    <div class="col-6">  
+                                        <label>Adresse : </label>
+                                        <input class="form-control" id="structureAdresse" value="{{ structure.PorteurOppAdresse }}">
+                                    </div>
+                                    <div class="col-6">  
+                                        <label>Contact : </label>
+                                        <input class="form-control" id="structureContactRef" value="{{ structure.PorteurOppContactRef }}">
+                                    </div>
+                                </div>
+                                <div class="row mT-10">
+                                    <div class="col-6">  
+                                        <label>Email : </label>
+                                        <input class="form-control" id="structureEmail" value="{{ structure.PorteurOppEmail }}">
+                                    </div>
+                                    <div class="col-6">  
+                                        <label>Téléphone : </label>
+                                        <input class="form-control" id="structureTelephone" value="{{ structure.PorteurOppTelephone }}">
+                                    </div>
+                                </div>
+                                <div class="row mT-10">
+                                    <div class="col-12">  
+                                        <label>Site web : </label>
+                                        <input class="form-control" id="structureSiteWeb" value="{{ structure.PorteurOppSiteWeb }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                                <button type="button" id="saveModifStructure" class="btn btn-primary">Enregistrer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+{#              <div class="row">
+                  <div class="col-md-12">
+                    <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                        <h4 class="c-grey-900 mB-20">Les OPP auxquels nous participons :</h4>
+                        <h5>C&ocirc;tes d&apos;Armor (itin&eacute;raire 5 de l'OPNP)</h5>
+                       
+                        <h6>Objectif  : </h6>
+                        <p>Les probl&eacute;matiques principales de l&apos;OPP sont : > les entr&eacute;es de ville, > l&apos;urbanisation du littoral, > l&apos;exploitation agricole, > les activit&eacute;s &eacute;conomiques, > le centre-ville.</p>
+                        
+                        <h6>Technicit&eacute; de l&apos;observatoire : </h6>
+                        <p>Quarante-deux prises de vues ont &eacute;t&eacute; s&eacute;lectionn&eacute;es sur les quelques 800 propos&eacute;es par le photographe Thibaut Cuisset. Ces clich&eacute;s sont reconduits tous les ans. Depuis peu, les photographies sont r&eacute;alis&eacute;es avec un appareil num&eacute;rique qui a remplac&eacute; l&apos;appareil &agrave; chambre.</p>
+                        
+                        <p><strong>Ann&eacute;e de cr&eacute;ation : </strong>1994</p>
+                        <p><strong>Niveau territorial concern&eacute; : </strong>D&eacute;partement des C&ocirc;tes d'Armor</p>
+                        <p><strong>Valorisation et diffusion : </strong>Exposition, publication (calendrier), participation aux &eacute;changes r&eacute;gionaux et nationaux</p>
+                    </div>
+                  </div>
+              </div>#}
+            </div>
+          </div>
+        </main>
+
+{% endblock body %}

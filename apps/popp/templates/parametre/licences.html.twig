@@ -1,0 +1,217 @@
+{%  extends "base.html.twig" %}
+
+{% block body %}
+
+<!--script src="https://cdn.ckeditor.com/4.13.1/standard/ckeditor.js"></script-->
+<script src="https://cdn.ckeditor.com/ckeditor5/19.0.0/classic/ckeditor.js"></script>
+<main class='main-content bgc-grey-100'>
+  <main class='main-content bgc-grey-100'>
+    {% for message in app.flashes("error") %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Erreur</strong> {{ message }}
+            <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endfor %}
+    {% for message in app.flashes("success") %}
+        <div class="alert alert-success alert-dismissible fade show " role="alert">
+            <strong>Succès</strong> {{ message }}
+            <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endfor %}
+    <div id="js-message"></div> 
+  <div id='mainContent'>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="bgc-white bd bdrs-3 p-20 mB-20">
+            <div class="row mT-10">
+                <div class="col-md-8">
+                    <h4 class="c-grey-900 mB-20">Liste des licences</h4>
+                </div>
+                <div class="col-md-4  text-right">
+                    <div class="form-group">
+                        <button type="button" class="btn btn-primary cur-p" id='addLicence'>Ajouter une licence</button><br/><br/>
+                    </div>
+                </div>
+            </div>
+            <table id="dataTableLicences" class="table table-striped table-bordered" cellspacing="0" width="100%">
+              <thead>
+                <tr>
+                  <th>Id</th>
+                  <th>Nom</th>
+                  <th>Description</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for licence in licences %}
+                <tr>
+                  <td>{{licence.licenceId}}</td>
+                  <td>{{licence.licenceNom}}</td>
+                  <td>{{licence.licenceDesc|raw}}</td>
+                  <td>
+                    <a class="modify" ><i class="c-light-blue-500 cur-p ti ti-pencil"></i></a>
+                    <a class="remove"><i class="c-red-500 cur-p ti ti-trash"></i></a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Modal -->
+<div class="modal fade bd-example-modal-lg" id="modalLicence" tabindex="-1" role="dialog" aria-labelledby="modalLicence" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Licence</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+            <label for="licence_nom" class="text-normal text-dark">Nom * :</label>
+            <input class="form-control" type="text" id="licence_nom" required="required" />
+        </div>
+        <div class="form-group">
+            <label for="licence_desc" class="text-normal text-dark">Description :</label>
+            <textarea class="form-control" type="text" id="licence_desc" value="" rows="10" cols="80"></textarea>
+            <script>
+                // Replace the <textarea id="serie_desc_fine_edit"> with a CKEditor
+                // instance, using default configuration.
+                //CKEDITOR.replace( 'licence_desc' );
+                  
+                ClassicEditor
+                  .create( document.querySelector( '#licence_desc' ), {
+                      extraPlugins: [ MyCustomUploadAdapterPlugin ],
+                  } )
+                  .then( editor => {
+                      myEditor = editor;
+                  } )
+                  .catch( error => {
+                      console.error( error );
+                  } );
+                                      
+                  function MyCustomUploadAdapterPlugin( editor ) {
+                      editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
+                          // Configure the URL to the upload script in your back-end here!
+                          return new MyUploadAdapter( loader );
+                      };
+                  }
+                  class MyUploadAdapter {
+                      constructor( loader ) {
+                          // The file loader instance to use during the upload.
+                          this.loader = loader;
+                      }
+
+                      // Starts the upload process.
+                      upload() {
+                          return this.loader.file
+                              .then( file => new Promise( ( resolve, reject ) => {
+                                  this._initRequest();
+                                  this._initListeners( resolve, reject, file );
+                                  this._sendRequest( file );
+                              } ) );
+                      }
+
+                      // Aborts the upload process.
+                      abort() {
+                          if ( this.xhr ) {
+                              this.xhr.abort();
+                          }
+                      }
+
+                      // Initializes the XMLHttpRequest object using the URL passed to the constructor.
+                      _initRequest() {
+                          const xhr = this.xhr = new XMLHttpRequest();
+
+                          // Note that your request may look different. It is up to you and your editor
+                          // integration to choose the right communication channel. This example uses
+                          // a POST request with JSON as a data structure but your configuration
+                          // could be different.
+                          xhr.open( 'POST', "{{ path('upload_img') }}", true );
+                          xhr.responseType = 'json';
+                      }
+
+                      // Initializes XMLHttpRequest listeners.
+                      _initListeners( resolve, reject, file ) {
+                          const xhr = this.xhr;
+                          const loader = this.loader;
+                          const genericErrorText = `Couldn't upload file: ${ file.name }.`;
+
+                          xhr.addEventListener( 'error', () => reject( genericErrorText ) );
+                          xhr.addEventListener( 'abort', () => reject() );
+                          xhr.addEventListener( 'load', () => {
+                              const response = xhr.response;
+
+                              // This example assumes the XHR server's "response" object will come with
+                              // an "error" which has its own "message" that can be passed to reject()
+                              // in the upload promise.
+                              //
+                              // Your integration may handle upload errors in a different way so make sure
+                              // it is done properly. The reject() function must be called when the upload fails.
+                              if ( !response || response.error ) {
+                                  return reject( response && response.error ? response.error.message : genericErrorText );
+                              }
+
+                              // If the upload is successful, resolve the upload promise with an object containing
+                              // at least the "default" URL, pointing to the image on the server.
+                              // This URL will be used to display the image in the content. Learn more in the
+                              // UploadAdapter#upload documentation.
+                              resolve( {
+                                  default: response.url
+                              } );
+                          } );
+
+                          // Upload progress when it is supported. The file loader has the #uploadTotal and #uploaded
+                          // properties which are used e.g. to display the upload progress bar in the editor
+                          // user interface.
+                          if ( xhr.upload ) {
+                              xhr.upload.addEventListener( 'progress', evt => {
+                                  if ( evt.lengthComputable ) {
+                                      loader.uploadTotal = evt.total;
+                                      loader.uploaded = evt.loaded;
+                                  }
+                              } );
+                          }
+                      }
+
+                      // Prepares the data and sends the request.
+                      _sendRequest( file ) {
+                          // Prepare the form data.
+                          const data = new FormData();
+
+                          data.append( 'upload', file );
+
+                          // Important note: This is the right place to implement security mechanisms
+                          // like authentication and CSRF protection. For instance, you can use
+                          // XMLHttpRequest.setRequestHeader() to set the request headers containing
+                          // the CSRF token generated earlier by your application.
+
+                          // Send the request.
+                          this.xhr.send( data );
+                      }
+                  }
+            </script>
+        </div>
+        {#{ dump(app) }#}
+        <input type="hidden" class="form-control" id="licence_id"/>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary cur-p" data-dismiss="modal">Annuler</button>
+        <button type="button" id="saveLicence" class="btn btn-primary cur-p">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock body %}

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  </head>
+
+    <body>
+        <p>Bonjour,</p>
+        <p>
+            <div>Un utilisateur a fait une demande de création de compte .</div>
+            <div>L'utilisateur {{user.Prenom}} {{user.Nom}} ({{user.email}}) est en attente de validation de votre part</div>
+            <br/>
+        </p>
+        <p>
+            Cliquer sur l'adresse suivante pour activer le compte {{ url('activeCompte', {'id' : id}) }} 
+            <br/><a href='{{ url('activeCompte', {'id' : id}) }}'>Activer le compte</a>
+            <br/>
+            <div style="color:red">Si vous ne souhaitez pas activer ce compte, cliquer sur le lien suivant {{ url('nonActivationCompte', {'id' : id}) }}
+                <br/><a href='{{ url('nonActivationCompte', {'id' : id}) }}'>Désactiver le compte</a>
+            </div>
+        </p>
+        <p>  
+            <div>Cordialement,</div>
+            <div>L'équipe OEB.</div>
+        </p>
+    </body>
+</html>
+
+
+

@@ -1,0 +1,97 @@
+
+            <!-- ### $App Screen Footer ### -->
+            <footer class="bdT ta-c lh-0 fsz-sm c-grey-600 page-footer">
+			  <!-- Footer Links -->
+			  <div class="container text-center text-md-left">
+				<!-- Footer links -->
+				<div class="row text-center text-md-left mt-3 pb-3">
+				  <!-- Grid column -->
+
+				  <!-- Grid column -->
+				  <div class="col-md-8 col-lg-8 col-xl-8 mx-auto mt-3">
+					<h6 class="text-uppercase mb-2 font-weight-bold">Partenaires</h6>
+					<img class='m-10' style='max-height: 40px; max-width: 70px;' src='{{parameters['URL_FOLDER_FILES']}}/logo_structure/Bloc-reseau-paysage-web.png'/>
+					<img class='m-10' style='max-height: 40px; max-width: 70px;' src='{{parameters['URL_FOLDER_FILES']}}/logo_structure/DREAL_Occitanie_RVB_HD.jpg'/>
+                    <!--img class='m-10' style='max-height: 40px; max-width: 70px;' src='{{parameters['URL_FOLDER_FILES']}}/logo ESO N&b.jpg'/-->
+					<p class="">La {{parameters.APP_NAME}} a été co-financée par XXXX.</p>
+				  </div>
+				  <!-- Grid column -->
+
+				  <hr class="w-100 clearfix d-md-none">
+
+				  <!-- Grid column -->
+				  <div class="col-md-4 col-lg-4 col-xl-4 mx-auto mt-3">
+					<h6 class="text-uppercase mb-2 font-weight-bold">Administrateur</h6>
+                    <!--img class='mb-2' style='max-height: 40px; /*max-width: 70px;*/' src='{{parameters['URL_FOLDER_FILES']}}/Logo_OEB Noir.png'/-->
+					<p class="mb-0">{{parameters.RESP_STRUCTURE}}</p>
+                    <p class="mb-0"><i class="ti-home pR-10"></i>{{parameters.RESP_ADRESSE}} </p>
+					<p class="mb-0"><i class="ti-email pR-10"></i>{{parameters.RESP_MAIL}}</p>
+					<p class="mb-0"><i class="ti-mobile pR-10"></i>{{parameters.RESP_TEL}}</p>
+                      
+				  </div>
+				  <!-- Grid column -->
+
+                </div>
+				<!--div class="row mL-25 mR-25 text-md-left"-->
+                    <div id='' class='w-100'>
+                      <h6 class="text-uppercase mb-1 font-weight-bold text-md-left">La {{parameters.APP_NAME}} est également financée par les adhérents</h6>
+                      {% for structure in structures %}
+                        {% if structure.porteurOppLogo and structure.porteurOppFinanceur %}
+                        <!--div -->
+                          <img class='m-10' style='max-height: 40px; max-width: 70px;' src='{{parameters['URL_FOLDER_FILES']}}/{{structure.porteurOppLogo.fileManagerUri}}'/>
+                        <!--/div-->
+                        {% endif %}
+                      {% endfor %}
+                    </div>
+                <!--/div-->
+                
+				<!--div class="row mL-25 mR-25 text-md-left"-->
+                    <div id='' class='w-100'>
+                      <h6 class="text-uppercase mb-1 font-weight-bold text-md-left">Les autres adhérents de la {{parameters.APP_NAME}}</h6>
+                      {% for structure in structures %}
+                        {% if structure.porteurOppLogo and structure.porteurOppFinanceur == false %}
+                        <!--div -->
+                          <img class='m-10' style='max-height: 40px; max-width: 70px;' src='{{parameters['URL_FOLDER_FILES']}}/{{structure.porteurOppLogo.fileManagerUri}}'/>
+                        <!--/div-->
+                        {% endif %}
+                      {% endfor %}
+                    </div>
+                <!--/div-->
+            </div>
+				<!-- Footer links -->
+				<!--hr>
+				<div class="row d-flex align-items-center">
+
+				  <div class="col-md-7 col-lg-8">
+				  <div>
+					<div class="text-center text-md-right">
+					  <ul class="list-unstyled list-inline">
+						<li class="list-inline-item">
+						  <a href="https://fr-fr.facebook.com/" class="btn-floating btn-sm rgba-white-slight mx-1">
+							<i class="ti-facebook pR-10"></i>
+						  </a>
+						</li>
+						<li class="list-inline-item">
+						  <a href="https://twitter.com/?lang=fr" class="btn-floating btn-sm rgba-white-slight mx-1">
+							<i class="ti-twitter pR-10"></i>
+						  </a>
+						</li>
+						<li class="list-inline-item">
+						  <a href="https://www.google.fr/webhp?tab=rw" class="btn-floating btn-sm rgba-white-slight mx-1">
+							<i class="ti-google pR-10"></i>
+						  </a>
+						</li>
+						<li class="list-inline-item">
+						  <a href="https://fr.linkedin.com/" class="btn-floating btn-sm rgba-white-slight mx-1">
+							<i class="ti-linkedin pR-10"></i>
+						  </a>
+						</li>
+					  </ul>
+					</div>
+
+				  </div>
+
+				</div>
+
+			  </div-->
+            </footer>

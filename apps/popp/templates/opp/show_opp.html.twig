@@ -1,0 +1,193 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+{% set parameters = app.session.get('parameters') %}
+<!-- ### $App Screen Content ### -->
+<main class='main-content bgc-grey-100'>
+    <div id='mainContent'>
+        <div class="container-fluid">
+            <div class="row" style="min-height: 600px;">
+                <div class="col-md-8">
+                    <div class="bgc-white bd bdrs-3 p-20 mB-20 h-100">
+                        <div class="row mT-10">
+                            <div class="col-md-12">
+                                <div class="row mT-10">
+                                    <h4 class="c-grey-900 mB-20 mL-20">{{ opp.oppNom }}</h4>
+                                </div>
+                                <hr class="my-4">
+                                <div class="row mT-10">
+                                    <div class="col-md-12">
+                                        <h6>Objectif :</h6>
+                                        <p>{{ opp.oppDesc|raw }}</p>
+                                    </div>
+                                </div>
+                                <div class="row mT-10">
+                                    <div class="col-md-12">
+                                        <h6>Technicité de l'observatoire :</h6>
+                                        <p>{{ opp.oppTechnicite }}</p>
+                                    </div>
+                                </div>
+                                <div class="row mT-10">
+                                    <div class="col-md-12">
+                                        <h6>Année de création :</h6>
+                                        <p>{{ opp.oppAnneeCreation }}</p>
+                                    </div>
+                                </div>
+                                <div class="row mT-10">
+                                    <div class="col-md-12">
+                                        <h6>Niveau territorial concerné :</h6>
+                                        <p>{{ opp.oppNivTerrit }}</p>
+                                    </div>
+                                </div>
+                                <div class="row mT-10">
+                                    <div class="col-md-12">
+                                        <h6>Valorisation et diffusion :</h6>
+                                        <p>{{ opp.oppValo }}</p>
+                                    </div>
+                                </div>
+                                <div class="row mT-10">
+                                    <div class="col-md-12">
+                                        <h6>Structure OPP :</h6>
+                                        <p>{% if opp.oppPorteurOpp %} {{ opp.oppPorteurOpp.porteurOppNom }}{% endif %}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="row mT-10">
+                                    <div class="col-md-12">
+                                        <h6>Liste des fournisseurs :</h6>
+                                        {% for fournisseur in fournisseurs %}
+                                        <li>{% if fournisseur.lFoUsers %}{{ fournisseur.lFoUsers.Prenom }} {{
+                                            fournisseur.lFoUsers.Nom }} {{ fournisseur.lFoUsers.email }}{% endif %}</li>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="row mT-10">
+                                    <div class="col-md-12">
+                                        <h6>Liste des gestionnaires :</h6>
+                                        {% for gestionnaire in gestionnaires %}
+                                        <li>{% if gestionnaire.lGoUsers %}{{ gestionnaire.lGoUsers.Prenom }} {{
+                                            gestionnaire.lGoUsers.Nom }} ({{ gestionnaire.lGoUsers.email }}){% endif %}
+                                        </li>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="bd bdrs-3 bg-dark shadow-2-strong h-100">
+                        <div class="table-responsive">
+                            <table class="table table-borderless table-dark align-items-center">
+                                <thead>
+                                    <h4 class="text-center text-white mT-30 mB-30">Statistiques</h4>
+                                    <hr class="stat my-4 bgc-white">
+                                </thead>
+                                <tbody>
+                                    <!--<i class="ti-angle-down"></i>-->
+                                    <tr>
+                                        <th scope="row">Utilisateurs</th>
+                                        <td></td>
+                                        <th>{{ gestionnaires|length + fournisseurs|length}}</th>
+                                        
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Gestionnaires</th>
+                                        <td></td>
+                                        <th>{{ gestionnaires|length }}</th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Fournisseurs</th>
+                                        <td></td>
+                                        <th>{{ fournisseurs|length }}</th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Séries</th>
+                                        <td></td>
+                                        <th>{{ nbrSerie|length }}</th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Séries en attente</th>
+                                        <td></td>
+                                        <th>{{ nbrSerieAttente|length }}</th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Photos</th>
+                                        <td></td>
+                                        <th>{{ nbrPhoto|length }}</th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Liste des axes thématiques</th>
+                                        <th><button onclick="clic()" class="btnListe"><i class="iconListe ti-angle-down"></i></button></th>
+                                        <th>{{ tabAxeSerie|length }}</th>
+                                    </tr>
+                                    {% for axe in tabAxeSerie %}
+                                        <tr class="tableau">
+                                            <td scope="row">{{axe.nomAxe}}</td>
+                                            <td></td>
+                                            <td>{{axe.nbSerie}}</td>                      
+                                        </tr>
+                                    {% endfor %}
+                                    <script>
+                                        function clic() {
+                                        var element = document.body;
+                                        element.classList.toggle("aff");
+                                        }
+                                    </script>                           
+                                    <tr>
+                                        <th scope="row">Mots du thésaurus exploités</th>
+                                        <th><button onclick="clic2()" class="btnListe"><i class="iconListe ti-angle-down"></i></button></th>
+                                        <th>{{ tabMotThesaurus|length }}</th>
+                                    </tr>
+                                    {% for mot in tabMotThesaurus %}
+                                        <tr class="tableau2">
+                                            <td scope="row">{{mot.nomThesaurus}}</td>
+                                            <td></td>
+                                            <td>{{mot.nbThesaurus}}</td>                      
+                                        </tr>
+                                    {% endfor %}
+                                    <script>
+                                        function clic2() {
+                                        var element = document.body;
+                                        element.classList.toggle("aff2");
+                                        }
+                                    </script> 
+                                    <tr>
+                                        <th scope="row">Communes de prises de vue</th>
+                                        <th><button onclick="clic3()" class="btnListe"><i class="iconListe ti-angle-down"></i></button></th>
+                                        <th>{{ tabCommune|length }}</th>
+                                    </tr>
+                                    {% for commune in tabCommune %}
+                                        <tr class="tableau3">
+                                            <td scope="row">{{commune.nomCommune}}</td>
+                                            <td></td>
+                                            <td>{{commune.nbCommune}}</td>                      
+                                        </tr>
+                                    {% endfor %}
+                                    <script>
+                                        function clic3() {
+                                        var element = document.body;
+                                        element.classList.toggle("aff3");
+                                        }
+                                    </script> 
+                                    <tr>
+                                        <th scope="row">Ambiances sonores</th>
+                                        <td></td>
+                                        <th>{{ nbrAmbianceSonore|length }}</th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Commentaire</th>
+                                        <td></td>
+                                        <th>{{ nbrCommentaire|length }}</th>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+{% endblock body %}

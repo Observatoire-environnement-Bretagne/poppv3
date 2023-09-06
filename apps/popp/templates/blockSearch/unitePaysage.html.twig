@@ -1,0 +1,18 @@
+
+<div class="layer w-100">
+    <div class="form-group row" >
+        <label for="selectUniPay" class="col-sm-4 col-form-label">Unit&eacute; paysag&egrave;re</label>
+        <div class="col-sm-8">
+            <select id="selectUniPay" class="form-control">
+            <option value='all'>-Tout-</option>
+            {% for unitePaysageId, unitePaysageNom in UnitePaysages %}
+                {% if unitePaysageId in app.session.get('critere_search_series')['uniPayId'] %}
+                <option value="{{ unitePaysageId }}" selected>{{ unitePaysageNom }}</option>
+                {% else %}
+                <option value="{{ unitePaysageId }}">{{ unitePaysageNom }}</option>
+                {% endif %}
+            {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>

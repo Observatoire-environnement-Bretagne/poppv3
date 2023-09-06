@@ -1,0 +1,384 @@
+{%  extends "base.html.twig" %}
+
+{% set parameters = app.session.get('parameters') %}
+
+{% block body %}
+
+    <script src="/utils/ckeditor5/31.0.0/decoupled-document/ckeditor.js"></script>
+    <!--script src="https://cdn.ckeditor.com/ckeditor5/31.0.0/decoupled-document/ckeditor.js"></script-->
+    <!--script src="https://cdn.ckeditor.com/ckeditor5/34.0.0/classic/ckeditor.js"></script-->
+
+<!--script src="https://unpkg.com/ckeditor5/build/ckeditor5-dll.js"></script>
+<script src="https://unpkg.com/@ckeditor/ckeditor5-editor-classic/build/editor-classic.js"></script>
+<script src="https://unpkg.com/@ckeditor/ckeditor5-essentials/build/essentials.js"></script>
+<script src="https://unpkg.com/@ckeditor/ckeditor5-adapter-ckfinder/build/adapter-ckfinder.js"></script>
+<script src="https://unpkg.com/@ckeditor/ckeditor5-autoformat/build/autoformat.js"></script>
+<script src="https://unpkg.com/@ckeditor/ckeditor5-basic-styles/build/basic-styles.js"></script>
+<script src="https://unpkg.com/@ckeditor/ckeditor5-block-quote/build/block-quote.js"></script>
+<script src="https://unpkg.com/@ckeditor/ckeditor5-ckfinder/build/ckfinder.js"></script>
+<script src="https://unpkg.com/@ckeditor/ckeditor5-easy-image/build/easy-image.js"></script>
+<script src="https://unpkg.com/@ckeditor/ckeditor5-heading/build/heading.js"></script>
+<script src="https://unpkg.com/@ckeditor/ckeditor5-image/build/image.js"></script>
+<script src="https://unpkg.com/@ckeditor/ckeditor5-indent/build/indent.js"></script>
+<script src="https://unpkg.com/@ckeditor/ckeditor5-link/build/link.js"></script>
+<script src="https://unpkg.com/@ckeditor/ckeditor5-list/build/list.js"></script>
+<script src="https://unpkg.com/@ckeditor/ckeditor5-media-embed/build/media-embed.js"></script>
+<script src="https://unpkg.com/@ckeditor/ckeditor5-paste-from-office/build/paste-from-office.js"></script>
+<script src="https://unpkg.com/@ckeditor/ckeditor5-table/build/table.js"></script>
+<script src="https://unpkg.com/@ckeditor/ckeditor5-cloud-services/build/cloud-services.js"></script>
+<script src="https://unpkg.com/@ckeditor/ckeditor5-html-embed/build/html-embed.js"></script>
+
+<script src="https://unpkg.com/ckeditor5/build/translations/fr.js"></script>
+<script src="https://unpkg.com/@ckeditor/ckeditor5-basic-styles/build/translations/fr.js"></script>
+<script src="https://unpkg.com/@ckeditor/ckeditor5-block-quote/build/translations/fr.js"></script>
+<script src="https://unpkg.com/@ckeditor/ckeditor5-heading/build/translations/fr.js"></script>
+<script src="https://unpkg.com/@ckeditor/ckeditor5-image/build/translations/fr.js"></script>
+<script src="https://unpkg.com/@ckeditor/ckeditor5-indent/build/translations/fr.js"></script>
+<script src="https://unpkg.com/@ckeditor/ckeditor5-link/build/translations/fr.js"></script>
+<script src="https://unpkg.com/@ckeditor/ckeditor5-list/build/translations/fr.js"></script>
+<script src="https://unpkg.com/@ckeditor/ckeditor5-media-embed/build/translations/fr.js"></script>
+<script src="https://unpkg.com/@ckeditor/ckeditor5-table/build/translations/fr.js"></script-->
+
+<main class='main-content bgc-grey-100'>
+    <div id='mainContent'>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                        <div class="row mT-10">
+                            <div class="col text-left">
+                                <h5>Ajout d'une actualité</h5>
+                            </div>
+                            
+                            <div class="col text-right">
+                                <div class="form-group">
+                                    <button class="btn btn-primary js-save-actualite">Valider</button>
+                                    <input type="hidden" id="actualiteId" value="{% if action != 'new' %}{{actualite.actualiteId}}{% else %}new{% endif %}">
+                                    <a class="btn btn-primary" href="{{path('showActualite')}}" role="button">Retour</a>
+                                </div>
+                            </div>  
+                        </div>
+                        <div class="row mB-10">
+                            <div class="col-4">
+                                <label class="text-normal text-dark">Numéro d'ordre :</label>
+                            </div>  
+                            <div class="col-4">
+                                <input class="form-control" type="number" id="ordreactualite" 
+                                    name="ordreactualite" value="{{actualite.actualiteOrdre}}"></input>
+                            </div>  
+                        </div>
+                        <div class="well well-sm well-primary">
+                            <!--<label  class="text-normal text-dark">Description :</label>-->
+                            <!--<textarea name="descActualite" id="descActualite" rows="10" cols="80"></textarea>-->
+                            <div class="document-editor">
+                                <div class="document-editor__toolbar"></div>
+                                <div class="document-editor__editable-container">
+                                    <div class="document-editor__editable">
+                                        {{actualite.actualiteEditor | raw}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="editor">
+                            </div>
+                                <script>
+  /*                                  CKEditor5.editorClassic.ClassicEditor.create( document.querySelector( '#editor' ), {
+		language: 'fr',
+        plugins: [
+			CKEditor5.essentials.Essentials,
+			CKEditor5.autoformat.Autoformat,
+			CKEditor5.basicStyles.Bold,
+			CKEditor5.basicStyles.Italic,
+			CKEditor5.basicStyles.Underline,
+			CKEditor5.basicStyles.Code,
+			CKEditor5.blockQuote.BlockQuote,
+			CKEditor5.cloudServices.CloudServices,
+			CKEditor5.heading.Heading,
+			CKEditor5.image.Image,
+			CKEditor5.image.ImageCaption,
+			CKEditor5.image.ImageStyle,
+			CKEditor5.image.ImageToolbar,
+			CKEditor5.image.ImageUpload,
+			CKEditor5.image.ImageResizeEditing,
+			CKEditor5.image.ImageResizeHandles,
+			CKEditor5.indent.Indent,
+			CKEditor5.link.Link,
+			CKEditor5.list.List,
+			CKEditor5.mediaEmbed.MediaEmbed,
+			CKEditor5.pasteFromOffice.PasteFromOffice,
+			CKEditor5.table.Table,
+			CKEditor5.table.TableCaption,
+			CKEditor5.table.TableProperties,
+			CKEditor5.table.TableCellProperties,
+			CKEditor5.table.TableToolbar,
+			CKEditor5.typing.TextTransformation,
+			CKEditor5.upload.Base64UploadAdapter,
+			CKEditor5.htmlEmbed.HtmlEmbed
+		],
+        mediaEmbed: {
+
+            // Previews are always enabled if there’s a provider for a URL (below regex catches all URLs)
+            // By default `previewsInData` are disabled, but let’s set it to `false` explicitely to be sure
+            previewsInData: false,
+
+            extraProviders: [
+                {
+                    // hint: this is just for previews. Get actual HTML codes by making API calls from your CMS
+                    name: 'iframely previews', 
+
+                    // Match all URLs or just the ones you need:
+                    url: /.+/,
+
+                    html: match => {
+                        const url = match[ 0 ];
+
+                        return (
+                            `<object data="${ match }" width="600" height="400">` +
+                                `<embed src="${ match }" width="600" height="400"> </embed>` +
+                                'Error: Embedded data could not be displayed.' +
+                            '</object>'
+                        );
+                    }
+                }
+            ]
+        },
+		toolbar: {
+			items: [
+				'heading',
+				'|',
+				'htmlEmbed',
+				'|',
+				'bold',
+				'italic',
+				'underline',
+				'code',
+				'link',
+				'bulletedList',
+				'numberedList',
+				'|',
+				'outdent',
+				'indent',
+				'|',
+				'uploadImage',
+				'blockQuote',
+				'insertTable',
+				'mediaEmbed',
+				'undo',
+				'redo'
+			]
+		},
+		image: {
+			toolbar: [
+				'imageStyle:inline',
+				'imageStyle:block',
+				'imageStyle:side',
+				'|',
+				'toggleImageCaption',
+				'imageTextAlternative'
+			]
+		},
+		table: {
+			contentToolbar: [
+				'tableColumn',
+				'tableRow',
+				'mergeTableCells',
+				'|',
+				'tableProperties',
+				'tableCellProperties',
+				'|',
+				'toggleTableCaption'
+			]
+		},
+	} )
+		.then( editor => {
+			window.editor = editor;
+		} )
+		.catch( error => {
+			console.error( 'There was a problem initializing the editor.', error );
+		} );*/
+                                    /*import audio from '@funkymed/ckeditor5-audio'
+
+                                        ClassicEditor
+                                        .create( document.querySelector( '#editor' ), {
+                                        } )
+                                        .catch( error => {
+                                            console.error( error );
+                                        } );*/
+
+
+    DecoupledEditor
+        .create( document.querySelector( '.document-editor__editable' ),{
+        extraPlugins: [ MyCustomUploadAdapterPlugin ],
+        mediaEmbed: {
+
+            // Previews are always enabled if there’s a provider for a URL (below regex catches all URLs)
+            // By default `previewsInData` are disabled, but let’s set it to `false` explicitely to be sure
+            previewsInData: false,
+
+            extraProviders: [
+                {
+                    // hint: this is just for previews. Get actual HTML codes by making API calls from your CMS
+                    name: 'iframely previews', 
+
+                    // Match all URLs or just the ones you need:
+                    url: /.+/,
+
+                    html: match => {
+                        const url = match[ 0 ];
+
+                        return (
+                            `<object data="${ match }" width="400" height="200">` +
+                                `<embed src="${ match }" width="400" height="200"> </embed>` +
+                                'Error: Embedded data could not be displayed.' +
+                            '</object>'
+                        );
+                    }
+                }
+            ]
+        },
+        } )
+            .then( editor => {
+                const toolbarContainer = document.querySelector( '.document-editor__toolbar' );
+                toolbarContainer.appendChild( editor.ui.view.toolbar.element ); 
+                myEditor = editor;
+            } )
+            .catch( error => {
+                console.error( error );
+            } );     
+                    
+        function MyCustomUploadAdapterPlugin( editor ) {
+            editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
+                // Configure the URL to the upload script in your back-end here!
+                return new MyUploadAdapter( loader );
+            };
+        }
+        class MyUploadAdapter {
+            constructor( loader ) {
+                // The file loader instance to use during the upload.
+                this.loader = loader;
+            }
+
+            // Starts the upload process.
+            upload() {
+                return this.loader.file
+                    .then( file => new Promise( ( resolve, reject ) => {
+                        this._initRequest();
+                        this._initListeners( resolve, reject, file );
+                        this._sendRequest( file );
+                    } ) );
+            }
+
+            // Aborts the upload process.
+            abort() {
+                if ( this.xhr ) {
+                    this.xhr.abort();
+                }
+            }
+
+            // Initializes the XMLHttpRequest object using the URL passed to the constructor.
+            _initRequest() {
+                const xhr = this.xhr = new XMLHttpRequest();
+
+                // Note that your request may look different. It is up to you and your editor
+                // integration to choose the right communication channel. This example uses
+                // a POST request with JSON as a data structure but your configuration
+                // could be different.
+                xhr.open( 'POST', "{{ path('upload_img') }}", true );
+                xhr.responseType = 'json';
+            }
+
+            // Initializes XMLHttpRequest listeners.
+            _initListeners( resolve, reject, file ) {
+                const xhr = this.xhr;
+                const loader = this.loader;
+                const genericErrorText = `Couldn't upload file: ${ file.name }.`;
+
+                xhr.addEventListener( 'error', () => reject( genericErrorText ) );
+                xhr.addEventListener( 'abort', () => reject() );
+                xhr.addEventListener( 'load', () => {
+                    const response = xhr.response;
+
+                    // This example assumes the XHR server's "response" object will come with
+                    // an "error" which has its own "message" that can be passed to reject()
+                    // in the upload promise.
+                    //
+                    // Your integration may handle upload errors in a different way so make sure
+                    // it is done properly. The reject() function must be called when the upload fails.
+                    if ( !response || response.error ) {
+                        return reject( response && response.error ? response.error.message : genericErrorText );
+                    }
+
+                    // If the upload is successful, resolve the upload promise with an object containing
+                    // at least the "default" URL, pointing to the image on the server.
+                    // This URL will be used to display the image in the content. Learn more in the
+                    // UploadAdapter#upload documentation.
+                    resolve( {
+                        default: response.url
+                    } );
+                } );
+
+                // Upload progress when it is supported. The file loader has the #uploadTotal and #uploaded
+                // properties which are used e.g. to display the upload progress bar in the editor
+                // user interface.
+                if ( xhr.upload ) {
+                    xhr.upload.addEventListener( 'progress', evt => {
+                        if ( evt.lengthComputable ) {
+                            loader.uploadTotal = evt.total;
+                            loader.uploaded = evt.loaded;
+                        }
+                    } );
+                }
+            }
+
+            // Prepares the data and sends the request.
+            _sendRequest( file ) {
+                // Prepare the form data.
+                const data = new FormData();
+
+                data.append( 'upload', file );
+
+                // Important note: This is the right place to implement security mechanisms
+                // like authentication and CSRF protection. For instance, you can use
+                // XMLHttpRequest.setRequestHeader() to set the request headers containing
+                // the CSRF token generated earlier by your application.
+
+                // Send the request.
+                this.xhr.send( data );
+            }
+        }
+    /*CKEDITOR.replace( 'descApropos', { 
+        filebrowserBrowseUrl: '/apps/ckfinder/3.4.5/ckfinder.html',
+        filebrowserImageBrowseUrl: '/apps/ckfinder/3.4.5/ckfinder.html?type=Images',
+        filebrowserUploadUrl: '/apps/ckfinder/3.4.5/core/connector/php/connector.php?command=QuickUpload&type=Files',
+        filebrowserImageUploadUrl: '/apps/ckfinder/3.4.5/core/connector/php/connector.php?command=QuickUpload&type=Images',
+
+    });*/
+                                </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                    <div class="row mT-10">
+                        <div class="col text-left">
+                            <h5>Carrousel de photos</h5>
+                        </div>
+                    </div>
+                    {% include('actualite/form_manage_actualite.html.twig')  %}
+                        <div class="row mT-10">
+                            <div class="col text-right">
+                                <div class="form-group">
+                                    <button class="btn btn-primary js-save-actualite">Valider</button>
+                                </div>
+                            </div>  
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock body %}

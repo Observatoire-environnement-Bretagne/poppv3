@@ -1,0 +1,8 @@
+.structure_logo,.ressource_logo{
+	text-align:center;
+	transition: all 200ms ease-in-out;
+  }
+  .structure_logo:hover, .ressource_logo:hover{
+	  transition: all 200ms ease-in-out;
+	  transform:scale(1.1);
+  }

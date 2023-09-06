@@ -1,0 +1,18 @@
+
+<div class="layer w-100">
+    <div class="form-group row">
+        <label for="SelectStructureOpp" class="col-sm-4 col-form-label">Structure OPP</label>
+        <div class="col-sm-8">
+            <select id="SelectStructureOpp" class="form-control">
+                <option value='all'>-Tout-</option>
+                {% for porteurOppId, porteurOppNom in structuresOpp %}
+                {% if porteurOppId in app.session.get('critere_search_series')['porteurOppId'] %}
+                    <option value="{{ porteurOppId }}" selected>{{ porteurOppNom }}</option>
+                {% else %}
+                    <option value="{{ porteurOppId }}">{{ porteurOppNom }}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>

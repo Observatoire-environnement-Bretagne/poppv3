@@ -1,0 +1,177 @@
+
+<input id="son_id" type="hidden" class="form-control form-son" />
+<div class="row mT-10">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="son_titre">Titre du son * </label>
+            <input id="son_titre" type="text" class="form-control form-son" placeholder="Titre * " required />
+        </div>
+    </div>
+</div>
+<div class="row mT-10">
+    <div class="col-md-6">
+        <label for="son_auteur">Auteur / Preneur de son * </label>
+        <div class="form-group">
+            <input id="son_auteur" type="text" class="form-control form-son" placeholder="Auteur / Preneur de son * " required/>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="son_struct_resp_id">Structure responsable de la création du contenu * </label>
+            <select class="form-control form-son" id="son_struct_resp_id" required>
+                {% for structureOpp in structuresOpp %}
+                    <option value="{{ structureOpp.porteurOppId }}">{{ structureOpp.porteurOppNom }}</option>
+                {% endfor %}            
+            </select> 
+        </div>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-12">
+        <label for="son_presentation">Présentation du son * </label>
+        <textarea type='text' id="son_presentation" placeholder="" class="form-control form-son" required></textarea>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-12">
+        <label for="son_lien_paysage">Lien avec le paysage pour la personne interviewée ou pour le preneur de l’ambiance sonore </label>
+        <textarea type='text' id="son_lien_paysage" placeholder="" class="form-control form-son"></textarea>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="son_date">Date d'enregistrement *</label>
+            <input type='date' class="form-control form-son" id="son_date" placeholder=""/>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <div class="form-group">
+                <label for="son_type">Type *</label>
+                <select class="form-control form-son" id="son_type" required>
+                    <option value="Ambiance">Ambiance</option>
+                    <option value="Témoignage">Témoignage</option>
+                </select> 
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="son_format">Format * </label>
+            <select class="form-control form-son" id="son_format" required>
+                <option value="Audio">Audio</option>
+                <option value="Vidéo">Vidéo</option>
+            </select> 
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="son_heure">Heure</label>
+            <input id="son_heure" placeholder="" class="form-control form-son" />
+        </div>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="son_type_mat">Type de matériel</label>
+            <input type='text' id="son_type_mat" placeholder="" class="form-control form-son" />
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="son_traitement">Traitement du fichier</label>
+            <input type='text' id="son_traitement" placeholder="" class="form-control form-son" />
+        </div>
+    </div>
+</div>
+<div class="row mT-10">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="son_protocole">Protocole / Méthode d'enregistrement</label>
+            <input id="son_protocole" type="text" class="form-control form-son" placeholder="" />
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="son_contexte">Contexte de l'enregistrement</label>
+            <input id="son_contexte" type="text" class="form-control form-son"  />
+        </div>
+    </div>
+</div>
+<div class="row mT-10">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="son_condition_meteo">Conditions météorologiques</label>
+            <input id="son_condition_meteo" type="text" class="form-control form-son"  />
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="son_num_photo">Numéro de la photo dans {{ "labelLaSerie"|trans }} *</label>
+            <input id="son_num_photo" type="number" class="form-control form-son" required/>
+        </div>
+    </div>
+</div>
+<div class="row mT-10">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="son_langue_id">Langue *</label>
+            <select class="form-control form-son" id="son_langue_id" name="son_langue_id" required>
+                {% for langue in langues %}
+                    <option value="{{ langue.langueId }}">{{ langue.langueNom }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="son_licence_id">Licence du son *</label>
+            <select class="form-control form-son" id="son_licence_id" required>
+                {% for licence in licences %}
+                    <option value="{{ licence.licenceId }}">{{ licence.licenceNom }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-12">
+        <label for="son_lieu">Lieu de la prise de son *</label>
+        <textarea type='text' id="son_lieu" placeholder="" class="form-control form-son" required></textarea>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="son_duree">Durée (mn) *</label>
+            <input id="son_duree" type="number" class="form-control form-son" required />
+        </div>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-12">
+        <input id="son_file_action" type="hidden" class="form-control form-son" />
+        <input id="son_file_name" type="hidden" class="form-control form-son" />
+        <input id="son_file_size" type="hidden" class="form-control form-son" />
+        <input id="son_file_url" type="hidden" class="form-control form-son" />
+        <h6>Son / Vidéo * </h6>
+        <form id="addSonDropzone" name="addSonDropzone" action="{{path('addPhoto')}}" class="dropzone" method="post" enctype="multipart/form-data">
+            <div class="fallback">
+                <input type="file"/>
+            </div>
+        </form>
+        <span class="formErrors"></span>
+    </div>
+</div>

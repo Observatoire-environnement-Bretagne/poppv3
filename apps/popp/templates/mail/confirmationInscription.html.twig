@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% set parameters = app.session.get('parameters') %}
+  <head>
+  </head>
+
+    <body>
+        <p>Bonjour {{user.Prenom}},</p>
+        <p>
+            <div>Merci d'avoir rejoint la {{parameters.APP_NAME}}.</div>
+            <div>Vous pouvez maintenant vous connecter et laisser des commentaires sur les {{ "labelSeries"|trans }} photos.</div>
+            <div>Rendez-vous sur la popp {{ url('app_login') }}</div><br/>
+            <a href='{{ url('app_login') }}'>Accès à la {{parameters.APP_NAME}}</a>
+            <br/>
+        </p>
+        <p>  
+            <div>Cordialement,</div>
+            <div>L'équipe {{parameters.APP_NAME}}.</div>
+        </p>
+    </body>
+</html>
+
+
+

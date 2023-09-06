@@ -1,0 +1,34 @@
+{%  extends "base.html.twig" %}
+
+{% block body %}
+
+<main class='main-content bgc-grey-100'>
+  <div id='mainContent'>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="bgc-white bd bdrs-3 p-20 mB-20">
+            <div class="row mT-10">
+                <div class="col-md-12">
+                    <h4 class="c-grey-900 mB-20">Thésaurus facultatif</h4>
+                    <p>Clic droit pour créer, modifier ou supprimer un élément du thésaurus</p>
+                    <div id='treeThesaurusFac'></div>
+                </div>
+            </div>
+            <div class="row mT-10">
+                <div class="col-md-12">
+                  <button id='saveThesaurusFacultatif' class='btn btn-primary cur-p'>Enregistrer</button>
+                </div>
+          </div>
+          <div class="row mT-10">
+              <div class="col-md-12">
+                <div id='messageConfirmThesaurus'></div>
+              </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+{% endblock body %}

@@ -1,0 +1,18 @@
+
+<div class="layer w-100">
+    <div class="form-group row">
+        <label for="selectReg" class="col-sm-4 col-form-label">R&eacute;gion</label>
+        <div class="col-sm-8">
+            <select id="selectReg" class="form-control">
+            <option value='all'>-Tout-</option>
+            {% for regionId, regionNom in Regions %}
+                {% if regionId == (app.session.get('critere_search_series')['regId']|join) %}
+                <option value="{{ regionId }}" selected>{{ regionNom }}</option>
+                {% else %}
+                <option value="{{ regionId }}">{{ regionNom }}</option>
+                {% endif %}
+            {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>

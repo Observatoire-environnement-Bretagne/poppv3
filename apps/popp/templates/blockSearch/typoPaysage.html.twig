@@ -1,0 +1,17 @@
+<div class="layer w-100">
+    <div class="form-group row">
+        <label for="selectTypo" class="col-sm-4 col-form-label">{{ "labelTypologiePaysage"|trans|capitalize }}</label>
+        <div class="col-sm-8">
+            <select id="selectTypo" class="form-control">
+            <option value='all'>-Tout-</option>
+            {% for typologiePaysageId, typologiePaysageNom in TypologiePaysages %}
+                {% if typologiePaysageId in app.session.get('critere_search_series')['typoId'] %}
+                <option value="{{ typologiePaysageId }}" selected>{{ typologiePaysageNom }}</option>
+                {% else %}
+                <option value="{{ typologiePaysageId }}">{{ typologiePaysageNom }}</option>
+                {% endif %}
+            {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>

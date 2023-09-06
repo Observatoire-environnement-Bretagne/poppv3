@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<meta charset="UTF-8" >
+<!--base href="http://{{app.request.host}}"-->
+<html>
+  {% set parameters = app.session.get('parameters') %}
+  <head>
+    <style>
+    table.table-border, .table-border td, .table-border th {  
+      border-bottom: 1px solid #ddd;
+    }
+    
+    table.table-border {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    
+    .table-border  th, .table-border  td {
+      padding: 15px;
+    }
+    </style>
+  </head>
+  <body>
+    <!--TODO - en table paramètre-->
+    <table>
+      <tr>
+        <td>
+          <img src="{{parameters['URL_FOLDER_FILES']}}/custom/popp.png" height='30px' alt="logo" />
+        </td>
+        <td>
+          <p><i>Plateforme des Observatoires Photographiques du Paysage</i></p>
+        </td>
+      </tr>
+    </table>
+    <h2>{{ serie.serieTitre }}</h2>
+    <b>Structure OPP</b> : {% if serie.seriePorteurOpp %}{{serie.seriePorteurOpp.porteurOppNom}}{% endif %}
+    <br/>
+    <b>OPP</b> : {% if serie.serieOpp %}{{serie.serieOpp.oppNom}}{% endif %}
+    <br/>
+    <b>{{ "labelSerie"|trans }} {{serie.serieIdentifiantSerie}}</b>
+    <br/>
+    <b>Fr&eacute;quence de reconduction pr&eacute;vue</b> : {{serie.serieFreqInterval}} {{serie.serieFreqPeriod}}{% if serie.serieFreqPeriod != 'mois' %}(s){% endif %}
+    <br/>
+    <b>Axe(s) thématique(s)</b> : 
+    {% for axeThe in AxeTheBySerie %}
+      <p> {{axeThe.lSatAxeThematic.axeThematicNom}}</p>
+    {% endfor %}
+    <b>Licence(s) des photos {{ "labelArtAndSerie"|trans }}</b> :
+    {% for LicencePhoto in tabLicencesPhotos %}
+      <p> {{LicencePhoto.licenceNom}}</p>
+    {% endfor %}
+    {% if serie.serieDepartement %}<b>Département</b> : {{serie.serieDepartement.departementNom}} {% endif %}
+    <br/>
+    <b>Commune</b> : {{serie.serieCommune.communeNom}}
+    <br/>
+    <b>Adresse/lieu de la prise de vue</b> : {{serie.serieAdresse}}
+    <br/>
+    <b>{{ "labelEnsemblePaysager"|trans|capitalize}}</b> : {% if serie.serieEnsemblePaysage %}{{serie.serieEnsemblePaysage.ensemblePaysagerNom}}{% endif %}
+    <br/>
+    <b>Unité de paysage </b>: {% if serie.serieUnitePaysagere %}{{serie.serieUnitePaysagere.unitePaysageNom}}{% endif %}
+    <br/>
+    <b>Emplacement {{ "labelArtAndSerie"|trans }}</b> :&nbsp;
+    <div>
+      <div id="longitudeWGS84">Long : {{serie.serieGeomX}}</div>
+      <div id="latitudeWGS84">Lat : {{serie.serieGeomY}}</div>
+    </div>
+    <b>Intention du photographe :</b>
+    <p>{{ serie.serieIntention }}</p>
+    <p>Le <i>{{serie.serieDate|date('d/m/Y')}}</i></p>
+    
+
+    <h3>Changements intervenus sur la dur&eacute;e {{ "labelArtAndSerie"|trans }}</h3>
+      
+    <table class="table-border" style="font-size:0.8em">
+      <thead>
+        <tr>
+          <th>El&eacute;ments</th>
+          <th scope="col" id='col-evol-0'><center>Présence</center></th>
+          {% for evolutionPaysage in tabEvolutionPaysage %}
+            <th>{{evolutionPaysage.evolutionPaysageNom}}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for evolutionsThesaurus in tabEvolutionsThesaurus %}
+          <tr>
+            <td>{{evolutionsThesaurus.nom}}</td>
+            <td scope="col">
+              <center>
+                {% if evolutionsThesaurus.evolution[0] is defined %}
+                  {{evolutionsThesaurus.evolution[0].nb }}
+                {% else %}
+                  0
+                {% endif %}
+              </center></td>
+          {% for evolutionPaysage in tabEvolutionPaysage %}
+            <td >
+              {% if evolutionsThesaurus.evolution[evolutionPaysage.evolutionPaysageId] is defined %}
+                {{evolutionsThesaurus.evolution[evolutionPaysage.evolutionPaysageId].nb }}
+              {% else %}
+                0
+              {% endif %}
+            </td>
+          {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    {% if serie.serieRefdoc %}
+      <h2>Document de référence</h2>
+      <img src="{{parameters['URL_FOLDER_FILES']}}{{serie.serieRefdoc.documentRefFile.fileManagerUri}}" style="width:44em">
+      <b>Auteur</b> : {{serie.serieRefdoc.documentRefAuteur}}
+      <br/>
+      <b>Date</b> : {{serie.serieRefdoc.documentRefDate|date('d/m/Y')}}
+      {% if serie.serieRefdoc.documentRefCommentaireDate != '' %}
+        <br>{{serie.serieRefdoc.documentRefCommentaireDate}}
+      {% endif %}
+      <br/>
+      <b>Licence</b> : {% if serie.serieRefdoc.documentRefLicence %}{{serie.serieRefdoc.documentRefLicence.licenceNom}} {% endif %}
+      <br>
+      <b>Lieu de conservation</b> :<p> {{serie.serieRefdoc.documentRefLieuConservation}}</p><br/>
+      <b>Description précise du document</b> : <p>{{serie.serieRefdoc.documentRefDesc|raw}}</p><br/>
+    {% endif %}
+    {% for photo in photos %}
+      <h2>Photo n°{{ loop.index }}</h2>
+      <img src="{{parameters['URL_FOLDER_FILES']}}{{photo.photo.photoFile.fileManagerUri}}" style="width:44em">
+      <b>Auteur de la reconduction</b> : {{photo.photo.photoAuteur}}
+      <br/>
+      <b>Date</b> : {{photo.photo.photoDatePrise|date('d/m/Y')}}
+      <br/>
+      <b>Licence</b> : {% if photo.photo.photoLicence %}{{photo.photo.photoLicence.licenceNom}} {% endif %}
+      
+      <h3>Description des éléments / des changements :</h3>
+      <p>{{ photo.photo.photoDescChangement }}</p>
+
+      <h3>Changements par rapport &agrave; la photo pr&eacute;c&eacute;dente</h3>
+      {{ photo.tableEvol|raw }}
+    {% endfor %}
+    
+  </body>
+</html>

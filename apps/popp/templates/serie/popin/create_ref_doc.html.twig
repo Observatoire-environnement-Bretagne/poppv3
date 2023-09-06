@@ -1,0 +1,210 @@
+
+<input id="document_ref_id" type="hidden" class="form-control form-refdoc" />
+<input id="document_ref_action" type="hidden" class="form-control form-refdoc" />
+
+<div class="row mT-10">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="document_ref_identifiant_int">Identifiant du document de référence * </label>
+            <input id="document_ref_identifiant_int" type="text" class="form-control form-refdoc" placeholder="Identifiant du document de référence * " required />
+        </div>
+    </div>
+</div>
+<div class="row mT-10">
+    <div class="col-md-12">
+        <label for="document_ref_auteur">Auteur / Photographe </label>
+        <div class="form-group">
+            <input id="document_ref_auteur" type="text" class="form-control form-refdoc" placeholder="Auteur / Photographe"/>
+        </div>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-12">
+        <label for="document_ref_desc">Description précise du document * </label>
+        <textarea type='text' id="document_ref_desc" placeholder="" class="form-control form-refdoc" required></textarea>
+    </div>
+</div>
+<div class="row mT-10">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="document_ref_date">Date *</label>
+            <input type='date' class="form-control form-refdoc" id="document_ref_date" placeholder=""/>
+            <!--div class="timepicker-input input-icon form-group">
+                <div class="input-group">
+                    <div class="input-group-addon bgc-white p-0">
+                        <i class="ti-calendar"></i>
+                    </div>
+                    <input id='document_ref_date' type="text" class="form-control date-picker form-refdoc" placeholder="__/__/____" 
+                    data-provide="datepicker" value="" required>
+                </div>
+            </div-->
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="document_ref_heure">Heure</label>
+            <input id="document_ref_heure" class="form-control form-refdoc" placeholder=""/>
+        </div>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-12">
+        <label for="document_ref_commentaire_date">Commentaire lié à la date</label>
+        <textarea type='text' id="document_ref_commentaire_date" placeholder="" class="form-control form-refdoc" ></textarea>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="document_ref_type">Type * </label>
+            <select class="form-control form-refdoc" id="document_ref_type" required>
+                <option value=""></option>
+                <option value="Photo">Photo</option>
+                <option value="Tableau">Tableau</option>
+                <option value="Dessin">Dessin</option>
+                <option value="Carte postale ancienne">Carte postale ancienne</option>
+                {#% for typeDoc in typesDoc %}
+                    <option value="{{ format.formatId }}">{{ format.formatNom }}</option>
+                {% endfor %#}            
+            </select> 
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="document_ref_langue_id">Langue</label>
+            <select class="form-control form-refdoc" id="document_ref_langue_id" >
+            {% for langue in langues %}
+                <option value="{{ langue.langueId }}" >{{ langue.langueNom }}</option>
+            {% endfor %}   
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="document_ref_source">Source du document</label>
+            <input type='text' id="document_ref_source" placeholder="" class="form-control form-refdoc" />
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="document_ref_site">Site de la prise de vue</label>
+            <input type='text' id="document_ref_site" placeholder="" class="form-control form-refdoc" />
+        </div>
+    </div>
+</div>
+<div class="row mT-10">
+    <!--div class="col-md-6">
+        <div class="form-group">
+            <label for="document_ref_nom">Nom du fichier *</label>
+            <input id="document_ref_nom" type="text" class="form-control form-refdoc" placeholder="" required/>
+        </div>
+    </div-->
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="document_ref_licence_id">Licence *</label>
+            <select class="form-control form-refdoc" id="document_ref_licence_id" required>
+                <option value=""></option>
+                {% for licence in licences %}
+                    <option value="{{ licence.licenceId }}">{{ licence.licenceNom }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="document_ref_sous_titre">Sous-titre</label>
+            <input id="document_ref_sous_titre" type="text" class="form-control form-refdoc"/>
+        </div>
+    </div>
+</div>
+<div class="row mT-10">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="document_ref_periode">Période / Saison de la photographie</label>
+            <input id="document_ref_periode" type="text" class="form-control form-refdoc"  />
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="document_ref_moment">Moment de la prise de vue</label>
+            <input id="document_ref_moment" type="text" class="form-control form-refdoc" />
+        </div>
+    </div>
+</div>
+<div class="row mT-10">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="document_ref_lieu_conservation">Lieu de conservation *</label>
+            <input id="document_ref_lieu_conservation" type="text" class="form-control form-refdoc" required />
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="document_ref_orientation">Orientation de la prise de vue</label>
+            <input id="document_ref_orientation" type="text" class="form-control form-refdoc" />
+        </div>
+    </div>
+</div>
+<div class="row mT-10">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="document_ref_altitude">Altitude (prise de vue aérienne)</label>
+            <input id="document_ref_altitude" type="number" class="form-control form-refdoc"  />
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="document_ref_coef_maree">Coefficient de marée</label>
+            <input id="document_ref_coef_maree" type="number" class="form-control form-refdoc" />
+        </div>
+    </div>
+</div>
+<div class="row mT-10">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="document_ref_format">Format</label>
+            <input type='text' id="document_ref_format" placeholder="" class="form-control form-refdoc" />
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="document_ref_cote_doc">Cote du document</label>
+            <input id="document_ref_cote_doc" type="text" class="form-control form-refdoc"  />
+        </div>
+    </div>
+</div>
+<div class="row mT-10">
+    <!--div class="col-md-6">
+        <div class="form-group">
+            <label for="document_ref_licence_id">Licence *</label>
+            <select class="form-control form-refdoc" id="document_ref_licence_id" required>
+                <option value=""></option>
+                {#% for licence in licences %}
+                    <option value="{{ licence.licenceId }}">{{ licence.licenceNom }}</option>
+                {% endfor %#}
+            </select>
+        </div>
+    </div-->
+</div>
+
+<div class="row mT-10">
+    <div class="col-md-12">
+        <input id="document_ref_file_action" type="hidden" class="form-control form-refdoc" />
+        <input id="document_ref_file_titre" type="hidden" class="form-control form-refdoc" />
+        <input id="document_ref_file_poids" type="hidden" class="form-control form-refdoc" />
+        <input id="document_ref_file_url" type="hidden" class="form-control form-refdoc" />
+        <h6>Document de référence * </h6>
+        <form id="addDocRefDropzone" name="addDocRefDropzone" action="{{path('addPhoto')}}" class="dropzone" method="post" enctype="multipart/form-data">
+            <div class="fallback">
+                <input type="file"/>
+            </div>
+        </form>
+        <span class="formErrors"></span>
+    </div>
+</div>

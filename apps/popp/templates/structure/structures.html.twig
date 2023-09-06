@@ -1,0 +1,123 @@
+{%  extends "base.html.twig" %}
+
+{% block body %}
+
+<main class='main-content bgc-grey-100'>
+  <div id='mainContent'>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="bgc-white bd bdrs-3 p-20 mB-20">
+            <div class="row mT-10">
+                <div class="col-md-8">
+                    <h4 class="c-grey-900 mB-20">Liste des structures</h4>
+                </div>
+                <div class="col-md-4  text-right">
+                    <div class="form-group">
+                        <a href="{{ path('createStructure')}}"><button type="button" class="btn btn-primary cur-p" id='addStructure'>Ajouter une structure</button></a><br/><br/>
+                    </div>
+                </div>
+            </div>
+            <table id="dataTableStructures" class="table table-striped table-bordered" cellspacing="0" width="100%">
+              <thead>
+                <tr>
+                  <th>Id</th>
+                  <th>Nom</th>
+                  <th>Description</th>
+                  <th class="collapse">Adresse</th>
+                  <th>Contact</th>
+                  <th class="collapse" >Description technique</th>
+                  <th class="collapse" >Email</th>
+                  <th class="collapse">T&eacute;l&eacute;phone</th>
+                  <th style="min-width:100px">Actions</th>
+                  <th class="collapse" >Site web</th>
+                  <th class="collapse" >Pr&eacute;ccupation paysag&egrave;re</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for structure in structures %}
+                <tr>
+                  <td id ="strucId">{{structure.PorteurOppId}}</td>
+                  <td class='cur-p'>{{structure.PorteurOppNom}}</td>
+                  <td class='cur-p'>{{structure.PorteurOppDescCourte}}</td>
+                  <td class="collapse">{{structure.PorteurOppAdresse}}</td>
+                  <td class='cur-p'>{{structure.PorteurOppContactRef}}</td>
+                  <td class="collapse" >{{structure.PorteurOppDescTech}}</td>
+                  <td class="collapse" >{{structure.PorteurOppEmail}}</td>
+                  <td class="collapse">{{structure.PorteurOppTelephone}}</td>
+                  <td class="collapse" >{{structure.PorteurOppSiteWeb}}</td>
+                  <td class="collapse" >{{structure.PorteurOppPreocupationPaysagere}}</td>
+                  <td>
+                    <a class="modify" ><i class="c-light-blue-500 cur-p ti ti-pencil"></i></a>
+                    <!--a class="remove"><i class="c-red-500 cur-p ti ti-trash"></i></a-->
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Modal -->
+<div class="modal fade bd-example-modal-lg" id="modalStructure" tabindex="-1" role="dialog" aria-labelledby="modalStructure" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalStructure">Structure</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="infoStructure"></div>
+        <div class="form-group">
+            <label  class="text-normal text-dark">Nom :</label>
+            <input class="form-control" type="text" id="structureName" name="structureName" required="required" />
+        </div>
+        <div class="form-group">
+            <label for="structureDesc" class="text-normal text-dark">Description :</label>
+            <textarea class="form-control" type="text" id="structureDesc" name="structureDesc" value=""></textarea>
+        </div>
+        <div class="form-group">
+            <label for="structureAdrs" class="text-normal text-dark">Adresse :</label>
+            <input class="form-control" type="text" id="structureAdrs" name="structureAdrs" value="" />
+        </div>
+        <div class="form-group">
+            <label for="structureContactRef" class="text-normal text-dark">Contact r&eacute;f&eacute;rence :</label>
+            <input class="form-control" type="text" id="structureContactRef" name="structureContactRef" value="" />
+        </div>
+        <div class="form-group">
+            <label for="structureDescTech" class="text-normal text-dark">Description technique : </label>
+            <textarea class="form-control" type="text" id="structureDescTech" name="structureDescTech" value=""></textarea>
+        </div>     
+        <div class="form-group">
+            <label for="structureEmail" class="text-normal text-dark">Email:</label>
+            <input class="form-control" type="text" id="structureEmail" name="structureEmail" value="" />
+        </div>
+        <div class="form-group">
+            <label for="structureTel" class="text-normal text-dark">T&eacute;l&eacute;phone :</label>
+            <input class="form-control" type="text" id="structureTel" name="structureTel" value="" />
+        </div>
+        <div class="form-group">
+            <label for="structureSiteWeb" class="text-normal text-dark">Site web:</label>
+            <input class="form-control" type="text" id="structureSiteWeb" name="structureSiteWeb" value="" />
+        </div>
+        <div class="form-group">
+            <label for="structurePreocPaysagere" class="text-normal text-dark">Pr&eacute;ocupation paysag&egrave;re :</label>
+            <textarea class="form-control" type="text" id="structurePreocPaysagere" name="structurePreocPaysagere" value=""></textarea>
+        </div>
+        {#{ dump(app) }#}
+        <input type="hidden" id="structureId" name="structureId" />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+        <button type="button" id="saveStructure" class="btn btn-primary">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock body %}

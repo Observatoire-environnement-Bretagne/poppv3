@@ -1,0 +1,125 @@
+{%  extends "base.html.twig" %}
+
+{% block body %}
+        {% set parameters = app.session.get('parameters') %}
+        <main class='main-content bgc-grey-100'>
+          <div id='mainContent'>
+            <div class="container-fluid">
+                <div class="row mT-10">
+                    <div class="col-md-8">
+                        <h4 class="c-grey-900 mB-20">Ressources</h4>
+                    </div>
+                    {% if is_granted("ROLE_ADMIN") %}
+                        <div class="col-md-4  text-right">
+                            <div class="form-group">
+                                <button type="button" id="addRessource" class="btn btn-primary" data-toggle="modal" data-target="#modalRessource" rel="modalRessource:open">Ajouter une ressource</button>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+              <div class="row">
+                <div class="col-md-12">
+                    <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                        <div id="messageConfirmCreateRessource"></div>
+                        <div class="row mT-30">
+                            {% for ressource in ressources %}
+                                <div class="col-md-4 text-center p-20 mT-20 ressource_logo">
+                                    <div class="col-12 mB-20">
+                                        <a href="{{path('showRessource', {ressourceId : ressource.ressourceId})}}">{% if ressource.ressourceLogo %}<img class="img-fluid" src='{{parameters['URL_FOLDER_FILES']}}/{{ressource.ressourceLogo.fileManagerUri}}' style="max-height:100px"/>{% endif %}</a>
+                                    </div>
+                                    <div class="col-12" style="margin-top:auto; margin-bottom:auto">
+                                        <a href="{{path('showRessource', {ressourceId : ressource.ressourceId})}}">{{ ressource.RessourceTitre }}</a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        {#<table id="ressourceTable" name="ressourceTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Id</th>
+                                    <th scope="col">Titre</th>
+                                    <th scope="col">Description</th>
+                                    {% if is_granted("ROLE_ADMIN") %} 
+                                    <th scope="col">Action</th>
+                                    {% endif %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ressource in ressources %}
+                                <tr>
+                                    <th scope="row">{{ ressource.ressourceId }}</th>
+                                    <td><a href="{{path('showRessource', {ressourceId : ressource.ressourceId})}}">{{ ressource.ressourceTitre }}</a></td>
+                                    <td>{{ ressource.ressourceDesc }}</td>
+                                    {% if is_granted("ROLE_ADMIN") %} 
+                                    <td style="vertical-align:middle"><a class="remove"><i class="c-red-500 cur-p ti ti-trash"></i></a></td>
+                                    {% endif %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>#}
+                        {#//Modal#}
+                        <div class="modal fade" id="modalRessource" tabindex="-1" role="dialog" aria-labelledby="modalRessource" aria-hidden="true">
+                          <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="modalRessource">Ajouter une ressource</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                <div id="infoRessource"></div>
+                                <div class="form-group">
+                                    <label  class="text-normal text-dark">Titre :</label>
+                                    <input class="form-control ressourceRequired" type="text" id="addTitleRessource" name="addTitleRessource" required/>
+                                </div>
+                                <div class="form-group">
+                                    <label  class="text-normal text-dark">Question :</label>
+                                    <textarea class="form-control ressourceRequired" type="text" id="addQuestionRessource" name="addQuestionRessource" rows=3 required style="height:100px"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="addDescRessource" class="text-normal text-dark">Description / réponse :</label>
+                                    <textarea class="form-control ressourceRequired" type="text" id="addDescRessource" name="addDescRessource" rows=3 required style="height:100px"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="addTitreDoc" class="text-normal text-dark">Titre du document :</label>
+                                    <input class="form-control ressourceRequired" type="text" id="addTitreDoc" name="addTitreDoc" required >
+                                </div>
+                                <div class="form-group"> 
+                                    <label for="addRessourceDoc">Document : </label>
+                                    <input id="ressourceRessourceFileId" name="ressourceDocFileId" value="" style="display:none"/>
+                                    <form id="addRessourceDoc" name="addRessourceDoc" action="{{path('insertFaqFile')}}" class="dropzone" method="post" enctype="multipart/form-data">
+                                        <div class="fallback">
+                                            <input id="add_ressource_doc" name="add_ressource_doc" type="file"/>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="form-group"> 
+                                    <label for="addRessourceDoc">Logo : </label>
+                                    <input id="ressourceRessourceLogoId" name="ressourceLogoId" value="" style="display:none"/>
+                                    <form id="addRessourceLogo" name="addRessourceLogo" action="{{path('insertFaqFile')}}" class="dropzone" method="post" enctype="multipart/form-data">
+                                        <div class="fallback">
+                                            <input id="add_ressource_logo" name="add_ressource_logo" type="file"/>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="form-group">
+                                    <label for="addNumOrdreRessource" class="text-normal text-dark">Numéro d'ordre :</label>
+                                    <input class="form-control" type="number" id="addNumOrdreRessource" name="addNumOrdreRessource"/>
+                                </div>
+                                <input type="hidden" id="iduser" name="iduser" />
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                                <button type="button" id="createRessource" class="btn btn-primary">Enregistrer</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+{% endblock body %}

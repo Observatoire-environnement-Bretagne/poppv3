@@ -1,0 +1,1231 @@
+{%  extends "base.html.twig" %}
+
+{% block body %}
+    
+{% set serieId = 'new' %}
+{%if action != 'new'%}
+    {%  set serieId = serie.serieId %} 
+{% endif %}
+{% set parameters = app.session.get('parameters') %}
+{% set stepObjet = 1 %}
+{% set stepGeographie = 2 %}
+{% set stepFicheTerrain = 3 %}
+{% set stepEmplacement = 4 %}
+{% set stepPhotos = 5 %}
+{% set stepDocumentationsAnnexes = 6 %}
+<style>
+    ul.step-anchor > li.nav-item > a{
+        margin-top: 0.5rem;
+    }
+    
+    .table-striped tbody tr.rowDelete{
+    border: 2px solid #AD0032;
+    background-color: #DEBBC5;
+}
+</style>
+<!--script src="https://cdn.ckeditor.com/4.13.1/standard/ckeditor.js"></script-->
+<script src="https://cdn.ckeditor.com/ckeditor5/19.0.0/classic/ckeditor.js"></script>
+<!--script src="./../../node_modules/ckeditor/ckeditor.js"></script-->
+
+
+<div id="js-message"></div>     
+<main class='main-content bgc-grey-100'>
+    <div id='mainContent'>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                        <div {% if not "showButtonWizardTop"|trans %} hidden {% endif %} class="row m-3">
+                            <div class="col-md-12 center-align contentButtonWizard" id='contentButtonWizardTop'>
+                                
+                            </div>
+                        </div>
+                        <div id="smartwizard" class="sw-theme-dots" >
+                            <ul class="step-anchor" >
+                                {#% for numWizard, wizard in parameters.dictionnaire.wizardOrder %#}
+                                {% for idx, wizard in "wizardOrder"|trans|split(';') %}
+                                {% set numWizard = idx+1 %}
+                                    {#% switch wizard %}
+                                        {% case 'Objet' %}
+                                            {% set stepObjet = numWizard %}
+                                        {% case 'Géographie' %}
+                                            {% set stepGeographie = numWizard %}
+                                    {% endswitch %#}
+
+
+                                    {% if wizard == "Objet" %}
+                                        {% set stepObjet = numWizard %}
+                                    {% elseif wizard == "Géographie" %}
+                                        {% set stepGeographie = numWizard %}
+                                    {% elseif wizard == "Fiche terrain" %}
+                                        {% set stepFicheTerrain = numWizard %}
+                                    {% elseif wizard == "Emplacement" %}
+                                        {% set stepEmplacement = numWizard %}
+                                    {% elseif wizard == "Photos" %}
+                                        {% set stepPhotos = numWizard %}
+                                    {% elseif wizard == "Documentations annexes" %}
+                                        {% set stepDocumentationsAnnexes = numWizard %}
+                                    {% endif %}
+                                    <li>
+                                        <a href="#step-{{numWizard}}">
+                                            <span class="step_descr">
+                                                {{numWizard}}<br />
+                                                <small>{{wizard}}</small>
+                                            </span>
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                                <!--li>
+                                    <a href="#step-1">
+                                        <span class="step_descr">
+                                            1<br />
+                                            <small>Objet</small>
+                                        </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#step-2">
+                                    <span class="step_descr">
+                                            2<br />
+                                            <small>Géographie</small>
+                                        </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#step-3">
+                                    <span class="step_descr">
+                                            3<br />
+                                            <small>Fiche terrain</small>
+                                        </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#step-4">
+                                    <span class="step_descr">
+                                            4<br />
+                                            <small>Emplacement</small>
+                                        </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#step-5">
+                                    <span class="step_descr">
+                                            5<br />
+                                            <small>Photos</small>
+                                        </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#step-6">
+                                    <span class="step_descr">
+                                            6<br />
+                                            <small>Documentations annexes</small>
+                                        </span>
+                                    </a>
+                                </li-->
+                            </ul>
+                            <input id="stepObjet" type="hidden" value="{{stepObjet}}">
+                            <input id="stepGeographie" type="hidden" value="{{stepGeographie}}">
+                            <input id="stepFicheTerrain" type="hidden" value="{{stepFicheTerrain}}">
+                            <input id="stepEmplacement" type="hidden" value="{{stepEmplacement}}">
+                            <input id="stepPhotos" type="hidden" value="{{stepPhotos}}">
+                            <input id="stepDocumentationsAnnexes" type="hidden" value="{{stepDocumentationsAnnexes}}">
+                            <div>
+                                <div id="step-{{ stepObjet }}" class="">
+                                    <div class="row mT-1">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <input id="serie_id" name="serie_id" type="text" class="form-control serie collapse" placeholder="ID" required value="{{ serieId }}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="serie_objet_opp">{{"labelNomSeriePhoto"|trans}} * </label>
+                                                <input id="serie_objet_titre" name="serie_objet_titre" type="text" class="form-control serie" placeholder="Titre - *" required {% if action == 'update' and serie %} value="{{ serie.serieTitre }}"{% endif %}/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mT-1">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="serie_objet_opp">OPP * </label>
+                                                <select id="serie_objet_opp" name="serie_objet_opp" class="form-control serie" required>
+                                                    <option value="" selected> - S&eacute;lectionnez -</option>
+                                                    {%  set oppId = -1  %}
+                                                    {%  if serie.serieOpp %}
+                                                        {%  set oppId = serie.serieOpp.oppId  %}
+                                                    {% endif  %}
+                                                    {% for opp in opps %}
+                                                        {% if action == 'update' and opp.oppId == oppId %}
+                                                            <option value="{{ opp.oppId }}" data-structure="{% if opp.oppPorteurOpp %}{{opp.oppPorteurOpp.porteurOppId}}{% endif %}" selected>{{ opp.oppNom }} </option>
+                                                        {% else %}
+                                                            <option value="{{ opp.oppId }}" data-structure="{% if opp.oppPorteurOpp %}{{opp.oppPorteurOpp.porteurOppId}}{% endif %}">{{ opp.oppNom }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="serie_objet_thematique">Axe(s) th&eacute;matique(s) {% if "AxeThematique" in "fieldRequired"|trans|split(";") %} * {% endif %}</label>
+                                                <select id="serie_objet_thematique" data-placeholder="S&eacute;lectionnez le(s)" class="form-control chosen-select serie" multiple tabindex="99" {% if "AxeThematique" in "fieldRequired"|trans|split(";") %} required {% endif %}>
+                                                    {% for axeThematicId, axeThematicNom in axeThematics %}
+                                                        {% if axeThematicId in lstAxeThematic %}
+                                                            <option value="{{ axeThematicId }}" selected>
+                                                        {% else %}
+                                                            <option value="{{ axeThematicId }}">
+                                                        {% endif %}
+                                                        {{ axeThematicNom }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mT-1">
+                                        <div class="col-md-12">
+                                            <h6>Description</h6>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="serie_desc_intention">{{ "labelIntentionPhotographe"|trans|capitalize }} *</label>
+                                                <textarea id="serie_desc_intention" name="serie_desc_intention" class="form-control serie" placeholder="D&eacute;crivez les intentions du photographe" required>{% if action == 'update' %}{{ serie.serieIntention }}{% endif %}</textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mT-1">
+                                        <div class="col-md-12 mb-1">
+                                            <div class="well well-sm well-primary">
+                                                    <label for="serie_desc_fine_edit">Description fine des &eacute;l&eacute;ments de paysage &agrave; la premi&egrave;re prise de vue {% if "descFine" in "fieldRequired"|trans|split(";") %} * {% endif %}</label>
+                                                    <textarea name="serie_desc_fine_edit" id="serie_desc_fine_edit" class="serie" rows="10" cols="80"  {% if "descFine" in "fieldRequired"|trans|split(";") %} required {% endif %}>{% if action == 'update' %}{{ serie.serieDesc }}{% else %}Ecrivez la description{% endif %}</textarea>
+                                                    <script>
+                                                        // Replace the <textarea id="serie_desc_fine_edit"> with a CKEditor
+                                                        // instance, using default configuration.
+                                                        
+                                                        ClassicEditor
+                                                            .create( document.querySelector( '#serie_desc_fine_edit' ), {
+                                                                extraPlugins: [ MyCustomUploadAdapterPlugin ],
+                                                            } )
+                                                            .then( editor => {
+                                                                myEditor = editor;
+                                                            } )
+                                                            .catch( error => {
+                                                                console.error( error );
+                                                            } );
+
+                                                            
+                                                            function MyCustomUploadAdapterPlugin( editor ) {
+                                                                editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
+                                                                    // Configure the URL to the upload script in your back-end here!
+                                                                    return new MyUploadAdapter( loader );
+                                                                };
+                                                            }
+                                                            class MyUploadAdapter {
+                                                                constructor( loader ) {
+                                                                    // The file loader instance to use during the upload.
+                                                                    this.loader = loader;
+                                                                }
+
+                                                                // Starts the upload process.
+                                                                upload() {
+                                                                    return this.loader.file
+                                                                        .then( file => new Promise( ( resolve, reject ) => {
+                                                                            this._initRequest();
+                                                                            this._initListeners( resolve, reject, file );
+                                                                            this._sendRequest( file );
+                                                                        } ) );
+                                                                }
+
+                                                                // Aborts the upload process.
+                                                                abort() {
+                                                                    if ( this.xhr ) {
+                                                                        this.xhr.abort();
+                                                                    }
+                                                                }
+
+                                                                // Initializes the XMLHttpRequest object using the URL passed to the constructor.
+                                                                _initRequest() {
+                                                                    const xhr = this.xhr = new XMLHttpRequest();
+
+                                                                    // Note that your request may look different. It is up to you and your editor
+                                                                    // integration to choose the right communication channel. This example uses
+                                                                    // a POST request with JSON as a data structure but your configuration
+                                                                    // could be different.
+                                                                    xhr.open( 'POST', "{{ path('upload_img') }}", true );
+                                                                    xhr.responseType = 'json';
+                                                                }
+
+                                                                // Initializes XMLHttpRequest listeners.
+                                                                _initListeners( resolve, reject, file ) {
+                                                                    const xhr = this.xhr;
+                                                                    const loader = this.loader;
+                                                                    const genericErrorText = `Couldn't upload file: ${ file.name }.`;
+
+                                                                    xhr.addEventListener( 'error', () => reject( genericErrorText ) );
+                                                                    xhr.addEventListener( 'abort', () => reject() );
+                                                                    xhr.addEventListener( 'load', () => {
+                                                                        const response = xhr.response;
+
+                                                                        // This example assumes the XHR server's "response" object will come with
+                                                                        // an "error" which has its own "message" that can be passed to reject()
+                                                                        // in the upload promise.
+                                                                        //
+                                                                        // Your integration may handle upload errors in a different way so make sure
+                                                                        // it is done properly. The reject() function must be called when the upload fails.
+                                                                        if ( !response || response.error ) {
+                                                                            return reject( response && response.error ? response.error.message : genericErrorText );
+                                                                        }
+
+                                                                        // If the upload is successful, resolve the upload promise with an object containing
+                                                                        // at least the "default" URL, pointing to the image on the server.
+                                                                        // This URL will be used to display the image in the content. Learn more in the
+                                                                        // UploadAdapter#upload documentation.
+                                                                        resolve( {
+                                                                            default: response.url
+                                                                        } );
+                                                                    } );
+
+                                                                    // Upload progress when it is supported. The file loader has the #uploadTotal and #uploaded
+                                                                    // properties which are used e.g. to display the upload progress bar in the editor
+                                                                    // user interface.
+                                                                    if ( xhr.upload ) {
+                                                                        xhr.upload.addEventListener( 'progress', evt => {
+                                                                            if ( evt.lengthComputable ) {
+                                                                                loader.uploadTotal = evt.total;
+                                                                                loader.uploaded = evt.loaded;
+                                                                            }
+                                                                        } );
+                                                                    }
+                                                                }
+
+                                                                // Prepares the data and sends the request.
+                                                                _sendRequest( file ) {
+                                                                    // Prepare the form data.
+                                                                    const data = new FormData();
+
+                                                                    data.append( 'upload', file );
+
+                                                                    // Important note: This is the right place to implement security mechanisms
+                                                                    // like authentication and CSRF protection. For instance, you can use
+                                                                    // XMLHttpRequest.setRequestHeader() to set the request headers containing
+                                                                    // the CSRF token generated earlier by your application.
+
+                                                                    // Send the request.
+                                                                    this.xhr.send( data );
+                                                                }
+                                                            }
+
+                                                    </script>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mT-1">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="serie_structure_opp">Structure OPP *</label>
+                                                <select class="form-control serie" id="serie_structure_opp" name="serie_structure_opp" required>
+                                                    <option value="" selected> - S&eacute;lectionnez -</option>
+                                                    {%  set structureOppId = -1  %}
+                                                    {%  if serie.seriePorteurOpp %}
+                                                        {%  set structureOppId = serie.seriePorteurOpp.porteurOppId  %}
+                                                    {% endif  %}
+                                                    {% for structureOpp in structuresOpp %}
+                                                        {% if action == 'update' and structureOpp.porteurOppId == structureOppId %}
+                                                            <option value="{{ structureOpp.porteurOppId }}" selected>{{ structureOpp.porteurOppNom }}</option>
+                                                        {% else %}
+                                                            <option value="{{ structureOpp.porteurOppId }}">{{ structureOpp.porteurOppNom }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6" {% if not "showSerieLangue"|trans %} hidden {% endif %}>
+                                            <div class="form-group">
+                                                <label for="serie_langue">Langue *</label>
+                                                <select class="form-control serie" id="serie_langue" name="serie_langue" {% if "showSerieLangue"|trans %} required {% endif %}>
+                                                    {%  set langueId = defaultValue.langue  %}
+                                                    {%  if serie.serieLangue %}
+                                                        {%  set langueId = serie.serieLangue.langueId  %}
+                                                    {% endif  %}
+                                                    {% for langue in langues %}
+                                                        {% if langue.langueId == langueId %}
+                                                            <option value="{{ langue.langueId }}" selected>{{ langue.langueNom }}</option>
+                                                        {% else %}
+                                                            <option value="{{ langue.langueId }}">{{ langue.langueNom }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mT-1" {% if not "showSerieDate"|trans and not "showSerieFormat"|trans %} hidden {% endif %}>
+                                        <div class="col-md-6" {% if not "showSerieDate"|trans %} hidden {% endif %}>
+                                            <div class="form-group">
+                                                <label for="serie_datepicker">Date *</label>
+                                                <input type='date' class="form-control serie" id="serie_datepicker" placeholder="" value="{{ serie.serieDate|date("Y-m-d") }}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6" {% if not "showSerieFormat"|trans %} hidden {% endif %}>
+                                            <div class="form-group">
+                                                <label for="serie_format">Format *</label>
+                                                <select id="serie_format" class="form-control serie" {% if "showSerieFormat"|trans %}required{% endif %}>
+                                                    {%  set formatId = 3  %}
+                                                    {%  if serie.serieFormat %}
+                                                        {%  set formatId = serie.serieFormat.formatId  %}
+                                                    {% endif  %}
+                                                    {% for format in formats %}
+                                                        {% if format.formatId == formatId %}
+                                                            <option value="{{ format.formatId }}" selected>{{ format.formatNom }}</option>
+                                                        {% else %}
+                                                            <option value="{{ format.formatId }}">{{ format.formatNom }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mT-1">
+                                        <div class="col-md-12">
+                                            <h6>Identifiants</h6>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="serie_id_serie">Identifiant {{ "labelArtAndSerie"|trans }}</label>
+                                                <input id="serie_id_serie" name="serie_id_serie" class="form-control serie" placeholder="G&eacute;n&eacute;r&eacute; automatiquement au premier enregistrement" disabled {% if action == 'update' %} value="{{ serie.serieIdentifiantSerie }}"{% endif %}/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="serie_id_inter_opp">Identifiant interne OPP</label>
+                                                <input id="serie_id_inter_opp" name="serie_id_inter_opp" type="text" class="form-control serie"  {% if action == 'update' %} value="{{ serie.serieIdentifiantInt }}"{% endif %}/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="step-{{ stepGeographie }}" class="">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="serie_coverage_pays">Pays * </label>
+                                                <select class="form-control serie" id="serie_coverage_pays" name="serie_coverage_pays">
+                                                    {%  set paysId = defaultValue.pays  %}
+                                                    {%  if serie.seriePays %}
+                                                        {%  set paysId = serie.seriePays.paysId  %}
+                                                    {% endif  %}
+                                                    {% for Pays in pays %}
+                                                        {% if Pays.paysId == paysId %}
+                                                            <option value="{{ Pays.paysId }}" selected>{{ Pays.paysNom }}</option>
+                                                        {% else %}
+                                                            <option value="{{ Pays.paysId }}">{{ Pays.paysNom }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="serie_coverage_region">R&eacute;gion * </label>
+                                                <select class="form-control serie"  id="serie_coverage_region" name="serie_coverage_region">
+                                                    {%  set regionId = defaultValue.region  %}
+                                                    {%  if serie.serieRegion %}
+                                                        {%  set regionId = serie.serieRegion.regionId  %}
+                                                    {% endif  %}
+                                                    {% for region in regions %}
+                                                        {% if region.regionId == regionId %}
+                                                            <option value="{{ region.regionId }}" selected>{{ region.regionNom }}</option>
+                                                        {% else %}
+                                                            <option value="{{ region.regionId }}">{{ region.regionNom }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="serie_coverage_dep">D&eacute;partements * </label>
+                                                <select class="form-control serie" id="serie_coverage_dep" name="serie_coverage_dep">
+                                                    {%  set departementId = -1  %}
+                                                    {%  if serie.serieDepartement %}
+                                                        {%  set departementId = serie.serieDepartement.departementId  %}
+                                                    {% endif  %}
+                                                    {% for departement in departements %}
+                                                        {% if action == 'update' and departement.departementId == departementId %}
+                                                            <option value="{{ departement.departementId }}" data-code="{{ departement.departementCode}}" selected>{{ departement.departementNom }}</option>
+                                                        {% else %}
+                                                            <option value="{{ departement.departementId }}" data-code="{{ departement.departementCode}}" >{{ departement.departementNom }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">    
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="serie_coverage_com">Commune * </label>
+                                                <!--select class="form-control serie" id="serie_coverage_com" name="serie_coverage_com"-->
+                                                <select id="serie_coverage_com" {#{modifiable}#} data-placeholder="S&eacute;lectionnez le(s)" class="form-control chosen-select serie" tabindex="99">
+                                                
+                                                    {%  set communeIdSerie = -1  %}
+                                                    {%  if serie.serieCommune %}
+                                                        {%  set communeIdSerie = serie.serieCommune.communeId  %}
+                                                    {% endif  %}
+                                                    {% for communeId, communeNom in communes %}
+                                                        {% if action == 'update' and communeId == communeIdSerie %}
+                                                            <option value="{{ communeId }}" selected>{{ communeNom }}</option>
+                                                        {% else %}
+                                                            <option value="{{ communeId }}">{{ communeNom }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">    
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="serie_coverage_adrs">Adresse/lieu de la prise de vue</label>
+                                                <input id="serie_coverage_adrs" name="serie_coverage_adrs" type="text" class="form-control serie" {% if action == 'update' %} value="{{ serie.serieAdresse }}"{% endif %}/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">    
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="serie_objet_typologie">{{ "labelTypologiePaysage"|trans|capitalize}} * </label>
+                                                <select id="serie_objet_typologie" name="serie_objet_typologie" class="form-control serie" required>
+                                                    <option value="" selected> - S&eacute;lectionnez -</option>
+                                                    {%  set typologiePaysageId = -1  %}
+                                                    {%  if serie.serieTypologie %}
+                                                        {%  set typologiePaysageId = serie.serieTypologie.typologiePaysageId  %}
+                                                    {% endif  %}
+                                                    {% for typologiePaysage in typologiesPaysage %}
+                                                        {% if action == 'update' and typologiePaysage.typologiePaysageId == typologiePaysageId %}
+                                                            <option value="{{ typologiePaysage.typologiePaysageId }}" selected>{{ typologiePaysage.typologiePaysageNom }} </option>
+                                                        {% else %}
+                                                            <option value="{{ typologiePaysage.typologiePaysageId }}">{{ typologiePaysage.typologiePaysageNom }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="serie_coverage_ens_paysage">{{ "labelEnsemblePaysager"|trans|capitalize}} {% if "EnsemblePaysager" in "fieldRequired"|trans|split(";") %} * {% endif %}</label>
+                                                <select class="form-control serie" id="serie_coverage_ens_paysage" name="serie_coverage_ens_paysage" {% if "EnsemblePaysager" in "fieldRequired"|trans|split(";") %} required {% endif %}>
+                                                    {%  set ensemblePaysagerId = -1  %}
+                                                    {%  if serie.serieEnsemblePaysage %}
+                                                        {%  set ensemblePaysagerId = serie.serieEnsemblePaysage.ensemblePaysagerId  %}
+                                                    {% endif  %}
+                                                    {% for ensemblePaysager in ensemblesPaysagers %}
+                                                        {% if action == 'update' and ensemblePaysager.ensemblePaysagerId == ensemblePaysagerId %}
+                                                            <option value="{{ ensemblePaysager.ensemblePaysagerId }}" selected>{{ ensemblePaysager.ensemblePaysagerNom }}</option>
+                                                        {% else %}
+                                                            <option value="{{ ensemblePaysager.ensemblePaysagerId }}">{{ ensemblePaysager.ensemblePaysagerNom }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="serie_coverage_unite_paysage">Unit&eacute; de paysage {% if "UnitePaysage" in "fieldRequired"|trans|split(";") %} * {% endif %}</label>
+
+                                                <select class="form-control serie" id="serie_coverage_unite_paysage" name="serie_coverage_unite_paysage" {% if "UnitePaysage" in "fieldRequired"|trans|split(";") %} required {% endif %}>
+                                                    <option value=''> - Aucun(e) - </option>
+                                                    {%  set unitePaysagereId = -1  %}
+                                                    {%  if serie.serieUnitePaysagere %}
+                                                        {%  set unitePaysagereId = serie.serieUnitePaysagere.unitePaysageId  %}
+                                                    {% endif  %}
+                                                    {% for unitePaysage in unitesPaysage %}
+                                                        {% if action == 'update' and unitePaysage.unitePaysageId == unitePaysagereId %}
+                                                            <option value="{{ unitePaysage.unitePaysageId }}" data-ensemble="{% if unitePaysage.unitePaysageEnsemble %}{{ unitePaysage.unitePaysageEnsemble.ensemblePaysagerId }}{% endif %}" selected>{{ unitePaysage.unitePaysageNom }}</option>
+                                                        {% else %}
+                                                            <option value="{{ unitePaysage.unitePaysageId }}" data-ensemble="{% if unitePaysage.unitePaysageEnsemble %}{{ unitePaysage.unitePaysageEnsemble.ensemblePaysagerId }}{% endif %}">{{ unitePaysage.unitePaysageNom }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>                                                                            
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="serie_coverage_unit_paysage_local">{{ "labelUnitePaysageLocale"|trans|capitalize}}</label>
+                                                <select id="serie_coverage_unit_paysage_local" data-placeholder="S&eacute;lectionnez le(s)" class="form-control chosen-select serie" multiple tabindex="99">
+                                                    {% for unitePaysageLocale in unitesPaysageLocale %}
+                                                        {% if unitePaysageLocale.unitePaysageLocaleId in lstUnitePaysageLocal %}
+                                                            <option value="{{ unitePaysageLocale.unitePaysageLocaleId }}" selected>
+                                                        {% else %}
+                                                            <option value="{{ unitePaysageLocale.unitePaysageLocaleId }}">
+                                                        {% endif %}
+                                                        {{ unitePaysageLocale.unitePaysageLocaleNom }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <!--TODO-->
+                                                {% if serie.serieFreqPeriod %}
+                                                    {% set frequence = serie.serieFreqPeriod %}
+                                                {% else %}
+                                                    {% set frequence = defaultValue.frequence %}
+                                                {% endif %}
+                                                <label for="serie_coverage_frequ_reconduct ">Fr&eacute;quence de reconduction pr&eacute;vue *</label>
+                                                <input id="serie_coverage_frequ_reconduct" name="serie_coverage_frequ_reconduct" type="number" class="form-control serie col-6"  style="display:inline" {% if action == 'update' %} value="{{ serie.serieFreqInterval }}"{% endif %} required/>
+                                                <select id="serie_coverage_freq_reconduct_unit" name="serie_coverage_freq_reconduct_unit" class="form-control serie col-2" style="display:inline" required>
+                                                    <option selected>- S&eacute;lectionner -</option>
+                                                    <option value="minute" {% if frequence == 'minute' %} selected {% endif %}>Minutes</option>
+                                                    <option value="heure" {% if frequence == 'heure' %} selected {% endif %}>Heures</option>
+                                                    <option value="jour" {% if frequence == 'jour' %} selected {% endif %} >Jours</option>
+                                                    <option value="semaine" {% if frequence == 'semaine' %} selected {% endif %}>Semaines</option>
+                                                    <option value="mois" {% if frequence == 'mois' %} selected {% endif %}>Mois</option>
+                                                    <option value="année" {% if frequence == 'année' %} selected {% endif %}>Ann&eacute;es</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="step-{{stepFicheTerrain}}" class="">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="serie_fiche_obs">Observations pour la re-photographie</label>
+                                                <textarea id="serie_fiche_obs" name="serie_fiche_obs" class="form-control serie"> {% if action == 'update' %}{{ serie.serieObsRephoto }}{% endif %}</textarea>
+                                            </div>
+                                        </div>
+                                    </div>    
+                                    <table id="dataTableSeriesUpdateFile" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                                        <thead>
+                                        <tr>
+                                            <th class="collapse">Id</th>
+                                            <th>Type d'ajout dans la fiche terrain</th>
+                                            <th>Fichier</th>
+                                            <th class="collapse">Titre</th>
+                                            <th class="collapse">URL</th>
+                                            <th class="collapse">Poids</th>
+                                            <th style="width:30px">Actions</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr id='Croquis'>
+                                                <td class='fileId collapse' id ="serieCroquisId">{% if serie.serieCroquis %}{{ serie.serieCroquis.fileManagerId }}{% endif %}</td>
+                                                <td class='fileType' id ="serieCroquisType">Croquis</td>
+                                                <td class='fileDownload' id ="serieCroquisFile"><a target='_blank' href="{% if serie.serieCroquis %}{{ parameters['URL_FOLDER_FILES'] }}{{ serie.serieCroquis.fileManagerUri }}{% endif %}">{% if serie.serieCroquis %}{{ serie.serieCroquis.fileManagerNom }}{% endif %}</a></td>
+                                                <td class='fileTitre collapse' id ="serieCroquisTitre">{% if serie.serieCroquis %}{{ serie.serieCroquis.fileManagerNom }}{% endif %}</td>
+                                                <td class='fileUrl collapse' id ="serieCroquisURL">{% if serie.serieCroquis %}{{ serie.serieCroquis.fileManagerUri }}{% endif %}</td>
+                                                <td class='filePoids collapse' id ="serieCroquisPoids">{% if serie.serieCroquis %}{{ serie.serieCroquis.fileManagerSize }}{% endif %}</td>
+                                                <td style="display:flex" style="display: block;" data-file-type="Croquis">
+                                                    <a class="modify" data-toggle="modal" {% if not serie.serieCroquis %}style="display: none;"{% endif %}>
+                                                        <i class="c-light-blue-500 cur-p ti ti-pencil"></i>
+                                                    </a>
+                                                    <a class="remove" {% if not serie.serieCroquis %}style="display: none;"{% endif %}>
+                                                        <i class="c-red-500 cur-p ti ti-trash"></i>
+                                                    </a>
+                                                    <a class="add" {% if serie.serieCroquis %}style="display: none;"{% endif %}>
+                                                        <i class="c-green-500 cur-p ti ti-plus"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>                                                        
+                                            <tr id='Aerienne'>
+                                                <td class='fileId collapse' id ="serieAerienneId">{% if serie.seriePhotoAerienne %}{{ serie.seriePhotoAerienne.fileManagerId }}{% endif %}</td>
+                                                <td class='fileType' id ="serieAerienneType">Photo a&eacute;rienne</td>
+                                                <td class='fileDownload' id ="serieAerienneFile"><a target='_blank' href="{% if serie.seriePhotoAerienne %}{{ parameters['URL_FOLDER_FILES'] }}{{ serie.seriePhotoAerienne.fileManagerUri }}{% endif %}">{% if serie.seriePhotoAerienne %}{{ serie.seriePhotoAerienne.fileManagerNom }}{% endif %}</a></td>
+                                                <td class='fileTitre collapse' id ="serieAerienneTitre">{% if serie.seriePhotoAerienne %}{{ serie.seriePhotoAerienne.fileManagerNom }}{% endif %}</td>
+                                                <td class='fileUrl collapse' id ="serieAerienneURL">{% if serie.seriePhotoAerienne %}{{ serie.seriePhotoAerienne.fileManagerUri }}{% endif %}</td>
+                                                <td class='filePoids collapse' id ="serieAeriennePoids">{% if serie.seriePhotoAerienne %}{{ serie.seriePhotoAerienne.fileManagerSize }}{% endif %}</td>
+                                                <td style="display:flex" style="display: block;" data-file-type="Aerienne">
+                                                    <a class="modify" data-toggle="modal" {% if not serie.seriePhotoAerienne %}style="display: none;"{% endif %}>
+                                                        <i class="c-light-blue-500 cur-p ti ti-pencil"></i>
+                                                    </a>
+                                                    <a class="remove" {% if not serie.seriePhotoAerienne %}style="display: none;"{% endif %}>
+                                                        <i class="c-red-500 cur-p ti ti-trash"></i>
+                                                    </a>
+                                                    <a class="add" {% if serie.seriePhotoAerienne %}style="display: none;"{% endif %}>
+                                                        <i class="c-green-500 cur-p ti ti-plus"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr id='Context'>
+                                                <td class='fileId collapse' id ="serieContextId">{% if serie.seriePhotoContext %}{{ serie.seriePhotoContext.fileManagerId }}{% endif %}</td>
+                                                <td class='fileType' id ="serieContextType">Photo contextuelle</td>
+                                                <td class='fileDownload' id ="serieContextFile"><a target='_blank' href="{% if serie.seriePhotoContext %}{{ parameters['URL_FOLDER_FILES'] }}{{ serie.seriePhotoContext.fileManagerUri }}{% endif %}">{% if serie.seriePhotoContext %}{{ serie.seriePhotoContext.fileManagerNom }}{% endif %}</a></td>
+                                                <td class='fileTitre collapse' id ="serieContextTitre">{% if serie.seriePhotoContext %}{{ serie.seriePhotoContext.fileManagerNom }}{% endif %}</td>
+                                                <td class='fileUrl collapse' id ="serieContextURL">{% if serie.seriePhotoContext %}{{ serie.seriePhotoContext.fileManagerUri }}{% endif %}</td>
+                                                <td class='filePoids collapse' id ="serieContextPoids">{% if serie.seriePhotoContext %}{{ serie.seriePhotoContext.fileManagerSize }}{% endif %}</td>
+                                                <td style="display:flex" style="display: block;" data-file-type="Context">
+                                                    <a class="modify" data-toggle="modal" {% if not serie.seriePhotoContext %}style="display: none;"{% endif %}>
+                                                        <i class="c-light-blue-500 cur-p ti ti-pencil"></i>
+                                                    </a>
+                                                    <a class="remove" {% if not serie.seriePhotoContext %}style="display: none;"{% endif %}>
+                                                        <i class="c-red-500 cur-p ti ti-trash"></i>
+                                                    </a>
+                                                    <a class="add" {% if serie.seriePhotoContext %}style="display: none;"{% endif %}>
+                                                        <i class="c-green-500 cur-p ti ti-plus"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr id='IGN'>
+                                                <td class='fileId collapse' id ="serieIGNId">{% if serie.seriePhotoIgn %}{{ serie.seriePhotoIgn.fileManagerId }}{% endif %}</td>
+                                                <td class='fileType' id ="serieIGNType">Photo IGN</td>
+                                                <td class='fileTitre collapse' id ="serieIGNTitre">{% if serie.seriePhotoIgn %}{{ serie.seriePhotoIgn.fileManagerNom }}{% endif %}</td>
+                                                <td class='fileDownload' id ="serieIGNFile"><a target='_blank' href="{% if serie.seriePhotoIgn %}{{ parameters['URL_FOLDER_FILES'] }}{{ serie.seriePhotoIgn.fileManagerUri }}{% endif %}">{% if serie.seriePhotoIgn %}{{ serie.seriePhotoIgn.fileManagerNom }}{% endif %}</a></td>
+                                                <td class='fileUrl collapse' id ="serieIGNURL">{% if serie.seriePhotoIgn %}{{ serie.seriePhotoIgn.fileManagerUri }}{% endif %}</td>
+                                                <td class='filePoids collapse' id ="serieIGNPoids">{% if serie.seriePhotoIgn %}{{ serie.seriePhotoIgn.fileManagerSize }}{% endif %}</td>
+                                                <td style="display:flex" style="display: block;" data-file-type="IGN">
+                                                    <a class="modify" data-toggle="modal" {% if not serie.seriePhotoIgn %}style="display: none;"{% endif %}>
+                                                        <i class="c-light-blue-500 cur-p ti ti-pencil"></i>
+                                                    </a>
+                                                    <a class="remove" {% if not serie.seriePhotoIgn %}style="display: none;"{% endif %}>
+                                                        <i class="c-red-500 cur-p ti ti-trash"></i>
+                                                    </a>
+                                                    <a class="add" {% if serie.seriePhotoIgn %}style="display: none;"{% endif %}>
+                                                        <i class="c-green-500 cur-p ti ti-plus"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr id='Trepied'>
+                                                <td class='fileId collapse' id ="serieTrepiedId">{% if serie.seriePhotoTrepied %}{{ serie.seriePhotoTrepied.fileManagerId }}{% endif %}</td>
+                                                <td class='fileType' id ="serieTrepiedType">Photo de trepied</td>
+                                                <td class='fileDownload' id ="serieTrepiedFile"><a target='_blank' href="{% if serie.seriePhotoTrepied %}{{ parameters['URL_FOLDER_FILES'] }}{{ serie.seriePhotoTrepied.fileManagerUri }}{% endif %}">{% if serie.seriePhotoTrepied %}{{ serie.seriePhotoTrepied.fileManagerNom }}{% endif %}</a></td>
+                                                <td class='fileTitre collapse' id ="serieTrepiedTitre">{% if serie.seriePhotoTrepied %}{{ serie.seriePhotoTrepied.fileManagerNom }}{% endif %}</td>
+                                                <td class='fileUrl collapse' id ="serieTrepiedURL">{% if serie.seriePhotoTrepied %}{{ serie.seriePhotoTrepied.fileManagerUri }}{% endif %}</td>
+                                                <td class='filePoids collapse' id ="serieTrepiedPoids">{% if serie.seriePhotoTrepied %}{{ serie.seriePhotoTrepied.fileManagerSize }}{% endif %}</td>
+                                                <td style="display:flex" style="display: block;" data-file-type="Trepied">
+                                                    <a class="modify" data-toggle="modal" {% if not serie.seriePhotoTrepied %}style="display: none;"{% endif %}>
+                                                        <i class="c-light-blue-500 cur-p ti ti-pencil"></i>
+                                                    </a>
+                                                    <a class="remove" {% if not serie.seriePhotoTrepied %}style="display: none;"{% endif %}>
+                                                        <i class="c-red-500 cur-p ti ti-trash"></i>
+                                                    </a>
+                                                    <a class="add" {% if serie.seriePhotoTrepied %}style="display: none;"{% endif %}>
+                                                        <i class="c-green-500 cur-p ti ti-plus"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div id="step-{{stepEmplacement}}" class="">
+                                    <div class="row">
+                                        <div class="col-md-12 row">
+                                            <div class="col-md-6 v-align">
+                                                <h6>Saisir les coordonnées (WGS 84) ou positionner le point sur la carte</h6>
+                                                <div class="form-group row">
+                                                    <label for="serie_emplacement_latitude" class="col-sm-3 col-form-label">Latitude *</label>
+                                                    <div class="col-sm-9">
+                                                        <input id="serie_emplacement_latitude" name="serie_emplacement_latitude" type="number" step="0.00001" class="form-control serie" {% if action == 'update' %}value="{{ serie.serieGeomY }}"{% endif %} required/>
+                                                        <span class="formErrors"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="serie_emplacement_longitude" class="col-sm-3 col-form-label">Longitude *</label>
+                                                    <div class="col-sm-9">
+                                                        <input id="serie_emplacement_longitude" name="serie_emplacement_longitude" type="number" step="0.00001" class="form-control serie" {% if action == 'update' %}value="{{ serie.serieGeomX }}"{% endif %} required/>
+                                                        <span class="formErrors"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="col-sm-12 center-align">
+                                                        <button id ="btnPositionner" class="btn btn-primary cur-p ">Positionner sur la carte</button>
+                                                    </div>
+                                                </div>
+                                            </div>  
+                                            <div class="col-6">
+                                                <div id="mapSerieCoordinate" class="map" style="height:500px"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="step-{{stepPhotos}}" class="">
+                                    <input type="hidden" id="evolution_delete" value="{{ defaultValue.evolution_delete }}">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class='text-right'><button id ="addPhotoSerie" class="btn btn-primary cur-p ">Ajouter une photo</button></div>
+                                            <table id="dataTablePhotosSerie" class="table table-striped table-bordered mT-1" cellspacing="0" width="100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Id</th>
+                                                        <th>Photographie</th>
+                                                        <th>photo_auteur</th>
+                                                        <th>photo_thesaurus</th>
+                                                        <th>photo_thesaurus_facult</th>
+                                                        <th>photo_desc</th>
+                                                        <th>photo_date_desc</th>
+                                                        <th>photo_date_prise</th>
+                                                        <th>photo_format</th>
+                                                        <th>photo_iden</th>
+                                                        <th>photo_licence</th>
+                                                        <th>photo_fiche_licence</th>
+                                                        <th>photo_heure</th>
+                                                        <th>photo_type_appareil</th>
+                                                        <th>photo_focale</th>
+                                                        <th>photo_ouverture</th>
+                                                        <th>photo_type_film</th>
+                                                        <th>photo_iso</th>
+                                                        <th>photo_poids_ori</th>
+                                                        <th>photo_inclinaison</th>
+                                                        <th>photo_hauteur</th>
+                                                        <th>photo_orientation</th>
+                                                        <th>photo_altitude</th>
+                                                        <th>photo_coef_mer</th>
+                                                        <th>photo_file_action</th>
+                                                        <th>photo_file_name</th>
+                                                        <th>photo_file_size</th>
+                                                        <th>photo_file_url</th>
+                                                        <th>photo_action</th>
+                                                        <th style="width:100px">Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for photo in photos %}
+                                                        <tr>
+                                                            <td>{{photo.photo.photoId}}</td>
+                                                            <td>{{photo.photo.photoTitre}}</td>
+                                                            <td>{{photo.photo.photoAuteur}}</td>
+                                                            <td>{{photo.thesaurus}}</td>
+                                                            <td>{{photo.thesaurusFacult}}</td>
+                                                            <td>{{photo.photo.photoDescChangement}}</td>
+                                                            <td>{{photo.photo.photoDateDesc|date("Y-m-d")}}</td>
+                                                            <td>{{photo.photo.photoDatePrise|date("Y-m-d")}}</td>
+                                                            <td>{% if photo.photo.photoFormat %}{{photo.photo.photoFormat.formatId}}{% endif %}</td>
+                                                            <td>{{photo.photo.photoIdentifiantInt}}</td>
+                                                            <td>{% if photo.photo.photoLicence %}{{photo.photo.photoLicence.licenceId}}{% endif %}</td>
+                                                            <td>{% if photo.photo.photoLicenceFiche %}{{photo.photo.photoLicenceFiche.licenceId}}{% endif %}</td>
+                                                            <td>{{photo.photo.photoHeure}}</td>
+                                                            <td>{{photo.photo.photoTypeAppareil}}</td>
+                                                            <td>{{photo.photo.photoFocale}}</td>
+                                                            <td>{{photo.photo.photoOuvertureDia}}</td>
+                                                            <td>{{photo.photo.photoTypeFilm}}</td>
+                                                            <td>{{photo.photo.photoIso}}</td>
+                                                            <td>{{photo.photo.photoPoidsOrigine}}</td>
+                                                            <td>{{photo.photo.photoInclinaison}}</td>
+                                                            <td>{{photo.photo.photoHauteur}}</td>
+                                                            <td>{{photo.photo.photoOrientation}}</td>
+                                                            <td>{{photo.photo.photoAltitude}}</td>
+                                                            <td>{{photo.photo.photoCoefMaree}}</td>
+                                                            <td>loaded</td>
+                                                            <td>{% if photo.photo.photoFile %}{{photo.photo.photoFile.fileManagerNom}}{% endif %}</td>
+                                                            <td>{% if photo.photo.photoFile %}{{photo.photo.photoFile.fileManagerSize}}{% endif %}</td>
+                                                            <td>{% if photo.photo.photoFile %}{{photo.photo.photoFile.fileManagerUri}}{% endif %}</td>
+                                                            <td>ras</td>
+                                                            <td>
+                                                                <a class="modify">
+                                                                    <i class="c-light-blue-500 cur-p ti ti-pencil"></i>
+                                                                </a>
+                                                                <a class="remove">
+                                                                    <i class="c-red-500 cur-p ti ti-trash"></i>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="step-{{stepDocumentationsAnnexes}}" class="">  
+                                    <div class="row mT-20">
+                                        <div class="col-md-3">
+                                            <h6>Document de r&eacute;f&eacute;rence</h6>
+                                            <input type="hidden" id="serie_document_ref_action" class="serie form-serie-refdoc" value="{% if serie.serieRefdoc %}init{% endif %}">
+                                            <input type="hidden" id="serie_document_ref_id" class="serie form-serie-refdoc" value="{% if serie.serieRefdoc %}{{ serie.serieRefdoc.documentRefId }}{% endif %}">
+                                            <input type="hidden" id="serie_document_ref_identifiant_int" class="serie form-serie-refdoc" value="{% if serie.serieRefdoc %}{{ serie.serieRefdoc.documentRefIdentifiantInt }}{% endif %}">
+                                            <input type="hidden" id="serie_document_ref_auteur" class="serie form-serie-refdoc" value="{% if serie.serieRefdoc %}{{ serie.serieRefdoc.documentRefAuteur }}{% endif %}">
+                                            <input type="hidden" id="serie_document_ref_desc" class="serie form-serie-refdoc" value="{% if serie.serieRefdoc %}{{ serie.serieRefdoc.documentRefDesc }}{% endif %}">
+                                            <input type="hidden" id="serie_document_ref_date" class="serie form-serie-refdoc" value="{% if serie.serieRefdoc %}{{ serie.serieRefdoc.documentRefDate|date("Y-m-d") }}{% endif %}">
+                                            <input type="hidden" id="serie_document_ref_commentaire_date" class="serie form-serie-refdoc" value="{% if serie.serieRefdoc %}{{ serie.serieRefdoc.documentRefCommentaireDate }}{% endif %}">
+                                            <input type="hidden" id="serie_document_ref_type" class="serie form-serie-refdoc" value="{% if serie.serieRefdoc %}{{ serie.serieRefdoc.documentRefType }}{% endif %}">
+                                            <input type="hidden" id="serie_document_ref_format" class="serie form-serie-refdoc" value="{% if serie.serieRefdoc %}{{ serie.serieRefdoc.documentRefFormat }}{% endif %}">
+                                            <input type="hidden" id="serie_document_ref_source" class="serie form-serie-refdoc" value="{% if serie.serieRefdoc %}{{ serie.serieRefdoc.documentRefSource }}{% endif %}">
+                                            <input type="hidden" id="serie_document_ref_site" class="serie form-serie-refdoc" value="{% if serie.serieRefdoc %}{{ serie.serieRefdoc.documentRefSite }}{% endif %}">
+                                            <input type="hidden" id="serie_document_ref_nom" class="serie form-serie-refdoc" value="{% if serie.serieRefdoc %}{{ serie.serieRefdoc.documentRefNom }}{% endif %}">
+                                            <input type="hidden" id="serie_document_ref_sous_titre" class="serie form-serie-refdoc" value="{% if serie.serieRefdoc %}{{ serie.serieRefdoc.documentRefSousTitre }}{% endif %}">
+                                            <input type="hidden" id="serie_document_ref_heure" class="serie form-serie-refdoc" value="{% if serie.serieRefdoc %}{{ serie.serieRefdoc.documentRefHeure }}{% endif %}">
+                                            <input type="hidden" id="serie_document_ref_periode" class="serie form-serie-refdoc" value="{% if serie.serieRefdoc %}{{ serie.serieRefdoc.documentRefPeriode }}{% endif %}">
+                                            <input type="hidden" id="serie_document_ref_moment" class="serie form-serie-refdoc" value="{% if serie.serieRefdoc %}{{ serie.serieRefdoc.documentRefMoment }}{% endif %}">
+                                            <input type="hidden" id="serie_document_ref_lieu_conservation" class="serie form-serie-refdoc" value="{% if serie.serieRefdoc %}{{ serie.serieRefdoc.documentRefLieuConservation }}{% endif %}">
+                                            <input type="hidden" id="serie_document_ref_orientation" class="serie form-serie-refdoc" value="{% if serie.serieRefdoc %}{{ serie.serieRefdoc.documentRefOrientation }}{% endif %}">
+                                            <input type="hidden" id="serie_document_ref_altitude" class="serie form-serie-refdoc" value="{% if serie.serieRefdoc %}{{ serie.serieRefdoc.documentRefAltitude }}{% endif %}">
+                                            <input type="hidden" id="serie_document_ref_coef_maree" class="serie form-serie-refdoc" value="{% if serie.serieRefdoc %}{{ serie.serieRefdoc.documentRefCoefMaree }}{% endif %}">
+                                            <input type="hidden" id="serie_document_ref_cote_doc" class="serie form-serie-refdoc" value="{% if serie.serieRefdoc %}{{ serie.serieRefdoc.documentRefCoteDoc }}{% endif %}">
+                                            <input type="hidden" id="serie_document_ref_langue_id" class="serie form-serie-refdoc" value="{% if serie.serieRefdoc %}{% if serie.serieRefdoc.documentRefLangue %}{{ serie.serieRefdoc.documentRefLangue.langueId }}{% endif %}{% endif %}">
+                                            <input type="hidden" id="serie_document_ref_licence_id" class="serie form-serie-refdoc" value="{% if serie.serieRefdoc %}{% if serie.serieRefdoc.documentRefLicence %}{{ serie.serieRefdoc.documentRefLicence.licenceId }}{% endif %}{% endif %}">
+                                            <input type="hidden" id="serie_document_ref_file_id" class="serie form-serie-refdoc" value="{% if serie.serieRefdoc %}{% if serie.serieRefdoc.documentRefFile %}{{ serie.serieRefdoc.documentRefFile.fileManagerId }}{% endif %}{% endif %}">
+                                            <input type="hidden" id="serie_document_ref_file_action" class="serie form-serie-refdoc" value="{% if serie.serieRefdoc %}{% if serie.serieRefdoc.documentRefFile %}loaded{% endif %}{% endif %}">
+                                            <input type="hidden" id="serie_document_ref_file_titre" class="serie form-serie-refdoc" value="{% if serie.serieRefdoc %}{% if serie.serieRefdoc.documentRefFile %}{{ serie.serieRefdoc.documentRefFile.fileManagerNom }}{% endif %}{% endif %}">
+                                            <input type="hidden" id="serie_document_ref_file_url" class="serie form-serie-refdoc" value="{% if serie.serieRefdoc %}{% if serie.serieRefdoc.documentRefFile %}{{ serie.serieRefdoc.documentRefFile.fileManagerUri }}{% endif %}{% endif %}">
+                                            <input type="hidden" id="serie_document_ref_file_poids" class="serie form-serie-refdoc" value="{% if serie.serieRefdoc %}{% if serie.serieRefdoc.documentRefFile %}{{ serie.serieRefdoc.documentRefFile.fileManagerSize }}{% endif %}{% endif %}">
+                                        </div>
+                                        <div class="col-md-3" id="serie_document_ref_download" class='form-serie-refdoc'>
+                                            {% if serie.serieRefdoc %}
+                                                {% if serie.serieRefdoc.documentRefFile %}
+                                                <a href="{{parameters['URL_FOLDER_FILES']}}{{ serie.serieRefdoc.documentRefFile.fileManagerUri }}" target="_blank">
+                                                    {{ serie.serieRefdoc.documentRefFile.fileManagerNom }}
+                                                </a>
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <a class="modify" id="editRefDoc"  {% if not serie.serieRefdoc %}style="display: none;"{% endif %}>
+                                                <i class="c-light-blue-500 cur-p ti ti-pencil"></i>
+                                            </a>
+                                            <a class="remove" id="removeRefDoc" {% if not serie.serieRefdoc %}style="display: none;"{% endif %}>
+                                                <i class="c-red-500 cur-p ti ti-trash"></i>
+                                            </a>
+                                            <!--button id="editRefDoc" class="btn btn-outline-warning cur-p" {% if not serie.serieRefdoc %}style="display: none;"{% endif %}>
+                                                <i class="ti ti-pencil"></i>
+                                            </button>
+                                            <button id="removeRefDoc" class="btn btn-outline-danger cur-p" {% if not serie.serieRefdoc %}style="display: none;"{% endif %}>
+                                                <i class="ti ti-trash"></i>
+                                            </button-->
+                                            <button id="addRefDoc" class="btn btn-primary cur-p" {% if serie.serieRefdoc %}style="display: none;"{% endif %}>
+                                                <i class="ti ti-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <hr class="my-1">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <h6>Sons</h6>
+                                            <button id ="addSonSerie" class="btn btn-primary cur-p ">Ajouter un son</button>
+                                            <table id="dataTableSonsSerie" class="table table-striped table-bordered mT-1" cellspacing="0" width="100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Id</th>
+                                                        <th>Titre</th>
+                                                        <th>son_auteur</th>
+                                                        <th>son_presentation</th>
+                                                        <th>son_lien_paysage</th>
+                                                        <th>son_date</th>
+                                                        <th>son_type</th>
+                                                        <th>son_format</th>
+                                                        <th>son_heure</th>
+                                                        <th>son_type_mat</th>
+                                                        <th>son_traitement</th>
+                                                        <th>son_protocole</th>
+                                                        <th>son_contexte</th>
+                                                        <th>son_condition_meteo</th>
+                                                        <th>son_num_photo</th>
+                                                        <th>son_lieu</th>
+                                                        <th>son_duree</th>
+                                                        <th>son_langue_id</th>
+                                                        <th>son_licence_id</th>
+                                                        <th>son_struct_resp_id</th>
+                                                        <th>son_file_action</th>
+                                                        <th>son_file_name</th>
+                                                        <th>son_file_size</th>
+                                                        <th>son_file_url</th>
+                                                        <th>son_action</th>
+                                                        <th>Son</th>
+                                                        <th style="width:100px">Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for son in sons %}
+                                                        <tr>
+                                                            <td>{{son.sonId}}</td>
+                                                            <td>{{son.sonTitre}}</td>
+                                                            <td>{{son.sonAuteur}}</td>
+                                                            <td>{{son.sonPresentation}}</td>
+                                                            <td>{{son.sonLienPaysage}}</td>
+                                                            <td>{{son.sonDate|date("Y-m-d")}}</td>
+                                                            <td>{{son.sonType}}</td>
+                                                            <td>{{son.sonFormat}}</td>
+                                                            <td>{{son.sonHeure}}</td>
+                                                            <td>{{son.sonTypeMat}}</td>
+                                                            <td>{{son.sonTraitement}}</td>
+                                                            <td>{{son.sonProtocole}}</td>
+                                                            <td>{{son.sonContexte}}</td>
+                                                            <td>{{son.sonConditionMeteo}}</td>
+                                                            <td>{{son.sonNumPhoto}}</td>
+                                                            <td>{{son.sonLieu}}</td>
+                                                            <td>{{son.sonDuree}}</td>
+                                                            <td>{% if son.sonLangue %}{{son.sonLangue.langueId}}{% endif %}</td>
+                                                            <td>{% if son.sonLicence %}{{son.sonLicence.licenceId}}{% endif %}</td>
+                                                            <td>{% if son.sonStructResp %}{{son.sonStructResp.porteurOppId}}{% endif %}</td>
+                                                            <td>loaded</td>
+                                                            <td>{{son.sonFile.fileManagerNom}}</td>
+                                                            <td>{{son.sonFile.fileManagerSize}}</td>
+                                                            <td>{{son.sonFile.fileManagerUri}}</td>
+                                                            <td>ras</td>
+                                                            <td><a href='{{ parameters['URL_FOLDER_FILES'] }}{{son.sonFile.fileManagerUri}}' download>{{son.sonFile.fileManagerNom}}</a></td>
+                                                            <td>
+                                                                <a class="modify">
+                                                                    <i class="c-light-blue-500 cur-p ti ti-pencil"></i>
+                                                                </a>
+                                                                <a class="remove">
+                                                                    <i class="c-red-500 cur-p ti ti-trash"></i>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <hr class="my-1">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <h6>Documentation</h6>
+                                            <button id ="addDocumentSerie" class="btn btn-primary cur-p ">Ajouter une documentation</button>
+                                            <table id="dataTableDocumentsSerie" class="table table-striped table-bordered mT-1" cellspacing="0" width="100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Id</th>
+                                                        <th>Titre</th>
+                                                        <th>document_legende</th>
+                                                        <th>document_file_action</th>
+                                                        <th>document_file_name</th>
+                                                        <th>document_file_size</th>
+                                                        <th>document_file_url</th>
+                                                        <th>document_action</th>
+                                                        <th>Document</th>
+                                                        <th style="width:100px">Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for document in documents %}
+                                                        <tr>
+                                                            <td>{{document.documentId}}</td>
+                                                            <td>{{document.documentTitre}}</td>
+                                                            <td>{{document.documentLegende}}</td>
+                                                            <td>loaded</td>
+                                                            <td>{{document.documentFile.fileManagerNom}}</td>
+                                                            <td>{{document.documentFile.fileManagerSize}}</td>
+                                                            <td>{{document.documentFile.fileManagerUri}}</td>
+                                                            <td>ras</td>
+                                                            <td><a href='{{ parameters['URL_FOLDER_FILES'] }}{{document.documentFile.fileManagerUri}}' download>{{document.documentFile.fileManagerNom}}</a></td>
+                                                            <td>
+                                                                <a class="modify">
+                                                                    <i class="c-light-blue-500 cur-p ti ti-pencil"></i>
+                                                                </a>
+                                                                <a class="remove">
+                                                                    <i class="c-red-500 cur-p ti ti-trash"></i>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <h6>Lien externe</h6>
+                                            <button id ="addLienExtSerie" class="btn btn-primary cur-p ">Ajouter un lien externe</button>
+                                            <table id="dataTableLienExtSerie" class="table table-striped table-bordered mT-1" cellspacing="0" width="100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Id</th>
+                                                        <th>Value</th>
+                                                        <th>Lien</th>
+                                                        <th style="width:100px">Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for lienExt in liensExt %}
+                                                        <tr>
+                                                            <td>{{lienExt.lienExterneId}}</td>
+                                                            <td>{{lienExt.lienExterneValue}}</td>
+                                                            <td><a href='{{lienExt.lienExterneValue}}' target='_blank'>{{lienExt.lienExterneValue}}</a></td>
+                                                            <td>
+                                                                <a class="modify">
+                                                                    <i class="c-light-blue-500 cur-p ti ti-pencil"></i>
+                                                                </a>
+                                                                <a class="remove">
+                                                                    <i class="c-red-500 cur-p ti ti-trash"></i>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="row m-3">
+                            <div class="col-md-12 center-align contentButtonWizard" id='contentButtonWizard'>
+                                
+                            </div>
+                        </div>
+                        {% if not serie.serieUserCrea and action == "update" %}
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="serie_user_crea">Créer par </label>
+                                        <select id="serie_user_crea" name="serie_user_crea" class="form-control serie">
+                                            <option value="" selected> - S&eacute;lectionnez -</option>
+                                            {% for user in users %}
+                                                <option value="{{ user.id }}" >{{ user.nom }} {{ user.prenom }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="serie_date_crea">Créer le </label>
+                                        <input type='date' class="form-control serie" id="serie_date_crea"/>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="row m-3">
+                            <div class="col-md-12 center-align">
+                                <div class="ai-c jc-sb fxw-nw">
+                                    <div class="checkbox checkbox-circle checkbox-info ai-c">
+                                        <input type="checkbox" id="seriePublie" name="seriePublie" class="peer form-control" {% if serie.seriePublie %}checked{% endif %}>
+                                        <label for="seriePublie" class=" peer-greed js-sb ai-c">
+                                            <span class="peer peer-greed">{{ "labelPublierSerie"|trans }}</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button id="createSerie" name="envoi" class="btn btn-secondary cur-p" value="Suivant" disabled>Enregistrer</button>
+                            </div>
+                        </div>
+                        <div id="messageConfirmSerie" class=" mT-1"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+    <!-- Modal -->
+    <div class="modal fade" id="modalSerieFile" name="modalSerieFile" tabindex="-1" role="dialog" aria-labelledby="modalSerieFile" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalSerieFileTitre">Fichier</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input class="form-control collapse" id="serieFileId">
+                    <input class="form-control collapse" id="serieFileType">
+                    <small>(Le fichier pr&eacute;c&eacute;dent sera &eacute;cras&eacute;.)</small>
+                    <form id="updateSerieDropzoneForm" name="updateSerieDropzoneForm" action="{{path('insertSerieFile')}}" class="dropzone" method="post" enctype="multipart/form-data">
+                        <div class="fallback">
+                            <input id="update_serie_dropzone" name="update_serie_dropzone" type="file"/>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="button" id="saveSerieFile" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalSeriePhoto" name="modalSeriePhoto" tabindex="-1" role="dialog" aria-labelledby="modalSeriePhoto" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Photo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% include 'serie/popin/create_photo.html.twig' %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="button" id="saveSeriePhoto" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalSerieRefDoc" name="modalSerieRefDoc" tabindex="-1" role="dialog" aria-labelledby="modalSerieRefDoc" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Document de référence</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% include 'serie/popin/create_ref_doc.html.twig' %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="button" id="saveSerieDocRef" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalSerieSon" name="modalSerieSon" tabindex="-1" role="dialog" aria-labelledby="modalSerieSon" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Son</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% include 'serie/popin/create_son.html.twig' %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="button" id="saveSerieSon" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalSerieDocument" name="modalSerieDocument" tabindex="-1" role="dialog" aria-labelledby="modalSerieDocument" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Documentation</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% include 'serie/popin/create_document.html.twig' %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="button" id="saveSerieDocument" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalSerieLienExt" name="modalSerieLienExt" tabindex="-1" role="dialog" aria-labelledby="modalSerieLienExt" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Lien externe</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input id="LienExtId" type="hidden" class="form-control "/>
+                    <input id="LienExtValue" type="text" class="form-control"/>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="button" id="saveSerieLienExt" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock body %}

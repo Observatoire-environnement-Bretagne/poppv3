@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% set parameters = app.session.get('parameters') %}
+  <head>
+  </head>
+
+    <body>
+        <p>Bonjour {{user.Prenom}},</p>
+        <p>
+            <div>L'activation de votre compte fournisseur a été refusée.</div>
+            <div>Vous pouvez tout de même vous connecter sur la POPP et laisser des commentaires sur les {{ "labelSeries"|trans }} photos {{ url('app_login') }}</div>
+            <a href='{{ url('app_login') }}'>Accès à la {{parameters.APP_NAME}}</a>
+            <br/>
+        </p>
+        <p>  
+            <div>Cordialement,</div>
+            <div>L'équipe {{parameters.APP_NAME}}.</div>
+        </p>
+    </body>
+</html>
+
+
+

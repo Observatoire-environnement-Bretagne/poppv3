@@ -1,0 +1,87 @@
+{%  extends "base.html.twig" %}
+
+{% set parameters = app.session.get('parameters') %}
+
+{% block body %}
+    <main class='main-content bgc-grey-100'>
+      {% for message in app.flashes("error") %}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <strong>Erreur</strong> {{ message }}
+          <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+  {% endfor %}
+  {% for message in app.flashes("success") %}
+      <div class="alert alert-success alert-dismissible fade show " role="alert">
+          <strong>Succès</strong> {{ message }}
+          <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+  {% endfor %}
+  <div id="js-message"></div> 
+        <div id='mainContent'>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h4 class="c-grey-900 mT-10 mB-30">Modérer les commentaires</h4>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="ai-c jc-sb fxw-nw mT-5">
+                                    <div class="checkbox checkbox-circle checkbox-info ai-c">
+                                        <input type="checkbox" id="commentairePublie" name="commentairePublie" class="peer form-control">
+                                        <label for='commentairePublie'>Commentaires non publiés seulement</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mT-5">
+                            <div class="col-md-12">
+                                <table id="dataTableCommentaires" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                                  <thead>
+                                    <tr>
+                                      <th>Id</th>
+                                      <th>Auteur</th>
+                                      <th>Commentaire</th>
+                                      <th>Photo</th>
+                                      <th>{{ "labelSerie"|trans }}</th>
+                                      <th>Date</th>
+                                      <th style="min-width:100px;">Publier/Dépublier</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {% for commentaire in commentaires %}
+                                    <tr data-etat='{{commentaire.commentaireEtat}}'>
+                                      <td id ="commentaireId">{{commentaire.commentaireId}}</td>
+                                      <td>{% if commentaire.commentaireAuteur %}{{commentaire.commentaireAuteur.Prenom}} {{commentaire.commentaireAuteur.Nom}}{% endif %}</td>
+                                      <td>{{commentaire.commentaireText}}</td>
+                                      <td>{% if commentaire.commentairePhoto %}{{commentaire.commentairePhoto.photoTitre}}{% endif %}</td>
+                                      <td>{% if commentaire.commentairePhoto %}{% if commentaire.commentairePhoto.photoSerie %}{{commentaire.commentairePhoto.photoSerie.serieTitre}}{% endif %}{% endif %}</td>
+                                      <td>{{commentaire.commentaireDate|date('d/m/Y H:i')}}</td>
+                                      <td>
+                                          <center>
+                                          {% if commentaire.commentaireEtat == 0 %}
+                                            <a class="modify" ><i class="c-red-500 cur-p ti ti-na"></i></a>
+                                          {% else %}
+                                            <a class="modify" ><i class="c-light-green-500 cur-p ti ti-check-box"></i></a>
+                                          {% endif %}
+                                          <a class="remove"><i class="c-red-500 cur-p ti ti-trash"></i></a>
+                                        </center>
+                                      </td>
+                                    </tr>
+                                    {% endfor %}
+                                  </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock body %}

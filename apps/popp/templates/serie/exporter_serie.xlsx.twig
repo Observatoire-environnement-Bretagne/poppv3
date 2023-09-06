@@ -1,0 +1,95 @@
+{% xlsdocument%}
+    {% xlssheet 'Export de la série'%}
+    {# Premier tableau #}
+        {% xlsrow %}
+            {% xlscell %}Identification{% endxlscell %}{# A1 #}
+            {% xlscell %}{% endxlscell %}{# B1 #}
+            {% xlscell %}Localisation{% endxlscell %}{# C1 #}
+            {% xlscell %}{% endxlscell %}{# D1 #}
+        {% endxlsrow %}
+        {% xlsrow %}
+            {% xlscell %}Serie{% endxlscell %}
+            {% xlscell %}{% endxlscell %}
+            {% xlscell %}Region{% endxlscell %}
+            {% xlscell %}{% endxlscell %}
+        {% endxlsrow %}
+        {% xlsrow %}
+            {% xlscell %}Identifiant{% endxlscell %}
+            {% xlscell %}{% endxlscell %}
+            {% xlscell %}Département{% endxlscell %}
+            {% xlscell %}{% endxlscell %}
+        {% endxlsrow %}
+        {% xlsrow %}
+            {% xlscell %}Structure OPP{% endxlscell %}
+            {% xlscell %}{% endxlscell %}
+            {% xlscell %}Commune{% endxlscell %}
+            {% xlscell %}{% endxlscell %}
+        {% endxlsrow %}
+        {% xlsrow %}
+            {% xlscell %}OPP{% endxlscell %}
+            {% xlscell %}{% endxlscell %}
+            {% xlscell %}Adresse / Lieu de la prise de vue{% endxlscell %}
+            {% xlscell %}{% endxlscell %}
+        {% endxlsrow %}
+        {% xlsrow %}
+            {% xlscell %}Photo{% endxlscell %}
+            {% xlscell %}{% endxlscell %}
+            {% xlscell %}Coordonnées GPS{% endxlscell %}
+            {% xlscell %}{% endxlscell %}
+        {% endxlsrow %}
+        {% xlsrow %}
+            {% xlscell %}=SUM(A1:B1){% endxlscell %}
+        {% endxlsrow %}
+    {# Fin premier tableau #}   
+    
+    {# Row d'espacement #}   
+        {% xlsrow %}
+        {% endxlsrow %}
+    {# Fin row d'espacement #}   
+
+    {# Second tableau #}
+        {% xlsrow %}
+            {% xlscell %}Identification{% endxlscell %}{# A1 #}
+            {% xlscell %}{% endxlscell %}{# B1 #}
+            {% xlscell %}Localisation{% endxlscell %}{# C1 #}
+            {% xlscell %}{% endxlscell %}{# D1 #}
+        {% endxlsrow %}
+        {% xlsrow %}
+            {% xlscell %}Serie{% endxlscell %}
+            {% xlscell %}{% endxlscell %}
+            {% xlscell %}Region{% endxlscell %}
+            {% xlscell %}{% endxlscell %}
+        {% endxlsrow %}
+        {% xlsrow %}
+            {% xlscell %}Identifiant{% endxlscell %}
+            {% xlscell %}{% endxlscell %}
+            {% xlscell %}Département{% endxlscell %}
+            {% xlscell %}{% endxlscell %}
+        {% endxlsrow %}
+        {% xlsrow %}
+            {% xlscell %}Structure OPP{% endxlscell %}
+            {% xlscell %}{% endxlscell %}
+            {% xlscell %}Commune{% endxlscell %}
+            {% xlscell %}{% endxlscell %}
+        {% endxlsrow %}
+        {% xlsrow %}
+            {% xlscell %}OPP{% endxlscell %}
+            {% xlscell %}{% endxlscell %}
+            {% xlscell %}Adresse / Lieu de la prise de vue{% endxlscell %}
+            {% xlscell %}{% endxlscell %}
+        {% endxlsrow %}
+        {% xlsrow %}
+            {% xlscell %}Photo{% endxlscell %}
+            {% xlscell %}{% endxlscell %}
+            {% xlscell %}Coordonnées GPS{% endxlscell %}
+            {% xlscell %}{% endxlscell %}
+        {% endxlsrow %}
+        {% xlsrow %}
+            {% xlscell %}=SUM(A1:B1){% endxlscell %}
+        {% endxlsrow %}
+    {# Fin premier tableau #}   
+    
+    
+    
+    {% endxlssheet %}
+{% endxlsdocument %}
