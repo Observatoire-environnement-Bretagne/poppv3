@@ -8,7 +8,7 @@ FROM debian:stretch
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-    apache2 curl nano \
+    apache2 curl nano certbot python3-certbot-apache \
     && rm -r /var/lib/apt/lists/*
 RUN a2enmod proxy_fcgi ssl rewrite proxy proxy_balancer proxy_http proxy_ajp
 #RUN sed -i '/Global configuration/a \
