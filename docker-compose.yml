@@ -25,7 +25,7 @@ services:
         
   postgres:
     container_name: popp_postgres
-    image: postgres:13.1-alpine
+    image: postgis/postgis:13-3.4
     restart: always
     ports:
     - "5432:5432"
@@ -34,11 +34,11 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data/ # persist data even if container shuts down
   
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-    - 8080:8080
+#  adminer:
+#    image: adminer
+#    restart: always
+#    ports:
+#    - 8080:8080
 
 volumes:
   postgres-data: # named volumes can be managed easier using docker-compose
